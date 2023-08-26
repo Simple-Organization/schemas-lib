@@ -9,11 +9,26 @@ const sourceMap = false;
 //
 //
 
-export default [
-  {
+function getConfig(dev = false, server = false) {
+  let file = '';
+
+  if (dev && server) {
+    file = './dist/server.dev.js';
+  }
+  if (dev && !server) {
+    file = './dist/index.dev.js';
+  }
+  if (!dev && server) {
+    file = './dist/server.js';
+  }
+  if (!dev && !server) {
+    file = './dist/index.js';
+  }
+
+  return {
     input: './src/index.ts',
     output: {
-      file: './dist/index.js',
+      file,
       format: 'es',
       sourcemap: sourceMap,
     },
@@ -28,9 +43,24 @@ export default [
       esbuild({
         sourceMap,
         minify: false,
+
+        define: {
+          __DEV__: dev + '',
+          __SERVER__: server + '',
+        },
       }),
     ],
-  },
+  };
+}
+
+//
+//
+
+export default [
+  getConfig(false, false),
+  getConfig(false, true),
+  getConfig(true, false),
+  getConfig(true, true),
   //
   // Types
   {
