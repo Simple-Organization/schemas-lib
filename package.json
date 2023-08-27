@@ -1,12 +1,13 @@
 {
   "name": "schemas-lib",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Simple Organization",
   "scripts": {
     "build": "tsc && rollup -c",
     "dev": "rollup -c -w",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "test": "mocha **/*.spec.ts -r esbuild-register -extension ts --file tests/setup-tests.ts"
+    "test": "mocha **/*.spec.ts -r esbuild-register -extension ts --file tests/setup-tests.ts",
+    "prepack": "pnpm build"
   },
   "main": "dist/index.js",
   "dependencies": {

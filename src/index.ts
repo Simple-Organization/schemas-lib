@@ -30,5 +30,5 @@ export {
 export * from './prebuilt';
 
 // Others
-export { Issue, ObjectIssue, IssueError } from './Issue';
+export { Issue, ObjectIssue, IssueError, CustomIssue } from './Issue';
 export type { SchemaMeta, Infer, Mutator, SchemaParser } from './types';
