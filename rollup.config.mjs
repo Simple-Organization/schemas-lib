@@ -9,20 +9,16 @@ const sourceMap = false;
 //
 //
 
-function getConfig(dev = false, server = false) {
-  let file = '';
+function getConfig(vite = false) {
+  let define = {};
+  let file = 'dist/index.js'
 
-  if (dev && server) {
-    file = './dist/server.dev.js';
-  }
-  if (dev && !server) {
-    file = './dist/index.dev.js';
-  }
-  if (!dev && server) {
-    file = './dist/server.js';
-  }
-  if (!dev && !server) {
-    file = './dist/index.js';
+  if (vite) {
+    file = 'dist/index.vite.js'
+    define = {
+      __DEV__: 'import.meta.env.DEV',
+      __SERVER__: 'import.meta.env.SSR',
+    };
   }
 
   return {
@@ -44,10 +40,7 @@ function getConfig(dev = false, server = false) {
         sourceMap,
         minify: false,
 
-        define: {
-          __DEV__: dev + '',
-          __SERVER__: server + '',
-        },
+        define,
       }),
     ],
   };
@@ -57,10 +50,8 @@ function getConfig(dev = false, server = false) {
 //
 
 export default [
-  getConfig(false, false),
-  getConfig(false, true),
-  getConfig(true, false),
-  getConfig(true, true),
+  getConfig(false),
+  getConfig(true),
   //
   // Types
   {

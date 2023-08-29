@@ -1,6 +1,6 @@
 {
   "name": "schemas-lib",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "Simple Organization",
   "scripts": {
     "build": "tsc && rollup -c",
@@ -29,33 +29,15 @@
   "files": [
     "dist/index.d.ts",
     "dist/index.js",
-    "dist/index.dev.js",
-    "dist/server.js",
-    "dist/server.dev.js"
+    "dist/index.vite.js"
   ],
   ".": {
-    "browser": {
-      "development": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.dev.js"
-      },
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "node": {
-      "development": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/server.dev.js"
-      },
-      "types": "./dist/index.d.ts",
-      "import": "./dist/server.js"
-    },
-    "development": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.dev.js"
-    },
     "types": "./dist/index.d.ts",
     "import": "./dist/index.js"
+  },
+  "/vite": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.vite.js"
   },
   "types": "dist/index.d.ts",
   "type": "module"
