@@ -116,7 +116,7 @@ export function object<T extends ObjectSchemaRecord>(
   //
   //  Validates the value only in development
 
-  if (__DEV__ && (shape === null || typeof shape !== 'object')) {
+  if (shape === null || typeof shape !== 'object') {
     throw new Error('The shape must be an object');
   }
 
@@ -125,20 +125,10 @@ export function object<T extends ObjectSchemaRecord>(
   //
   //  Creates the output schema
 
-  const schema = new ObjectSchema<T>(
-    [cloneObjectParser, objectParser],
-    __DEV__
-      ? {
-          jsType: '',
-          db: {
-            type: 'TEXT',
-          },
-          shape: _shape,
-        }
-      : {
-          shape: _shape,
-        },
-  );
+  const schema = new ObjectSchema<T>([cloneObjectParser, objectParser], {
+    jsType: '',
+    shape: _shape,
+  });
 
   //
   //  Creates the shape and clones all child schemas
@@ -146,7 +136,7 @@ export function object<T extends ObjectSchemaRecord>(
   let clone: Schema<any>;
 
   for (const key of Object.keys(shape)) {
-    if (__DEV__ && !(shape[key] instanceof Schema)) {
+    if (!(shape[key] instanceof Schema)) {
       throw new Error(
         `Expected value['${key}'] to be a instance of Schema, but received: ${shape[key]}`,
       );
@@ -159,34 +149,32 @@ export function object<T extends ObjectSchemaRecord>(
 
   schema.meta.shape = _shape;
 
-  if (__DEV__) {
-    schema.meta.jsType =
-      '{' +
-      Object.keys(_shape)
-        .map((key) => {
-          let prop = '"' + key.replace(/"/g, '\\"') + '"';
-          let postfix = '';
+  schema.meta.jsType =
+    '{' +
+    Object.keys(_shape)
+      .map((key) => {
+        let prop = '"' + key.replace(/"/g, '\\"') + '"';
+        let postfix = '';
 
-          if (_shape[key].meta.mode === 'optional') {
-            prop += '?';
-          } else if (_shape[key].meta.mode === 'nullish') {
-            prop += '?';
-            postfix += '|null';
-          } else if (_shape[key].meta.mode === 'nullable') {
-            postfix += '|null';
-          }
+        if (_shape[key].meta.mode === 'optional') {
+          prop += '?';
+        } else if (_shape[key].meta.mode === 'nullish') {
+          prop += '?';
+          postfix += '|null';
+        } else if (_shape[key].meta.mode === 'nullable') {
+          postfix += '|null';
+        }
 
-          let jsType = _shape[key].meta.jsType;
+        let jsType = _shape[key].meta.jsType;
 
-          if (_shape[key].meta.namedJSType) {
-            jsType = _shape[key].meta.namedJSType;
-          }
+        if (_shape[key].meta.namedJSType) {
+          jsType = _shape[key].meta.namedJSType;
+        }
 
-          return prop + ':' + jsType + postfix;
-        })
-        .join(';') +
-      '}';
-  }
+        return prop + ':' + jsType + postfix;
+      })
+      .join(';') +
+    '}';
 
   return schema;
 }
@@ -220,31 +208,29 @@ export function table<T extends ObjectSchemaRecord>(
 ): ObjectSchema<T> {
   const objectSchema = /* @__PURE__ */ strict(shape);
 
-  if (__DEV__) {
-    objectSchema.meta.name = tableName;
+  objectSchema.meta.name = tableName;
 
-    //
-    // Does not need to clone the shape because it is already cloned
+  //
+  // Does not need to clone the shape because it is already cloned
 
-    Object.keys(objectSchema.shape).forEach((key) => {
-      const child = objectSchema.shape[key];
+  Object.keys(objectSchema.shape).forEach((key) => {
+    const child = objectSchema.shape[key];
 
-      if (child.meta.mode === 'nullable' || child.meta.mode === 'optional') {
-        throw new Error(
-          `You can't use nullable or optional schemas in a table schema. Use nullish or required instead.`,
-        );
-      }
+    if (child.meta.mode === 'nullable' || child.meta.mode === 'optional') {
+      throw new Error(
+        `You can't use nullable or optional schemas in a table schema. Use nullish or required instead.`,
+      );
+    }
 
-      let db = child.meta.db;
-      if (!db) {
-        db = {};
-        child.meta.db = db;
-      }
+    let db = child.meta.db;
+    if (!db) {
+      db = {};
+      child.meta.db = db;
+    }
 
-      db.columnName = key;
-      db.tableOwner = objectSchema;
-    });
-  }
+    db.columnName = key;
+    db.tableOwner = objectSchema;
+  });
 
   return objectSchema;
 }

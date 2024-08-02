@@ -1,5 +1,4 @@
 import { Issue } from '../Issue';
-import { setDefaultMeta } from '../utils/utils';
 import { DatetimeMeta, DatetimeSchema } from '../schemas/DatetimeSchema';
 
 export function datetimeParser(
@@ -48,8 +47,4 @@ export function datetimeParser(
  *
  * Removes the milliseconds
  */
-export const datetimeUTC = new DatetimeSchema([datetimeParser]);
-
-if (__DEV__) {
-  setDefaultMeta(datetimeUTC, 'string', 'TEXT');
-}
+export const datetimeUTC = new DatetimeSchema([datetimeParser], { jsType: 'string' });

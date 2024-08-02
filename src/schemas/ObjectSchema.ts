@@ -42,7 +42,7 @@ export class ObjectSchema<T = ObjectSchemaRecord> extends Schema<
   constructor(parsers: SchemaParser[], meta: ObjectMeta) {
     super(parsers, meta);
 
-    if (__DEV__ && (typeof meta.shape !== 'object' || meta.shape === null)) {
+    if (typeof meta.shape !== 'object' || meta.shape === null) {
       throw new Error(
         'You must provide a shape to the object schema and must be an object',
       );

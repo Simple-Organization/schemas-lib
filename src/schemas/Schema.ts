@@ -16,7 +16,7 @@ export class Schema<T> {
     public parsers: SchemaParser[],
     meta?: SchemaMeta,
   ) {
-    if (__DEV__ && parsers.length === 0) {
+    if (parsers.length === 0) {
       throw new Error('You must provide at least one parser to the schema');
     }
 
@@ -34,12 +34,6 @@ export class Schema<T> {
         ...this.meta,
       },
     );
-
-    if (__DEV__) {
-      if (clone.meta.db) {
-        clone.meta.db = { ...clone.meta.db };
-      }
-    }
 
     return clone as any;
   }
@@ -212,15 +206,13 @@ export class Schema<T> {
    * In production it will only parse the value, will not do the deepEqual check
    */
   deepEq(originalValue: T) {
-    if (__DEV__) {
-      const parsed = this.parse(originalValue);
-      if (!deepEqual(originalValue, parsed)) {
-        throw new Error(
-          `The value is not deepEqual to the parsed value. Value: ${JSON.stringify(
-            originalValue,
-          )} Parsed: ${JSON.stringify(parsed)}`,
-        );
-      }
+    const parsed = this.parse(originalValue);
+    if (!deepEqual(originalValue, parsed)) {
+      throw new Error(
+        `The value is not deepEqual to the parsed value. Value: ${JSON.stringify(
+          originalValue,
+        )} Parsed: ${JSON.stringify(parsed)}`,
+      );
     }
 
     return this.parse(originalValue);

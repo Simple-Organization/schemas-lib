@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
-import { setDefaultMeta } from '../utils/utils';
 
 export function intParser(
   value: any,
@@ -33,7 +32,3 @@ export function intParser(
  * Only integer numbers, can be bigger than 32 bits integers
  */
 export const int = new NumberSchema([intParser]);
-
-if (__DEV__) {
-  setDefaultMeta(int, 'number', 'INTEGER');
-}

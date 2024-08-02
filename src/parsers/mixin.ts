@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { Schema } from '../schemas/Schema';
-import { setDefaultMeta } from '../utils/utils';
 
 //
 //
@@ -46,26 +45,21 @@ export function mixin<E extends Schema<any>, T extends Readonly<[...E[]]>>(
   //
   //  Dev generation values
 
-  if (__DEV__) {
-    let jsType = '';
+  const array = schemas as any as Schema<any>[];
 
-    const array = schemas as any as Schema<any>[];
-
-    if (array.length < 2) {
-      throw new Error(
-        `You must provide at least 2 values for the mixin. Received: ${array.length}`,
-      );
-    }
-
-    if (array.some((v) => !(v instanceof Schema))) {
-      throw new Error(
-        `All values of the mixin must be Schema. Received: ${array}`,
-      );
-    }
-
-    jsType = array.map((v) => '(' + v.meta.jsType + ')').join(' | ');
-    setDefaultMeta(schema, jsType, 'TEXT');
+  if (array.length < 2) {
+    throw new Error(
+      `You must provide at least 2 values for the mixin. Received: ${array.length}`,
+    );
   }
+
+  if (array.some((v) => !(v instanceof Schema))) {
+    throw new Error(
+      `All values of the mixin must be Schema. Received: ${array}`,
+    );
+  }
+
+  schema.meta.jsType = array.map((v) => '(' + v.meta.jsType + ')').join(' | ');
 
   return schema;
 }

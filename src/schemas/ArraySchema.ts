@@ -23,7 +23,7 @@ export class ArraySchema<
   constructor(parsers: SchemaParser[], meta: ArrayMeta) {
     super(parsers, meta);
 
-    if (__DEV__ && meta.element === undefined) {
+    if (meta.element === undefined) {
       throw new Error('You must provide a element to the array schema');
     }
 

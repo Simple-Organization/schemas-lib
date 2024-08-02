@@ -19,6 +19,10 @@ Added
 
 Added **schema.errors({})**
 
+Changed
+
+Because of removel of __DEV__, jsType is always included on the meta
+
 Removed
 
 Removed support do **__DEV__** and **__SERVER__** variables, to make more easy to use **schemas-lib** in an existing project

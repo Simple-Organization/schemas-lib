@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { Schema } from '../schemas/Schema';
-import { setDefaultMeta } from '../utils/utils';
 import { ObjectSchema } from '../schemas/ObjectSchema';
 
 //
@@ -38,26 +37,20 @@ export function literal<T extends Primitive>(value: T): Schema<T> {
   //
   //  Dev generation values
 
-  if (__DEV__) {
-    if (
-      typeof value !== 'string' &&
-      typeof value !== 'number' &&
-      typeof value !== 'bigint' &&
-      typeof value !== 'boolean' &&
-      value !== null &&
-      value !== undefined
-    ) {
-      throw new Error(
-        `The literal value must be a primitive different than symbol. Received: ${value}`,
-      );
-    }
-
-    setDefaultMeta(
-      schema,
-      `${typeof value === 'string' ? `"${value}"` : value}`,
-      'TEXT',
+  if (
+    typeof value !== 'string' &&
+    typeof value !== 'number' &&
+    typeof value !== 'bigint' &&
+    typeof value !== 'boolean' &&
+    value !== null &&
+    value !== undefined
+  ) {
+    throw new Error(
+      `The literal value must be a primitive different than symbol. Received: ${value}`,
     );
   }
+
+  schema.meta.jsType = `${typeof value === 'string' ? `"${value}"` : value}`;
 
   return schema;
 }
@@ -98,51 +91,49 @@ export function distinct<
 >(distinctProp: string, schemas: T): Schema<T[number]['_o']> {
   const schema = new Schema<any>([distinctParser]);
 
-  if (__DEV__ && typeof distinctProp !== 'string') {
+  if (typeof distinctProp !== 'string') {
     throw new Error(
       `The distinctProp must be a string. Received: ${distinctProp}`,
     );
   }
 
   //
-  //  Dev generation values
+  //  jsType generation values
 
-  if (__DEV__) {
-    let jsType = '';
-
-    for (const obj of schemas) {
-      //
-      if (!(obj instanceof ObjectSchema)) {
-        throw new Error(
-          `All values of the distinctType must be ObjectSchema. Received: ${obj}`,
-        );
-      }
-
-      if (!obj.shape.hasOwnProperty(distinctProp)) {
-        throw new Error(
-          `All values of the distinctType must have the distinctProp '${distinctProp}'. Received: ${obj}`,
-        );
-      }
-
-      if (!obj.shape[distinctProp].meta.literal) {
-        throw new Error(
-          `All values of the distinctType must have the distinctProp '${distinctProp}' as literal. Received: ${obj}`,
-        );
-      }
-    }
-
-    const literals = schemas.map((s) => s.shape[distinctProp].meta.literal);
-
-    // Check if all literals are different
-    if (new Set(literals).size !== literals.length) {
+  for (const obj of schemas) {
+    //
+    if (!(obj instanceof ObjectSchema)) {
       throw new Error(
-        `All values of the distinctType must have different literals. Received: ${literals}`,
+        `All values of the distinctType must be ObjectSchema. Received: ${obj}`,
       );
     }
 
-    jsType = schemas.map((s) => `(${s.meta.jsType!})`).join('|');
-    setDefaultMeta(schema, jsType, 'TEXT');
+    if (!obj.shape.hasOwnProperty(distinctProp)) {
+      throw new Error(
+        `All values of the distinctType must have the distinctProp '${distinctProp}'. Received: ${obj}`,
+      );
+    }
+
+    if (!obj.shape[distinctProp].meta.literal) {
+      throw new Error(
+        `All values of the distinctType must have the distinctProp '${distinctProp}' as literal. Received: ${obj}`,
+      );
+    }
   }
+
+  const literals = schemas.map((s) => s.shape[distinctProp].meta.literal);
+
+  // Check if all literals are different
+  if (new Set(literals).size !== literals.length) {
+    throw new Error(
+      `All values of the distinctType must have different literals. Received: ${literals}`,
+    );
+  }
+
+  schema.meta.jsType = schemas.map((s) => `(${s.meta.jsType!})`).join('|');
+
+  //
+  //
 
   const distinctObjs: Map<string, ObjectSchema<any>> = new Map();
 

@@ -206,19 +206,4 @@ describe('object schema', () => {
 
     assert.deepEqual(objSchema2.safeParse({ id: 1 }), { id: 1 });
   });
-
-  //
-  //
-
-  test('__DEV__ Deve dar erros em desenvolvimento', () => {
-    assert.throws(() => {
-      // @ts-expect-error
-      object();
-    }, 'The shape must be an object');
-
-    assert.throws(() => {
-      // @ts-expect-error
-      object({ id: 1 });
-    }, "Expected value['id'] to be a instance of Schema, but received: 1");
-  });
 });

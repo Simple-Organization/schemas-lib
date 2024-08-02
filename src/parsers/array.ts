@@ -72,7 +72,7 @@ export function arrayParser(
 export function array<T>(
   element: Schema<T> | ObjectSchema<T>,
 ): ArraySchema<T[], Schema<T[]>> {
-  if (__DEV__ && !(element instanceof Schema)) {
+  if (!(element instanceof Schema)) {
     throw new Error('The element must be a instance of Schema');
   }
 
@@ -82,20 +82,10 @@ export function array<T>(
     jsType = element.meta.namedJSType;
   }
 
-  const schema = new ArraySchema(
-    [arrayParser],
-    __DEV__
-      ? {
-          jsType: `(${jsType})[]`,
-          db: {
-            type: 'TEXT',
-          },
-          element,
-        }
-      : {
-          element,
-        },
-  );
+  const schema = new ArraySchema([arrayParser], {
+    jsType: `(${jsType})[]`,
+    element,
+  });
 
   return schema;
 }

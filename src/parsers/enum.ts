@@ -36,26 +36,21 @@ export function enumType<
   //
   //  Dev generation values
 
-  if (__DEV__) {
-    let jsType = 'string';
+  const array = values as any as string[];
 
-    const array = values as any as string[];
-
-    if (array.length < 2) {
-      throw new Error(
-        `You must provide at least 2 values for the enumType. Received: ${array.length}`,
-      );
-    }
-
-    if (array.some((v) => typeof v !== 'string' && typeof v !== 'number')) {
-      throw new Error(
-        `All values of the enumType must be strings or numbers. Received: ${array}`,
-      );
-    }
-
-    jsType = array.map((v) => "'" + v + "'").join('|');
-    setDefaultMeta(schema, jsType, 'TEXT');
+  if (array.length < 2) {
+    throw new Error(
+      `You must provide at least 2 values for the enumType. Received: ${array.length}`,
+    );
   }
+
+  if (array.some((v) => typeof v !== 'string' && typeof v !== 'number')) {
+    throw new Error(
+      `All values of the enumType must be strings or numbers. Received: ${array}`,
+    );
+  }
+
+  schema.meta.jsType = array.map((v) => "'" + v + "'").join('|');
 
   return schema;
 }

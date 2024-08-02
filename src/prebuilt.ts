@@ -14,11 +14,7 @@ import { trimmed } from './parsers/string';
 
 export const id = /* @__PURE__ */ int.min(1);
 
-export const id_increments = /* @__PURE__ */ __DEV__
-  ? id.pipe((schema) => {
-      schema.meta.db!.increments = true;
-    })
-  : id;
+export const id_increments = id;
 
 //
 //

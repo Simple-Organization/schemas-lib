@@ -15,9 +15,6 @@ function getConfig(vite = false) {
 
   if (vite) {
     file = 'dist/index.vite.js'
-    define = {
-      __DEV__: 'import.meta.env.DEV',
-    };
   }
 
   return {

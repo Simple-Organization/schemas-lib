@@ -1,7 +1,6 @@
 import { Issue } from '../Issue';
 import { Schema } from '../schemas/Schema';
 import { SchemaMeta, falseOptions, trueOptions } from '../types';
-import { setDefaultMeta } from '../utils/utils';
 
 export function booleanParser(
   value: any,
@@ -27,8 +26,5 @@ export function booleanParser(
  *
  * `on` and `off` are for `HTMLInput[type='checkbox']`
  */
-export const boolean = new Schema<boolean>([booleanParser]);
+export const boolean = new Schema<boolean>([booleanParser], { jsType: 'boolean' });
 
-if (__DEV__) {
-  setDefaultMeta(boolean, 'boolean', 'INTEGER');
-}

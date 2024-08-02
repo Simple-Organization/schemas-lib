@@ -39,48 +39,46 @@ export function partialUpdateObj<
   //
   // Validação do requiredShape e partialShape
 
-  if (__DEV__) {
-    if (requiredShape === null || typeof requiredShape !== 'object') {
-      throw new Error(`The requiredShape must be an object`);
+  if (requiredShape === null || typeof requiredShape !== 'object') {
+    throw new Error(`The requiredShape must be an object`);
+  }
+
+  if (partialShape === null || typeof partialShape !== 'object') {
+    throw new Error(`The partialShape must be an object`);
+  }
+
+  const requiredKeys = Object.keys(requiredShape);
+
+  for (const key of requiredKeys) {
+    const requiredSchema = requiredShape[key];
+
+    if (partialKeys.includes(key)) {
+      throw new Error(
+        `The requiredShape and partialShape must not have the same keys. Received: ${key}`,
+      );
     }
 
-    if (partialShape === null || typeof partialShape !== 'object') {
-      throw new Error(`The partialShape must be an object`);
+    if (!(requiredSchema instanceof Schema)) {
+      throw new Error(
+        `Expected value['${key}'] to be a instance of Schema, but received: ${requiredSchema}`,
+      );
     }
 
-    const requiredKeys = Object.keys(requiredShape);
-
-    for (const key of requiredKeys) {
-      const requiredSchema = requiredShape[key];
-
-      if (partialKeys.includes(key)) {
-        throw new Error(
-          `The requiredShape and partialShape must not have the same keys. Received: ${key}`,
-        );
-      }
-
-      if (!(requiredSchema instanceof Schema)) {
-        throw new Error(
-          `Expected value['${key}'] to be a instance of Schema, but received: ${requiredSchema}`,
-        );
-      }
-
-      const mode = requiredSchema.meta.mode;
-      if (mode !== undefined && mode !== 'required') {
-        throw new Error(
-          `The required shape must have required fields. Received: ${key}`,
-        );
-      }
+    const mode = requiredSchema.meta.mode;
+    if (mode !== undefined && mode !== 'required') {
+      throw new Error(
+        `The required shape must have required fields. Received: ${key}`,
+      );
     }
+  }
 
-    for (const key of partialKeys) {
-      const partialSchema = partialShape[key];
+  for (const key of partialKeys) {
+    const partialSchema = partialShape[key];
 
-      if (!(partialSchema instanceof Schema)) {
-        throw new Error(
-          `Expected value['${key}'] to be a instance of Schema, but received: ${partialSchema}`,
-        );
-      }
+    if (!(partialSchema instanceof Schema)) {
+      throw new Error(
+        `Expected value['${key}'] to be a instance of Schema, but received: ${partialSchema}`,
+      );
     }
   }
 

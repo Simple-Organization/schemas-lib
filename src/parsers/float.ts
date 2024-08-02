@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
-import { setDefaultMeta } from '../utils/utils';
 import { numberParser } from './number';
 
 export function notInfinityParser(
@@ -21,7 +20,3 @@ export function notInfinityParser(
  */
 
 export const float = new NumberSchema([numberParser, notInfinityParser]);
-
-if (__DEV__) {
-  setDefaultMeta(float, 'number', 'REAL');
-}
