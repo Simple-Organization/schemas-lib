@@ -11,18 +11,20 @@
 
 A principal diferença está no reuso de **schemas** definidos para manter uma boa performance e clareza nas declarações, **schemas-lib** tem melhor escalabilidade em relação a performance de validação e da leitura do TypeScript, sem sacrificar muito DX
 
+O **schemas-lib** gera a tipagem do objeto em uma propriedade do **meta**, `meta.jsType`aonde possue um Type do TypeScript
+
 ## Changelog
 
 ### [0.1.7] - 2024-08-02
 
 Added
 
-Added **schema.errors({})**
+Added `schema.errors({})`
 
 Changed
 
-Because of removel of __DEV__, jsType is always included on the meta
+Because of removal of `__DEV__`, jsType is always included on the meta
 
 Removed
 
-Removed support do **__DEV__** and **__SERVER__** variables, to make more easy to use **schemas-lib** in an existing project
+Removed support do `__DEV__` and `__SERVER__` variables, to make more easy to use **schemas-lib** in an existing project
