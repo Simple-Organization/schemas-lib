@@ -1,6 +1,14 @@
 import { describe, test } from 'mocha';
 import { assert } from 'chai';
-import { Issue, array, enumType, int, object, strict, trimmed } from '../../src';
+import {
+  Issue,
+  array,
+  enumType,
+  int,
+  object,
+  strict,
+  trimmed,
+} from '../../src';
 import { assertSchemaIssue } from '../util';
 
 describe('object schema', () => {
@@ -14,7 +22,10 @@ describe('object schema', () => {
     const obj2 = object({ id: int, name: trimmed.nullish() });
     assert.equal(obj2.meta.jsType, '{"id":number;"name"?:string|null}');
 
-    const obj3 = object({ ids: array(int).optional(), name: trimmed.nullable() });
+    const obj3 = object({
+      ids: array(int).optional(),
+      name: trimmed.nullable(),
+    });
     assert.equal(obj3.meta.jsType, '{"ids"?:(number)[];"name":string|null}');
 
     const obj4 = object({ ids: enumType(['int', 'other']).optional() });

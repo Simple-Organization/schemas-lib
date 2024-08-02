@@ -23,7 +23,7 @@ export type SchemaMeta = {
   jsType?: string;
   /** Schema named javascript type when is a child of a object */
   namedJSType?: string;
-  
+
   /**
    * Schema empty mode
    * @default 'required'
@@ -88,8 +88,8 @@ export type SchemaMeta = {
   description?: string;
   helperText?: string;
 
-  /** 
-   * Custom validation error 
+  /**
+   * Custom validation error
    */
   errors?: Record<
     string,

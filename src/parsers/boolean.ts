@@ -26,5 +26,6 @@ export function booleanParser(
  *
  * `on` and `off` are for `HTMLInput[type='checkbox']`
  */
-export const boolean = new Schema<boolean>([booleanParser], { jsType: 'boolean' });
-
+export const boolean = new Schema<boolean>([booleanParser], {
+  jsType: 'boolean',
+});

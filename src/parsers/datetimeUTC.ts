@@ -47,4 +47,6 @@ export function datetimeParser(
  *
  * Removes the milliseconds
  */
-export const datetimeUTC = new DatetimeSchema([datetimeParser], { jsType: 'string' });
+export const datetimeUTC = new DatetimeSchema([datetimeParser], {
+  jsType: 'string',
+});

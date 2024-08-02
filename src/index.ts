@@ -19,12 +19,7 @@ export { boolean } from './parsers/boolean';
 export { datetimeUTC } from './parsers/datetimeUTC';
 export { partialUpdateObj } from './parsers/partialUpdateObj';
 
-export {
-  setNamedObjectJSType,
-  setDefaultMeta,
-  getParsedType,
-  logJSType,
-} from './utils/utils';
+export { setNamedObjectJSType, getParsedType, logJSType } from './utils/utils';
 
 // Prebuilt schemas
 export * from './prebuilt';

@@ -4,20 +4,6 @@ import { SchemaMeta } from '../types';
 //
 //
 
-export function setDefaultMeta(
-  schema: Schema<any>,
-  jsType: string,
-  dbType: string,
-): void {
-  schema.meta.jsType = jsType;
-  schema.meta.db = {
-    type: dbType,
-  };
-}
-
-//
-//
-
 export function setNamedObjectJSType(
   schema: Schema<any>,
   namedJSType: string,

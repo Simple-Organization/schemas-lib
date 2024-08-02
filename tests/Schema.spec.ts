@@ -1,7 +1,6 @@
 import { describe, test } from 'mocha';
 import { assert } from 'chai';
 import { Schema, type SchemaParser, Issue, int, NumberSchema } from '../src';
-import { setDefaultMeta } from '../src/utils/utils';
 
 describe('Schema', () => {
   const noopParsers: SchemaParser[] = [(value) => value];
@@ -28,8 +27,7 @@ describe('Schema', () => {
   //
 
   test('Deve mudar o modo do schema com sucesso', () => {
-    const schema = new Schema(noopParsers);
-    setDefaultMeta(schema, 'string', 'TEXT');
+    const schema = new Schema(noopParsers, { jsType: 'string' });
 
     const optional = schema.optional();
     const nullable = schema.nullable();
@@ -40,7 +38,6 @@ describe('Schema', () => {
       optional,
       new Schema(noopParsers, {
         jsType: 'string',
-        db: { type: 'TEXT' },
         mode: 'optional',
       }),
     );
@@ -49,7 +46,6 @@ describe('Schema', () => {
       nullable,
       new Schema(noopParsers, {
         jsType: 'string',
-        db: { type: 'TEXT' },
         mode: 'nullable',
       }),
     );
@@ -58,7 +54,6 @@ describe('Schema', () => {
       nullish,
       new Schema(noopParsers, {
         jsType: 'string',
-        db: { type: 'TEXT' },
         mode: 'nullish',
       }),
     );
@@ -67,7 +62,6 @@ describe('Schema', () => {
       required,
       new Schema(noopParsers, {
         jsType: 'string',
-        db: { type: 'TEXT' },
         mode: 'required',
       }),
     );
@@ -252,11 +246,8 @@ describe('Schema', () => {
 
   test('Deve exibir erro customizado adequadamente', () => {
     const schema1 = int.errors({ not_number_string: 'Custom error' });
-    
-    assert.equal(
-      schema1.safeParse('-asdas').toString(),
-      'Custom error',
-    );
+
+    assert.equal(schema1.safeParse('-asdas').toString(), 'Custom error');
 
     assert.equal(
       schema1.safeParse(1.2).toString(),

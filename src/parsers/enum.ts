@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { Schema } from '../schemas/Schema';
-import { setDefaultMeta } from '../utils/utils';
 
 //
 //

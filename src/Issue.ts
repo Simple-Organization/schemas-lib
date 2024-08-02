@@ -102,7 +102,11 @@ export class IssueError extends Error {
 //
 
 export class CustomIssue extends Issue {
-  constructor(readonly custom: string, meta: SchemaMeta, originalValue: any) {
+  constructor(
+    readonly custom: string,
+    meta: SchemaMeta,
+    originalValue: any,
+  ) {
     super('custom', meta, originalValue);
   }
 

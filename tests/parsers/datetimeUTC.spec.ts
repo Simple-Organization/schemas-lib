@@ -21,8 +21,16 @@ describe('datetimeUTC schema', () => {
 
     assertSchemaIssue(datetimeUTC, 'not_utc_datetime_string', 'aaaa');
     assertSchemaIssue(datetimeUTC, 'datetime_out_range', 0); // Will convert to 1970
-    assertSchemaIssue(datetimeUTC, 'datetime_out_range', '2010-07-20T21:19:25Z'); // Considered wrong because is smaller than 2015
-    assertSchemaIssue(datetimeUTC, 'datetime_out_range', '2031-07-20T21:19:25Z'); // Considered wrong because is bigger than 2030
+    assertSchemaIssue(
+      datetimeUTC,
+      'datetime_out_range',
+      '2010-07-20T21:19:25Z',
+    ); // Considered wrong because is smaller than 2015
+    assertSchemaIssue(
+      datetimeUTC,
+      'datetime_out_range',
+      '2031-07-20T21:19:25Z',
+    ); // Considered wrong because is bigger than 2030
   });
 
   //

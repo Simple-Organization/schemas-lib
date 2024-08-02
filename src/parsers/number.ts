@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
-import { setDefaultMeta } from '../utils/utils';
 
 export function numberParser(
   value: any,
