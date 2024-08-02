@@ -22,8 +22,6 @@ export function notInfinityParser(
 
 export const float = new NumberSchema([numberParser, notInfinityParser]);
 
-if (!__SERVER__) float.meta.inputType = 'number';
-
 if (__DEV__) {
   setDefaultMeta(float, 'number', 'REAL');
 }

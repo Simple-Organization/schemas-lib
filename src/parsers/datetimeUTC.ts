@@ -50,8 +50,6 @@ export function datetimeParser(
  */
 export const datetimeUTC = new DatetimeSchema([datetimeParser]);
 
-if (!__SERVER__) datetimeUTC.meta.inputType = 'datetime-local';
-
 if (__DEV__) {
   setDefaultMeta(datetimeUTC, 'string', 'TEXT');
 }

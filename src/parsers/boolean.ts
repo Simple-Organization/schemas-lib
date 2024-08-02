@@ -29,8 +29,6 @@ export function booleanParser(
  */
 export const boolean = new Schema<boolean>([booleanParser]);
 
-if (!__SERVER__) boolean.meta.inputType = 'checkbox';
-
 if (__DEV__) {
   setDefaultMeta(boolean, 'boolean', 'INTEGER');
 }

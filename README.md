@@ -15,6 +15,10 @@ A principal diferença está no reuso de **schemas** definidos para manter uma b
 
 ### [0.1.7] - 2024-08-02
 
+Added
+
+Added **schema.errors({})**
+
 Removed
 
 Removed support do **__DEV__** and **__SERVER__** variables, to make more easy to use **schemas-lib** in an existing project

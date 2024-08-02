@@ -36,8 +36,6 @@ export function trimParser(value: any): Issue | string {
  */
 export const trimmed = new StringSchema([trimParser, stringParser]);
 
-if (!__SERVER__) trimmed.meta.inputType = 'text';
-
 if (__DEV__) {
   setDefaultMeta(trimmed, 'string', 'TEXT');
 }

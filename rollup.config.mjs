@@ -17,7 +17,6 @@ function getConfig(vite = false) {
     file = 'dist/index.vite.js'
     define = {
       __DEV__: 'import.meta.env.DEV',
-      __SERVER__: 'import.meta.env.SSR',
     };
   }
 

@@ -34,8 +34,6 @@ export function intParser(
  */
 export const int = new NumberSchema([intParser]);
 
-if (!__SERVER__) int.meta.inputType = 'number';
-
 if (__DEV__) {
   setDefaultMeta(int, 'number', 'INTEGER');
 }
