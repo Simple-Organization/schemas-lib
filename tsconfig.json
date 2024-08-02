@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["ESNext", "DOM"],
-    "outDir": "dist",
+    "outFile": "dist/index.d.ts",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,

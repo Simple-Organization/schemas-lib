@@ -19,10 +19,6 @@ export type Infer<T extends Schema<any>> = T['_o'];
  * how the Schema behaves
  */
 export type SchemaMeta = {
-  /** Schema javascript type */
-  jsType?: string;
-  /** Schema named javascript type when is a child of a object */
-  namedJSType?: string;
   /**
    * Schema empty mode
    * @default 'required'
@@ -35,26 +31,8 @@ export type SchemaMeta = {
 
   /** Property name, is given by `object()` */
   name?: string;
-  /** dbColumn name, is given by `table()` */
 
   default?: (value: null | undefined) => any;
-
-  //
-  //  Database info
-  //
-  db?: {
-    type?: string;
-    columnName?: string;
-    tableOwner?: Schema<any>;
-    primary?: boolean;
-    increments?: boolean;
-    unique?: boolean;
-    // Must be a Schema field
-    foreignKey?: Schema<any>;
-
-    // Group for organization
-    group?: string;
-  };
 
   //
   //  enumType info
@@ -102,28 +80,16 @@ export type SchemaMeta = {
    * Front proprerties
    */
 
-  label?: string;
   description?: string;
   helperText?: string;
 
-  inputType?:
-    | 'number'
-    | 'search'
-    | 'button'
-    | 'time'
-    | 'text'
-    | 'checkbox'
-    | 'color'
-    | 'date'
-    | 'datetime-local'
-    | 'email'
-    | 'file'
-    | 'hidden'
-    | 'password'
-    | 'radio'
-    | 'url';
-
-  serverOnly?: boolean;
+  /** 
+   * Custom validation error 
+   */
+  errors?: Record<
+    string,
+    string | ((originalValue: any, meta: SchemaMeta) => string)
+  >;
 
   [k: string]: any;
 };

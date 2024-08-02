@@ -12,7 +12,10 @@ export class Schema<T> {
   private declare _defaultReq?: Schema<T>;
   meta: SchemaMeta;
 
-  constructor(public parsers: SchemaParser[], meta?: SchemaMeta) {
+  constructor(
+    public parsers: SchemaParser[],
+    meta?: SchemaMeta,
+  ) {
     if (__DEV__ && parsers.length === 0) {
       throw new Error('You must provide at least one parser to the schema');
     }
@@ -184,6 +187,20 @@ export class Schema<T> {
   info(meta: SchemaMeta) {
     const clone = /* @__PURE__ */ this.clone();
     clone.meta = { ...clone.meta, ...meta };
+    return clone;
+  }
+
+  /**
+   * Adiciona informação de erros de validação ao `meta`
+   */
+  errors(
+    errors: Record<
+      string,
+      string | ((originalValue: any, meta: SchemaMeta) => string)
+    >,
+  ) {
+    const clone = /* @__PURE__ */ this.clone();
+    clone.meta = { ...clone.meta, errors };
     return clone;
   }
 

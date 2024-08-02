@@ -246,4 +246,21 @@ describe('Schema', () => {
       schema2.parse(null);
     });
   });
+
+  //
+  //
+
+  test('Deve exibir erro customizado adequadamente', () => {
+    const schema1 = int.errors({ not_number_string: 'Custom error' });
+    
+    assert.equal(
+      schema1.safeParse('-asdas').toString(),
+      'Custom error',
+    );
+
+    assert.equal(
+      schema1.safeParse(1.2).toString(),
+      'O campo não é um número inteiro',
+    );
+  });
 });

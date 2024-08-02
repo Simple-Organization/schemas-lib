@@ -11,7 +11,7 @@ export class Issue {
   ) {
     this.value = originalValue;
 
-    if (__DEV__ && validationErrors[code] === undefined) {
+    if (validationErrors[code] === undefined) {
       throw new Error(`Validation error "${code}" not found`);
     }
   }
@@ -28,6 +28,16 @@ export class Issue {
   }
 
   toString() {
+    if (this.meta.errors && this.meta.errors[this.code]) {
+      const error = this.meta.errors[this.code];
+
+      if (typeof error === 'function') {
+        return error(this.value, this.meta);
+      }
+
+      return error;
+    }
+
     const error = validationErrors[this.code];
 
     if (typeof error === 'function') {
