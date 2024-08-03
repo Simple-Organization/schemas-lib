@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "outFile": "dist/index.d.ts",
-    "allowJs": true,
+    "outDir": "dist/types",
+    "module": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
     "moduleResolution": "Node",
     "isolatedModules": false,
     "emitDeclarationOnly": true,

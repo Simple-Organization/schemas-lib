@@ -1,9 +1,9 @@
 {
   "name": "schemas-lib",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Simple Organization",
   "scripts": {
-    "build": "tsc && node esbuild.mjs",
+    "build": "tsc && rollup -c && node esbuild.mjs",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "mocha **/*.spec.ts -r esbuild-register -extension ts --file tests/setup-tests.ts",
     "prepack": "pnpm build"
@@ -19,6 +19,8 @@
     "esbuild": "^0.23.0",
     "mocha": "^10.7.0",
     "prettier": "^3.3.3",
+    "rollup": "^4.20.0",
+    "rollup-plugin-dts": "^6.1.1",
     "typescript": "^5.5.4"
   },
   "files": [
