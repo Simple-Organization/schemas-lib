@@ -1,6 +1,5 @@
 import { Mutator, SchemaMeta, SchemaParser } from '../types';
 import { Issue, IssueError } from '../Issue';
-import deepEqual from 'fast-deep-equal';
 
 //
 //
@@ -196,26 +195,6 @@ export class Schema<T> {
     const clone = /* @__PURE__ */ this.clone();
     clone.meta = { ...clone.meta, errors };
     return clone;
-  }
-
-  /**
-   * Parse the value and then check if the parsed value is deep equal to the original
-   *
-   * Used to validate if the value is the same before
-   *
-   * In production it will only parse the value, will not do the deepEqual check
-   */
-  deepEq(originalValue: T) {
-    const parsed = this.parse(originalValue);
-    if (!deepEqual(originalValue, parsed)) {
-      throw new Error(
-        `The value is not deepEqual to the parsed value. Value: ${JSON.stringify(
-          originalValue,
-        )} Parsed: ${JSON.stringify(parsed)}`,
-      );
-    }
-
-    return this.parse(originalValue);
   }
 
   /**

@@ -1,6 +1,6 @@
 {
   "name": "schemas-lib",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": "Simple Organization",
   "scripts": {
     "build": "tsc && rollup -c && node esbuild.mjs",
@@ -9,9 +9,6 @@
     "prepack": "pnpm build"
   },
   "main": "dist/index.js",
-  "dependencies": {
-    "fast-deep-equal": "^3.1.3"
-  },
   "devDependencies": {
     "@types/chai": "^4.3.17",
     "@types/mocha": "^10.0.7",

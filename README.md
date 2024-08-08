@@ -15,6 +15,12 @@ O **schemas-lib** gera a tipagem do objeto em uma propriedade do **meta**, `meta
 
 ## Changelog
 
+### [0.1.9] - 2024-08-08
+
+Removed
+
+- `deepEq` and `fast-deep-equal` dependency (May cause break changes)
+
 ### [0.1.7] - 2024-08-02
 
 Added
