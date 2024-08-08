@@ -39,6 +39,11 @@ export type SchemaMeta = {
 
   default?: (value: null | undefined) => any;
 
+  /** 
+   * Property that indicates that when parse() throws a error, it should return the default value
+   */
+  catch?: boolean;
+
   //
   //  enumType info
   enum?: string[];

@@ -55,4 +55,16 @@ describe('int schema', () => {
     assertSchemaIssue(intMin1, 'min_number', 0);
     assertSchemaIssue(intMax1, 'max_number', 2);
   });
+
+  //
+  //
+
+  test('Deve dar catch com sucesso', () => {
+    const intMin1 = int.min(1).catch(1);
+
+    assert.deepEqual(intMin1.parse(0), 1);
+
+    // When safe parse it should give the issue
+    assertSchemaIssue(intMin1, 'min_number', 0);
+  });
 });

@@ -1,6 +1,14 @@
 import { describe, test } from 'mocha';
 import { assert } from 'chai';
-import { Schema, type SchemaParser, Issue, int, NumberSchema } from '../src';
+import {
+  Schema,
+  type SchemaParser,
+  Issue,
+  int,
+  NumberSchema,
+  SchemaMeta,
+} from '../src';
+import { assertSchemaIssue } from './util';
 
 describe('Schema', () => {
   const noopParsers: SchemaParser[] = [(value) => value];
@@ -253,5 +261,40 @@ describe('Schema', () => {
       schema1.safeParse(1.2).toString(),
       'O campo não é um número inteiro',
     );
+  });
+
+  //
+  //
+
+  test('catch precisa retornar o valor padrão caso dê um Issue', () => {
+    const schema = new Schema([parser]);
+
+    //
+    // parser that when receives 'any' returns an Issue
+
+    function parser(
+      value: any,
+      meta: SchemaMeta,
+      originalValue: any,
+    ): Issue | number {
+      if (value === 'any') {
+        return new Issue('any', meta, originalValue);
+      }
+      return value;
+    }
+
+    //
+    //
+
+    const catched = schema.catch('catched');
+
+    // should return the value when it's not 'any'
+    assert.deepEqual(catched.parse('asdf'), 'asdf');
+
+    // should return catched when it's 'any'
+    assert.deepEqual(catched.parse('any'), 'catched');
+
+    // should return a issue when it is safeParse
+    assertSchemaIssue(catched, 'any', 'any');
   });
 });
