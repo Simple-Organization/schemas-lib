@@ -9,7 +9,7 @@ export { ArraySchema } from './schemas/ArraySchema';
 // Parsers and prebuiltin schemas
 export { object, strict, table } from './parsers/object';
 export { array } from './parsers/array';
-export { enumType } from './parsers/enum';
+export { enumType } from './parsers/enumType';
 export { mixin } from './parsers/mixin';
 export { string, trimmed } from './parsers/string';
 export { int } from './parsers/int';
