@@ -14,8 +14,6 @@ import { trimmed } from './parsers/string';
 
 export const id = /* @__PURE__ */ int.min(1);
 
-export const id_increments = id;
-
 //
 //
 
@@ -37,7 +35,6 @@ export const url = /* @__PURE__ */ trimmed.addParser(
     return value;
   },
 );
-url.meta.inputType = 'url';
 
 /**
  * Similar to int, but keeps the left zeros
@@ -51,7 +48,6 @@ export const intString = /* @__PURE__ */ trimmed.addParser(
     return value;
   },
 );
-intString.meta.inputType = 'text';
 
 //
 //  Email - Created by Copilot
@@ -66,7 +62,6 @@ export const email = /* @__PURE__ */ trimmed.addParser(
     return value;
   },
 );
-email.meta.inputType = 'email';
 
 //
 //  Date - Created by Copilot
@@ -81,7 +76,6 @@ export const date = /* @__PURE__ */ trimmed.addParser(
     return value;
   },
 );
-date.meta.inputType = 'date';
 
 /**
  * Must start with a letter

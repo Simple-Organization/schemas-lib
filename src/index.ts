@@ -24,6 +24,8 @@ export { setNamedObjectJSType, getParsedType, logJSType } from './utils/utils';
 // Prebuilt schemas
 export * from './prebuilt';
 
+export { validationErrors } from './validationErrors';
+
 // Others
 export { Issue, ObjectIssue, IssueError, CustomIssue } from './Issue';
 export type { SchemaMeta, Infer, Mutator, SchemaParser } from './types';

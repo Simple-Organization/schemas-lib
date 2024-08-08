@@ -217,4 +217,12 @@ describe('object schema', () => {
 
     assert.deepEqual(objSchema2.safeParse({ id: 1 }), { id: 1 });
   });
+
+  //
+  //
+
+  test('Se o objeto for um json, deve dar parse', () => {
+    const obj = object({ id: int });
+    assert.deepEqual(obj.parse('{ "id": 1 }'), { id: 1 } as any);
+  });
 });
