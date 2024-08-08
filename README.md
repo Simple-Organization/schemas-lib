@@ -27,6 +27,8 @@ obj.parse('{ "id": 1 }'); // { id: 1 }
 
 Uma das diferenças entre uma lib como a `zod` é que o **schemas-lib** possui o foco em **reusar** instancias como **trimmed**, salvando um pouco de performance de maneira geral (linter, build, production)
 
+E o **schemas-lib** faz uso extenso do **trimmed**, assim quase todos os campos costumam receber **trim** por padrão
+
 ```ts
 import { z } from 'zod';
 import { trimmed, string } from 'schemas-lib';
