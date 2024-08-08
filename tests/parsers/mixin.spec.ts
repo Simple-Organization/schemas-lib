@@ -15,7 +15,6 @@ describe('mixin schema', () => {
 
     assert.deepEqual(metaEnum.meta, {
       jsType: '(number) | (string)',
-      db: { type: 'TEXT' },
       mixin: [int, trimmed],
     });
 

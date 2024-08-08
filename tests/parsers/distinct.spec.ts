@@ -13,7 +13,6 @@ describe('distinct schema', () => {
 
     assert.deepEqual(_literal.meta, {
       jsType: '1',
-      db: { type: 'TEXT' },
       literal: 1,
     });
 

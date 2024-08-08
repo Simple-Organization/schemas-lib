@@ -19,7 +19,7 @@ export class Schema<T> {
       throw new Error('You must provide at least one parser to the schema');
     }
 
-    this.meta = meta || {};
+    this.meta = meta || { jsType: 'number' };
   }
 
   //
@@ -76,10 +76,22 @@ export class Schema<T> {
   }
 
   /**
+   * Set default with `meta.catch = true`
+   */
+  catch(
+    defaultSetter: T | ((value: null | undefined) => T),
+  ): Schema<T | null | undefined> {
+    const clone = this.default(defaultSetter);
+    clone.meta.catch = true;
+
+    return clone as any;
+  }
+
+  /**
    * Pipe changes to the schema
    */
   pipe(...pipesMutators: Mutator[]): typeof this {
-    const clone = this.clone();
+    const clone = /* @__PURE__ */ this.clone();
     for (const mutator of pipesMutators) {
       mutator(clone);
     }
@@ -154,10 +166,17 @@ export class Schema<T> {
     return parsed;
   }
 
+  /**
+   * Parse the value, throw IssueError when the value is invalid, but returns default value when `meta.catch = true`
+   */
   parse(originalValue: any): T {
     const parsed = this.safeParse(originalValue);
 
     if (parsed instanceof Issue) {
+      if (this.meta.catch) {
+        return this._sendDefault(parsed) as T;
+      }
+
       throw new IssueError(parsed);
     }
 

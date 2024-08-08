@@ -57,13 +57,11 @@ describe('number schema', () => {
 
     assert.deepEqual(numberMin1.meta, {
       jsType: 'number',
-      db: { type: 'REAL' },
       min: 1,
     });
 
     assert.deepEqual(numberMax1.meta, {
       jsType: 'number',
-      db: { type: 'REAL' },
       max: 1,
     });
 
@@ -79,7 +77,6 @@ describe('number schema', () => {
 
     assert.deepEqual(numberBet.meta, {
       jsType: 'number',
-      db: { type: 'REAL' },
       min: 1,
       max: 3,
     });
@@ -98,7 +95,6 @@ describe('number schema', () => {
   test('Deve executar o float e checar se o valor é finito', () => {
     assert.deepEqual(float.meta, {
       jsType: 'number',
-      db: { type: 'REAL' },
     });
 
     assertSchemaIssue(float, 'not_finite', Number.POSITIVE_INFINITY);

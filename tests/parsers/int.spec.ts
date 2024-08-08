@@ -44,13 +44,11 @@ describe('int schema', () => {
 
     assert.deepEqual(intMin1.meta, {
       jsType: 'number',
-      db: { type: 'INTEGER' },
       min: 1,
     });
 
     assert.deepEqual(intMax1.meta, {
       jsType: 'number',
-      db: { type: 'INTEGER' },
       max: 1,
     });
 

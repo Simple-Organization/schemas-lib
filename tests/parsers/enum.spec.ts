@@ -12,7 +12,6 @@ describe('enum schema', () => {
 
     assert.deepEqual(metaEnum.meta, {
       jsType: "'a'|'b'|'c'",
-      db: { type: 'TEXT' },
       enum: ['a', 'b', 'c'],
     });
 

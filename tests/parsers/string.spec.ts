@@ -10,7 +10,6 @@ describe('string schema', () => {
   test('Deve checar se é uma string com required', () => {
     assert.deepEqual(string.meta, {
       jsType: 'string',
-      db: { type: 'TEXT' },
     });
 
     assert.equal(string.safeParse('a'), 'a');
@@ -29,7 +28,6 @@ describe('string schema', () => {
 
     assert.deepEqual(nullishString.meta, {
       jsType: 'string',
-      db: { type: 'TEXT' },
       mode: 'nullish',
     });
 
@@ -50,13 +48,11 @@ describe('string schema', () => {
 
     assert.deepEqual(stringMin2.meta, {
       jsType: 'string',
-      db: { type: 'TEXT' },
       min: 2,
     });
 
     assert.deepEqual(stringMax2.meta, {
       jsType: 'string',
-      db: { type: 'TEXT' },
       max: 2,
     });
 
@@ -75,7 +71,6 @@ describe('text schema', () => {
   test('Deve checar se text é uma string com required', () => {
     assert.deepEqual(trimmed.meta, {
       jsType: 'string',
-      db: { type: 'TEXT' },
     });
 
     assert.equal(trimmed.safeParse('   a   '), 'a');
@@ -94,7 +89,6 @@ describe('text schema', () => {
 
     assert.deepEqual(nullishText.meta, {
       jsType: 'string',
-      db: { type: 'TEXT' },
       mode: 'nullish',
     });
 

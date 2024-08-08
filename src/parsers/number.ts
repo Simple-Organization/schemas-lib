@@ -25,4 +25,4 @@ export function numberParser(
 /**
  * Any number accepting Infinity too, but does not accept NaN
  */
-export const number = new NumberSchema([numberParser], { jsType: 'number' });
+export const number = new NumberSchema([numberParser]);
