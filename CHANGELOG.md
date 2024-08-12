@@ -1,6 +1,16 @@
 ## Changelog
 
-### [0.1.9] - 2024-08-08
+### [1.1.0] - 2024-08-12
+
+Added
+
+- `changeRequiredToOptional` method used for `UPDATE` queries, convert all `required` to `optional` and all `nullable` to `nullish`
+
+Fixed
+
+- `object.clone` will now clone the shape too
+
+### [1.0.0] - 2024-08-08
 
 Added
 

@@ -2,7 +2,7 @@ import { describe, test } from 'mocha';
 import { assert } from 'chai';
 import { int, object, trimmed } from '../../src';
 import { array } from '../../src/parsers/array';
-import { partialUpdateObj } from '../../src/parsers/partialUpdateObj';
+import { partialUpdateObj } from '../../src/manipulation/partialUpdateObj';
 
 describe('partialUpdateObj schema', () => {
   //

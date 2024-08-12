@@ -17,15 +17,22 @@ export { number } from './parsers/number';
 export { float, notInfinityParser } from './parsers/float';
 export { boolean } from './parsers/boolean';
 export { datetimeUTC } from './parsers/datetimeUTC';
-export { partialUpdateObj } from './parsers/partialUpdateObj';
 
+// Manipulation
+export { partialUpdateObj } from './manipulation/partialUpdateObj';
+export { changeRequiredToOptional } from './manipulation/changeRequiredToOptional';
+
+// Utils
 export { setNamedObjectJSType, getParsedType, logJSType } from './utils/utils';
 
 // Prebuilt schemas
 export * from './prebuilt';
 
+// Errors
 export { validationErrors } from './validationErrors';
 
-// Others
+// Issues
 export { Issue, ObjectIssue, IssueError, CustomIssue } from './Issue';
+
+// Types
 export type { SchemaMeta, Infer, Mutator, SchemaParser } from './types';

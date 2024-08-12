@@ -1,12 +1,12 @@
 import type { SchemaMeta } from '../types';
 import { Schema } from '../schemas/Schema';
 import { ObjectSchema, ObjectSchemaRecord } from '../schemas/ObjectSchema';
-import { strict } from './object';
+import { strict } from '../parsers/object';
 
 //
 //
 
-type PartialUpdateOptional<T extends ObjectSchemaRecord> = {
+export type PartialUpdateOptional<T extends ObjectSchemaRecord> = {
   [k in keyof T]: Schema<T[k]['_o'] | undefined>;
 };
 
