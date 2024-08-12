@@ -9,6 +9,12 @@
     "prepack": "pnpm build"
   },
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Simple-Organization/schemas-lib.git"
+  },
+  "bugs": "https://github.com/Simple-Organization/schemas-lib/issues",
+  "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.3.17",
     "@types/mocha": "^10.0.7",
@@ -26,5 +32,6 @@
     "dist/index.js"
   ],
   "types": "dist/index.d.ts",
-  "type": "module"
+  "type": "module",
+  "packageManager": "pnpm@9.6.0"
 }
