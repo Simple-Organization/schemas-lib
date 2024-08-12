@@ -225,4 +225,21 @@ describe('object schema', () => {
     const obj = object({ id: int });
     assert.deepEqual(obj.parse('{ "id": 1 }'), { id: 1 } as any);
   });
+
+  //
+  //
+
+  test('Se clonar um object(), a instancia de .shape deve ser diferente e não afetar a instancia do original', () => {
+    const obj = object({ id: int });
+
+    const obj2 = obj.clone();
+
+    assert.notEqual(obj.shape, obj2.shape);
+
+    // @ts-ignore
+    obj2.shape.name = trimmed;
+
+    // @ts-ignore
+    assert.equal(!!obj.shape.name, false);
+  });
 });

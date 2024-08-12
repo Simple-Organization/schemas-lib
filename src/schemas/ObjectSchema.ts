@@ -49,6 +49,20 @@ export class ObjectSchema<T = ObjectSchemaRecord> extends Schema<
     }
   }
 
+  clone(): typeof this {
+    const shape = { ...this.meta.shape! };
+
+    const clone = /* @__PURE__ */ new (this.constructor as any)(
+      [...this.parsers],
+      {
+        ...this.meta,
+        shape,
+      },
+    );
+
+    return clone as any;
+  }
+
   get shape(): T {
     return this.meta.shape as any;
   }
