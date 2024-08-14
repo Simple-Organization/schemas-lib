@@ -1,5 +1,12 @@
 ## Changelog
 
+### [1.1.1] - 2024-08-14
+
+Fixed
+
+- Export `distinct` and `literal`
+- TypeScript type: `schema.default` and `schema.catch` now can be called without argument
+
 ### [1.1.0] - 2024-08-12
 
 Added

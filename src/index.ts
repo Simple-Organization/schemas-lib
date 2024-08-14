@@ -11,6 +11,8 @@ export { object, strict, table } from './parsers/object';
 export { array } from './parsers/array';
 export { enumType } from './parsers/enumType';
 export { mixin } from './parsers/mixin';
+export { distinct, literal } from './parsers/distinct';
+
 export { string, trimmed } from './parsers/string';
 export { int } from './parsers/int';
 export { number } from './parsers/number';
