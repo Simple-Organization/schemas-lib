@@ -108,7 +108,7 @@ export class Schema<T> {
   //  Parses
   //
 
-  safeParse(originalValue: any): T | Issue {
+  private _safeParse(originalValue: any): T | Issue {
     const meta = this.meta;
 
     let parsed = originalValue;
@@ -116,7 +116,7 @@ export class Schema<T> {
     for (const parser of this.parsers) {
       if (parsed === '') {
         if (meta.default) {
-          return this._sendDefault(parsed);
+          return meta.default();
         }
         parsed = null;
       }
@@ -164,7 +164,26 @@ export class Schema<T> {
   }
 
   /**
-   * Parse the value, throw IssueError when the value is invalid, but returns default value when `meta.catch = true`
+   * Parse the value, return Issue when the value is invalid
+   */
+  safeParse(originalValue: any): T | Issue {
+    const parsed = this._safeParse(originalValue);
+
+    if (this.meta.catch) {
+      if (parsed instanceof Issue) {
+        if (originalValue === undefined || originalValue === null) {
+          return originalValue;
+        }
+
+        return this.meta.default!();
+      }
+    }
+
+    return parsed;
+  }
+
+  /**
+   * Parse the value, throw IssueError when the value is invalid
    */
   parse(originalValue: any): T {
     const parsed = this.safeParse(originalValue);
