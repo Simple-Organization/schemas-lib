@@ -18,4 +18,4 @@ export function notInfinityParser(
 /**
  * Any number, but does not accept Infinity and NaN
  */
-export const float = new NumberSchema([numberParser, notInfinityParser]);
+export const float = new NumberSchema([numberParser, notInfinityParser], { jsType: 'number' });

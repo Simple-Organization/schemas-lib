@@ -19,7 +19,7 @@ export class Schema<T> {
       throw new Error('You must provide at least one parser to the schema');
     }
 
-    this.meta = meta || { jsType: 'number' };
+    this.meta = meta || { jsType: 'unknown' };
   }
 
   //

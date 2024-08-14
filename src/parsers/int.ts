@@ -31,4 +31,4 @@ export function intParser(
 /**
  * Only integer numbers, can be bigger than 32 bits integers
  */
-export const int = new NumberSchema([intParser]);
+export const int = new NumberSchema([intParser], { jsType: 'number' });

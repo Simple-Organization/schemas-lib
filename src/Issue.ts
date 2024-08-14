@@ -11,7 +11,7 @@ export class Issue {
   ) {
     this.value = originalValue;
 
-    if (validationErrors[code] === undefined) {
+    if (code !== 'custom' && validationErrors[code] === undefined) {
       throw new Error(`Validation error "${code}" not found`);
     }
   }
