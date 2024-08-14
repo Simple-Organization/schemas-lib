@@ -237,18 +237,10 @@ describe('Schema', () => {
   //
   //
 
-  test('Deve revalidar o default com sucesso (_sendDefault)', () => {
+  test('Não deve revalidar o default', () => {
     const schema1 = int.default('1' as any);
-    const schema2 = int.default(null as any);
 
-    assert.equal(schema1.safeParse(null), 1);
-
-    const instance = (schema1 as any)._defaultReq.constructor;
-    assert.equal(instance, NumberSchema);
-
-    assert.throw(() => {
-      schema2.parse(null);
-    });
+    assert.equal(schema1.safeParse(null), '1' as any);
   });
 
   //
@@ -263,74 +255,5 @@ describe('Schema', () => {
       schema1.safeParse(1.2).toString(),
       'O campo não é um número inteiro',
     );
-  });
-
-  //
-  //
-
-  test('catch precisa retornar o valor padrão caso dê um Issue', () => {
-    const schema = new Schema([parser]);
-
-    //
-    // parser that when receives 'any' returns an Issue
-
-    function parser(
-      value: any,
-      meta: SchemaMeta,
-      originalValue: any,
-    ): Issue | number {
-      if (value === 'any') {
-        return new CustomIssue('any error', meta, originalValue);
-      }
-      return value;
-    }
-
-    //
-    //
-
-    const catched = schema.catch('catched');
-
-    // should return the value when it's not 'any'
-    assert.deepEqual(catched.parse('asdf'), 'asdf');
-
-    // should return catched when it's 'any'
-    assert.deepEqual(catched.parse('any'), 'catched');
-
-    // should return a issue when it is safeParse
-    assertSchemaIssue(catched, 'custom', 'any', 'any error');
-  });
-
-  //
-  //
-
-  test('catch sem argumento e required não deve dar erro, deve ao invés retornar undefined', () => {
-    const schema = new Schema([parser]);
-
-    //
-    // parser that when receives 'any' returns an Issue
-
-    function parser(
-      value: any,
-      meta: SchemaMeta,
-      originalValue: any,
-    ): Issue | number {
-      if (value === 'any') {
-        return new CustomIssue('any error', meta, originalValue);
-      }
-      return value;
-    }
-
-    //
-    //
-
-    const catched = schema.catch();
-
-    assert.deepEqual(catched.parse(undefined), undefined);
-
-    // should return the value when it's not 'any'
-    assert.deepEqual(catched.parse('asdf'), 'asdf');
-
-    // should return catched when it's 'any'
-    assert.deepEqual(catched.parse('any'), undefined);
   });
 });

@@ -25,7 +25,7 @@ export class NumberSchema<T = number> extends Schema<T> {
    * AND IT SETs TO NULLISH MODE
    */
   declare default: (
-    defaultSetter: T | ((value: null | undefined) => T),
+    defaultSetter?: T | null | (() => T),
   ) => NumberSchema<T | null | undefined>;
 }
 

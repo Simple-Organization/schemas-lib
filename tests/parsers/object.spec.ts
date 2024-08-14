@@ -242,4 +242,17 @@ describe('object schema', () => {
     // @ts-ignore
     assert.equal(!!obj.shape.name, false);
   });
+
+  //
+  //
+
+  test('Se um campo retornar default() como undefined, o objeto deve remover a propriedade', () => {
+    const objSchema = object({ id: int.default() });
+
+    assert.deepEqual(objSchema.safeParse({ id: 1 }), {
+      id: 1,
+    });
+
+    assert.deepEqual(objSchema.safeParse({}), {});
+  });
 });

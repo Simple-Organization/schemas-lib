@@ -44,7 +44,7 @@ export class StringSchema<T = string> extends Schema<T> {
    * AND IT SETs TO NULLISH MODE
    */
   declare default: (
-    defaultSetter: T | ((value: null | undefined) => T),
+    defaultSetter?: T | null | (() => T),
   ) => StringSchema<T | null | undefined>;
 }
 

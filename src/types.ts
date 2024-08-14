@@ -37,7 +37,7 @@ export type SchemaMeta = {
   /** Property name, is given by `object()` */
   name?: string;
 
-  default?: (value: null | undefined) => any;
+  default?: () => any;
 
   /** 
    * Property that indicates that when parse() throws a error, it should return the default value

@@ -81,9 +81,7 @@ export class ObjectSchema<T = ObjectSchemaRecord> extends Schema<
     const currentShape = this.meta.shape!;
 
     Object.keys(currentShape).forEach((key) => {
-      // @ts-ignore
-      if (!mask[key]) {
-        // @ts-ignore
+      if (!(mask as any)[key]) {
         newShape[key] = currentShape[key];
       }
     });
@@ -104,9 +102,7 @@ export class ObjectSchema<T = ObjectSchemaRecord> extends Schema<
     const currentShape = this.meta.shape!;
 
     Object.keys(currentShape).forEach((key) => {
-      // @ts-ignore
-      if (mask[key]) {
-        // @ts-ignore
+      if ((mask as any)[key]) {
         shape[key] = currentShape[key];
       }
     });
@@ -116,23 +112,6 @@ export class ObjectSchema<T = ObjectSchemaRecord> extends Schema<
 
     return clone as any;
   }
-
-  //
-  //  Sobreescrita da tipagem métodos
-  //
-
-  // @ts-ignore
-  declare optional: () => ObjectSchema<Exclude<T, null> | undefined>;
-  // @ts-ignore
-  declare nullable: () => ObjectSchema<Exclude<T, undefined> | null>;
-  // @ts-ignore
-  declare nullish: () => ObjectSchema<T | null | undefined>;
-  // @ts-ignore
-  declare required: () => ObjectSchema<Exclude<T, undefined | null>>;
-  // @ts-ignore
-  declare default: (
-    defaultSetter: T | ((value: null | undefined) => T),
-  ) => ObjectSchema<T | null | undefined>;
 }
 
 //

@@ -38,17 +38,12 @@ export class ArraySchema<
   //  Sobreescrita da tipagem métodos
   //
 
-  // @ts-ignore
   declare optional: () => ArraySchema<Exclude<T, null> | undefined>;
-  // @ts-ignore
   declare nullable: () => ArraySchema<Exclude<T, undefined> | null>;
-  // @ts-ignore
   declare nullish: () => ArraySchema<T | null | undefined>;
-  // @ts-ignore
   declare required: () => ArraySchema<Exclude<T, undefined | null>>;
-  // @ts-ignore
   declare default: (
-    defaultSetter: T | ((value: null | undefined) => T),
+    defaultSetter?: T | null |  (() => T),
   ) => ArraySchema<T | null | undefined>;
 }
 

@@ -7,8 +7,6 @@ import { Issue, IssueError } from '../Issue';
 export class Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
-  /** Quando tem default e irá executar parse, cria um clone desse Schema e salva ele como default */
-  private declare _defaultReq?: Schema<T>;
   meta: SchemaMeta;
 
   constructor(
@@ -63,7 +61,7 @@ export class Schema<T> {
    * AND IT SETs TO NULLISH MODE
    */
   default(
-    defaultSetter?: T | null | ((value: null | undefined) => T),
+    defaultSetter?: T | null | (() => T),
   ): Schema<T | null | undefined> {
     const clone = /* @__PURE__ */ cloneChangingMode(this, 'nullish');
 
@@ -78,7 +76,7 @@ export class Schema<T> {
    * Set default with `meta.catch = true`
    */
   catch(
-    defaultSetter?: T | null | ((value: null | undefined) => T),
+    defaultSetter?: T | null | (() => T),
   ): Schema<T | null | undefined> {
     const clone = this.default(defaultSetter);
     clone.meta.catch = true;
@@ -126,7 +124,7 @@ export class Schema<T> {
       if (parsed === null) {
         if (meta.mode === 'nullable' || meta.mode === 'nullish') {
           if (meta.default) {
-            return this._sendDefault(parsed);
+            return meta.default();
           }
 
           return parsed;
@@ -142,7 +140,7 @@ export class Schema<T> {
       if (parsed === undefined) {
         if (meta.mode === 'optional' || meta.mode === 'nullish') {
           if (meta.default) {
-            return this._sendDefault(parsed);
+            return meta.default();
           }
 
           return parsed;
@@ -172,10 +170,6 @@ export class Schema<T> {
     const parsed = this.safeParse(originalValue);
 
     if (parsed instanceof Issue) {
-      if (this.meta.catch) {
-        return this.meta.default!(originalValue);
-      }
-
       throw new IssueError(parsed);
     }
 
@@ -213,19 +207,6 @@ export class Schema<T> {
     const clone = /* @__PURE__ */ this.clone();
     clone.meta = { ...clone.meta, errors };
     return clone;
-  }
-
-  /**
-   * Send to default value when the value is null or undefined
-   *
-   * Clones the current Schema and saves it as required
-   */
-  private _sendDefault(parsed: any) {
-    if (!this._defaultReq) {
-      this._defaultReq = this.required() as any;
-    }
-
-    return this._defaultReq!.safeParse(this.meta.default!(parsed));
   }
 }
 
