@@ -1,13 +1,18 @@
 import { assert } from 'chai';
-import { Schema, Issue } from '../src';
+import { Schema, Issue, CustomIssue } from '../src';
 
 export function assertSchemaIssue(
   schema: Schema<any>,
   issueCode: string,
   value: any,
+  customMessage?: string,
 ) {
   const result = schema.safeParse(value);
-  const issue = new Issue(issueCode, schema.meta, value);
+  let issue = new Issue(issueCode, schema.meta, value);
+
+  if (issueCode === 'custom') {
+    issue = new CustomIssue(customMessage || 'YOU SHOULD DEFINE customMessage', schema.meta, value);
+  }
 
   let resultMessage = '';
 

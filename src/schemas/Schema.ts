@@ -65,12 +65,11 @@ export class Schema<T> {
   default(
     defaultSetter?: T | null | ((value: null | undefined) => T),
   ): Schema<T | null | undefined> {
-    const clone = this.clone();
+    const clone = /* @__PURE__ */ cloneChangingMode(this, 'nullish');
 
     // @ts-ignore
     clone.meta.default =
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter;
-    clone.meta.mode = 'nullish';
 
     return clone as any;
   }
@@ -174,7 +173,7 @@ export class Schema<T> {
 
     if (parsed instanceof Issue) {
       if (this.meta.catch) {
-        return this._sendDefault(parsed) as T;
+        return this.meta.default!(originalValue);
       }
 
       throw new IssueError(parsed);

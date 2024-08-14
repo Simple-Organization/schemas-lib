@@ -1,5 +1,13 @@
 ## Changelog
 
+### [1.1.2] - 2024-08-14
+
+Fixed
+
+- Bug on `.catch` not being `nullish`
+- Schema.jsType is now `unknown`
+- Fixed CustomIssue
+
 ### [1.1.1] - 2024-08-14
 
 Fixed

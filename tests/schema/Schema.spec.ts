@@ -7,8 +7,9 @@ import {
   int,
   NumberSchema,
   SchemaMeta,
-} from '../src';
-import { assertSchemaIssue } from './util';
+  CustomIssue,
+} from '../../src';
+import { assertSchemaIssue } from '../util';
 
 describe('Schema', () => {
   const noopParsers: SchemaParser[] = [(value) => value];
@@ -228,6 +229,7 @@ describe('Schema', () => {
 
     assert.deepEqual(withInfo.meta, {
       label: 'Test',
+      jsType: 'unknown',
       description: 'Test description',
     });
   });
@@ -278,7 +280,7 @@ describe('Schema', () => {
       originalValue: any,
     ): Issue | number {
       if (value === 'any') {
-        return new Issue('any', meta, originalValue);
+        return new CustomIssue('any error', meta, originalValue);
       }
       return value;
     }
@@ -295,6 +297,40 @@ describe('Schema', () => {
     assert.deepEqual(catched.parse('any'), 'catched');
 
     // should return a issue when it is safeParse
-    assertSchemaIssue(catched, 'any', 'any');
+    assertSchemaIssue(catched, 'custom', 'any', 'any error');
+  });
+
+  //
+  //
+
+  test('catch sem argumento e required não deve dar erro, deve ao invés retornar undefined', () => {
+    const schema = new Schema([parser]);
+
+    //
+    // parser that when receives 'any' returns an Issue
+
+    function parser(
+      value: any,
+      meta: SchemaMeta,
+      originalValue: any,
+    ): Issue | number {
+      if (value === 'any') {
+        return new CustomIssue('any error', meta, originalValue);
+      }
+      return value;
+    }
+
+    //
+    //
+
+    const catched = schema.catch();
+
+    assert.deepEqual(catched.parse(undefined), undefined);
+
+    // should return the value when it's not 'any'
+    assert.deepEqual(catched.parse('asdf'), 'asdf');
+
+    // should return catched when it's 'any'
+    assert.deepEqual(catched.parse('any'), undefined);
   });
 });
