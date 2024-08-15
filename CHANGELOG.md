@@ -1,5 +1,21 @@
 ## Changelog
 
+### [2.0.0] - 2024-08-14
+
+Change
+
+- **Break change** `object()` previously acts like zod [`.passthrough`](https://zod.dev/?id=passthrough), now it will act like [`.object`](https://zod.dev/?id=objects)
+
+Fixed
+
+- `.catch` not working in `object()` because of `.safeParse()`
+- TypeScript type: `schema.default` and `schema.catch` now can be called without argument for `NumberSchema`, `ArraySchema`, `DatetimeSchema`, `ObjectSchema` and `StringSchema`
+
+Removed
+
+- **Break change** Removed support to argument in `schema.default`. No one uses it, and supporting it causes many bugs
+- Now `ObjectSchema` will not override the `.optional()`, `.required()`, `nullable()` and `.nullish()` methods to remove the TS error
+
 ### [1.1.2] - 2024-08-14
 
 Fixed

@@ -24,6 +24,12 @@ export function objectParser(
 
   let errors: ObjectIssue | undefined;
 
+  //
+
+  const newObject: Record<string, any> = {};
+
+  //
+
   for (const key of Object.keys(shape)) {
     const parsedProp = shape[key].safeParse(value[key]);
 
@@ -40,14 +46,14 @@ export function objectParser(
       continue;
     }
 
-    value[key] = parsedProp;
+    newObject[key] = parsedProp;
   }
 
   if (errors) {
     return errors;
   }
 
-  return value;
+  return newObject;
 }
 
 //
@@ -58,11 +64,9 @@ export function objectParser(
  *
  * Validates if the value is an object
  *
- * Clones the value as object
- *
  * Must be before most object parsers
  */
-export function cloneObjectParser(
+export function jsonObjectParser(
   value: any,
   meta: ObjectMeta,
   originalValue: any,
@@ -85,7 +89,7 @@ export function cloneObjectParser(
     return new Issue('not_object', meta, originalValue);
   }
 
-  return { ...value };
+  return value;
 }
 
 //
@@ -125,7 +129,7 @@ export function object<T extends ObjectSchemaRecord>(
   //
   //  Creates the output schema
 
-  const schema = new ObjectSchema<T>([cloneObjectParser, objectParser], {
+  const schema = new ObjectSchema<T>([jsonObjectParser, objectParser], {
     jsType: '',
     shape: _shape,
   });
@@ -191,7 +195,7 @@ export function strict<T extends ObjectSchemaRecord>(
 ): ObjectSchema<T> {
   const objectSchema = /* @__PURE__ */ object(shape);
 
-  objectSchema.parsers = [cloneObjectParser, strictObjectParser, objectParser];
+  objectSchema.parsers = [jsonObjectParser, strictObjectParser, objectParser];
 
   return objectSchema;
 }

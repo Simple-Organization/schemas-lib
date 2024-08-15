@@ -1,6 +1,6 @@
 {
   "name": "schemas-lib",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "author": "Simple Organization",
   "scripts": {
     "build": "tsc && rollup -c && node esbuild.mjs",

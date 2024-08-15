@@ -73,12 +73,11 @@ describe('object schema', () => {
   //
   //
 
-  test('Deve manter variáveis adicionais', () => {
+  test('Não deve manter variáveis adicionais', () => {
     const objSchema = object({ id: int });
 
     assert.deepEqual(objSchema.safeParse({ id: 1, a: 'something' }), {
       id: 1,
-      a: 'something',
     } as any);
   });
 

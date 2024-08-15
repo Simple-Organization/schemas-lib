@@ -60,9 +60,7 @@ export class Schema<T> {
    *
    * AND IT SETs TO NULLISH MODE
    */
-  default(
-    defaultSetter?: T | null | (() => T),
-  ): Schema<T | null | undefined> {
+  default(defaultSetter?: T | null | (() => T)): Schema<T | null | undefined> {
     const clone = /* @__PURE__ */ cloneChangingMode(this, 'nullish');
 
     // @ts-ignore
@@ -75,9 +73,7 @@ export class Schema<T> {
   /**
    * Set default with `meta.catch = true`
    */
-  catch(
-    defaultSetter?: T | null | (() => T),
-  ): Schema<T | null | undefined> {
+  catch(defaultSetter?: T | null | (() => T)): Schema<T | null | undefined> {
     const clone = this.default(defaultSetter);
     clone.meta.catch = true;
 
