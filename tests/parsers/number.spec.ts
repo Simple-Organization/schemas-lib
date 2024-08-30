@@ -52,8 +52,8 @@ describe('number schema', () => {
   //
 
   test('Deve executar o schema number com os parsers minNumber e maxNumber', () => {
-    const numberMin1 = number.min(1);
-    const numberMax1 = number.max(1);
+    const numberMin1 = number().min(1);
+    const numberMax1 = number().max(1);
 
     assert.deepEqual(numberMin1.meta, {
       jsType: 'number',
@@ -73,7 +73,7 @@ describe('number schema', () => {
   //
 
   test('Deve executar o schema number com o parser between', () => {
-    const numberBet = number.between(1, 3);
+    const numberBet = number().between(1, 3);
 
     assert.deepEqual(numberBet.meta, {
       jsType: 'number',
@@ -93,11 +93,11 @@ describe('number schema', () => {
   //
 
   test('Deve executar o float e checar se o valor é finito', () => {
-    assert.deepEqual(float.meta, {
+    assert.deepEqual(float().meta, {
       jsType: 'number',
     });
 
-    assertSchemaIssue(float, 'not_finite', Number.POSITIVE_INFINITY);
-    assertSchemaIssue(float, 'not_finite', Number.NEGATIVE_INFINITY);
+    assertSchemaIssue(float(), 'not_finite', Number.POSITIVE_INFINITY);
+    assertSchemaIssue(float(), 'not_finite', Number.NEGATIVE_INFINITY);
   });
 });

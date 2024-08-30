@@ -7,7 +7,7 @@ export { ObjectSchema } from './schemas/ObjectSchema';
 export { ArraySchema } from './schemas/ArraySchema';
 
 // Parsers and prebuiltin schemas
-export { object, strict, table } from './parsers/object';
+export { object, strict } from './parsers/object';
 export { array } from './parsers/array';
 export { enumType } from './parsers/enumType';
 export { mixin } from './parsers/mixin';

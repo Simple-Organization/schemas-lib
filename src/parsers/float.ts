@@ -3,6 +3,9 @@ import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
 import { numberParser } from './number';
 
+//
+//
+
 export function notInfinityParser(
   value: any,
   meta: SchemaMeta,
@@ -18,4 +21,8 @@ export function notInfinityParser(
 /**
  * Any number, but does not accept Infinity and NaN
  */
-export const float = new NumberSchema([numberParser, notInfinityParser], { jsType: 'number' });
+export function float() {
+  return new NumberSchema([numberParser, notInfinityParser], {
+    jsType: 'number',
+  });
+}

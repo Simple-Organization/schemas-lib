@@ -8,23 +8,23 @@ describe('string schema', () => {
   //
 
   test('Deve checar se é uma string com required', () => {
-    assert.deepEqual(string.meta, {
+    assert.deepEqual(string().meta, {
       jsType: 'string',
     });
 
-    assert.equal(string.safeParse('a'), 'a');
+    assert.equal(string().safeParse('a'), 'a');
 
-    assertSchemaIssue(string, 'required', ''); // Por ser required e como string vazia é null, então não é nullable
-    assertSchemaIssue(string, 'not_string_type', 0);
-    assertSchemaIssue(string, 'not_string_type', new Map());
-    assertSchemaIssue(string, 'not_string_type', new Date());
+    assertSchemaIssue(string(), 'required', ''); // Por ser required e como string vazia é null, então não é nullable
+    assertSchemaIssue(string(), 'not_string_type', 0);
+    assertSchemaIssue(string(), 'not_string_type', new Map());
+    assertSchemaIssue(string(), 'not_string_type', new Date());
   });
 
   //
   //
 
   test('Deve checar se é uma string com nullish', () => {
-    const nullishString = string.nullish();
+    const nullishString = string().nullish();
 
     assert.deepEqual(nullishString.meta, {
       jsType: 'string',
@@ -43,8 +43,8 @@ describe('string schema', () => {
   //
 
   test('Deve checar se a string tem cumprimento específico', () => {
-    const stringMin2 = string.min(2);
-    const stringMax2 = string.max(2);
+    const stringMin2 = string().min(2);
+    const stringMax2 = string().max(2);
 
     assert.deepEqual(stringMin2.meta, {
       jsType: 'string',

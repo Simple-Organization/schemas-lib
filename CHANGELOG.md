@@ -5,6 +5,7 @@
 Removed
 
 - `addPrototypeMinMax` now the lib has better tree shaking because of that removal
+- `table` type, it was the same as `strict`, but with a name
 
 ### [2.0.0] - 2024-08-14
 

@@ -2,6 +2,9 @@ import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
 
+//
+//
+
 export function numberParser(
   value: any,
   meta: SchemaMeta,
@@ -25,4 +28,6 @@ export function numberParser(
 /**
  * Any number accepting Infinity too, but does not accept NaN
  */
-export const number = new NumberSchema([numberParser], { jsType: 'number' });
+export function number() {
+  return new NumberSchema([numberParser], { jsType: 'number' });
+}

@@ -2,6 +2,9 @@ import { StringSchema } from '../schemas/StringSchema';
 import { Issue } from '../Issue';
 import { SchemaMeta } from '../types';
 
+//
+//
+
 export function stringParser(
   value: any,
   meta: SchemaMeta,
@@ -17,7 +20,9 @@ export function stringParser(
 /**
  * A string with any length
  */
-export const string = new StringSchema([stringParser], { jsType: 'string' });
+export function string() {
+  return new StringSchema([stringParser], { jsType: 'string' });
+}
 
 //
 //

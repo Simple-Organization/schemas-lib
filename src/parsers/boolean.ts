@@ -2,6 +2,9 @@ import { Issue } from '../Issue';
 import { Schema } from '../schemas/Schema';
 import { SchemaMeta, falseOptions, trueOptions } from '../types';
 
+//
+//
+
 export function booleanParser(
   value: any,
   meta: SchemaMeta,
@@ -26,6 +29,8 @@ export function booleanParser(
  *
  * `on` and `off` are for `HTMLInput[type='checkbox']`
  */
-export const boolean = new Schema<boolean>([booleanParser], {
-  jsType: 'boolean',
-});
+export function boolean() {
+  return new Schema<boolean>([booleanParser], {
+    jsType: 'boolean',
+  });
+}
