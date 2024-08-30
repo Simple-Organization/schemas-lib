@@ -16,14 +16,14 @@ describe('object schema', () => {
   //
 
   test('Deve ter gerado a tipagem com sucesso', () => {
-    const obj1 = object({ id: int });
+    const obj1 = object({ id: int() });
     assert.equal(obj1.meta.jsType, '{"id":number}');
 
-    const obj2 = object({ id: int, name: trimmed.nullish() });
+    const obj2 = object({ id: int(), name: trimmed.nullish() });
     assert.equal(obj2.meta.jsType, '{"id":number;"name"?:string|null}');
 
     const obj3 = object({
-      ids: array(int).optional(),
+      ids: array(int()).optional(),
       name: trimmed.nullable(),
     });
     assert.equal(obj3.meta.jsType, '{"ids"?:(number)[];"name":string|null}');
@@ -36,11 +36,11 @@ describe('object schema', () => {
   //
 
   test('Deve executar criar o shape com sucesso', () => {
-    const obj = object({ id: int });
+    const obj = object({ id: int() });
 
     assert.equal(obj.shape.id.meta.name, 'id');
-    assert.equal(int.meta.name, undefined);
-    assert.notEqual(obj.shape.id, int);
+    assert.equal(int().meta.name, undefined);
+    assert.notEqual(obj.shape.id, int());
 
     assert.deepEqual(Object.keys(obj.shape), ['id']);
 
@@ -54,7 +54,7 @@ describe('object schema', () => {
   //
 
   test('Deve executar o safeParse com sucesso', () => {
-    const objSchema = object({ id: int });
+    const objSchema = object({ id: int() });
 
     assert.deepEqual(objSchema.safeParse({ id: 1 }), { id: 1 });
     assert.deepEqual(objSchema.safeParse({ id: '1' }), { id: 1 });
@@ -74,7 +74,7 @@ describe('object schema', () => {
   //
 
   test('Não deve manter variáveis adicionais', () => {
-    const objSchema = object({ id: int });
+    const objSchema = object({ id: int() });
 
     assert.deepEqual(objSchema.safeParse({ id: 1, a: 'something' }), {
       id: 1,
@@ -87,7 +87,7 @@ describe('object schema', () => {
   test('Deve recursivamente dar safeParse', () => {
     const objSchema1 = object({
       a: object({
-        b: int,
+        b: int(),
       }),
     });
 
@@ -105,7 +105,7 @@ describe('object schema', () => {
     const objSchema2 = object({
       a: object({
         b: object({
-          c: int,
+          c: int(),
         }),
       }),
     });
@@ -147,7 +147,7 @@ describe('object schema', () => {
   //
 
   test('Deve testar o strict() e ter funcionalidades similares ao object()', () => {
-    const objSchema = strict({ id: int });
+    const objSchema = strict({ id: int() });
 
     assert.deepEqual(objSchema.safeParse({ id: 1 }), { id: 1 });
     assert.deepEqual(objSchema.safeParse({ id: '1' }), { id: 1 });
@@ -178,7 +178,7 @@ describe('object schema', () => {
   //
 
   test('Não deve adicionar campos undefined', () => {
-    const objSchema = object({ id: int.optional() });
+    const objSchema = object({ id: int().optional() });
 
     assert.deepEqual(objSchema.safeParse({ id: 1 }), {
       id: 1,
@@ -191,7 +191,7 @@ describe('object schema', () => {
   //
 
   test('omit() deve funcionar com sucesso', () => {
-    const objSchema = object({ id: int, name: trimmed });
+    const objSchema = object({ id: int(), name: trimmed });
 
     const result: Issue = objSchema.safeParse({ id: 1 }) as unknown as Issue;
 
@@ -206,7 +206,7 @@ describe('object schema', () => {
   //
 
   test('pick() deve funcionar com sucesso', () => {
-    const objSchema = object({ id: int, name: trimmed });
+    const objSchema = object({ id: int(), name: trimmed });
 
     const result: Issue = objSchema.safeParse({ id: 1 }) as unknown as Issue;
 
@@ -221,7 +221,7 @@ describe('object schema', () => {
   //
 
   test('Se o objeto for um json, deve dar parse', () => {
-    const obj = object({ id: int });
+    const obj = object({ id: int() });
     assert.deepEqual(obj.parse('{ "id": 1 }'), { id: 1 } as any);
   });
 
@@ -229,7 +229,7 @@ describe('object schema', () => {
   //
 
   test('Se clonar um object(), a instancia de .shape deve ser diferente e não afetar a instancia do original', () => {
-    const obj = object({ id: int });
+    const obj = object({ id: int() });
 
     const obj2 = obj.clone();
 
@@ -246,7 +246,7 @@ describe('object schema', () => {
   //
 
   test('Se um campo retornar default() como undefined, o objeto deve remover a propriedade', () => {
-    const objSchema = object({ id: int.default() });
+    const objSchema = object({ id: int().default() });
 
     assert.deepEqual(objSchema.safeParse({ id: 1 }), {
       id: 1,

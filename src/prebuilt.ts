@@ -12,7 +12,7 @@ import { trimmed } from './parsers/string';
 //
 // Ids
 
-export const id = /* @__PURE__ */ int.min(1);
+export const id = () => int().min(1);
 
 //
 //

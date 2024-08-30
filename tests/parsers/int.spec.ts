@@ -39,8 +39,8 @@ describe('int schema', () => {
   //
 
   test('Deve executar o schema int com mutators minNumber e maxNumber', () => {
-    const intMin1 = int.min(1);
-    const intMax1 = int.max(1);
+    const intMin1 = int().min(1);
+    const intMax1 = int().max(1);
 
     assert.deepEqual(intMin1.meta, {
       jsType: 'number',
@@ -60,7 +60,7 @@ describe('int schema', () => {
   //
 
   test('Deve dar catch com sucesso', () => {
-    const intMin1 = int.min(1).catch(1);
+    const intMin1 = int().min(1).catch(1);
 
     assert.deepEqual(intMin1.parse(0), 1);
     assert.deepEqual(intMin1.safeParse(0), 1);
@@ -70,7 +70,7 @@ describe('int schema', () => {
   //
 
   test('int.default() sem argumentos deve fazer safeParse() e retornar undefined', () => {
-    const intMin1 = int.default();
+    const intMin1 = int().default();
 
     assert.deepEqual(intMin1.parse(1), 1);
     assert.deepEqual(intMin1.parse(undefined), undefined);

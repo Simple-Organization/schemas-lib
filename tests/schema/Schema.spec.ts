@@ -238,7 +238,7 @@ describe('Schema', () => {
   //
 
   test('Não deve revalidar o default', () => {
-    const schema1 = int.default('1' as any);
+    const schema1 = int().default('1' as any);
 
     assert.equal(schema1.safeParse(null), '1' as any);
   });
@@ -247,7 +247,7 @@ describe('Schema', () => {
   //
 
   test('Deve exibir erro customizado adequadamente', () => {
-    const schema1 = int.errors({ not_number_string: 'Custom error' });
+    const schema1 = int().errors({ not_number_string: 'Custom error' });
 
     assert.equal(schema1.safeParse('-asdas').toString(), 'Custom error');
 

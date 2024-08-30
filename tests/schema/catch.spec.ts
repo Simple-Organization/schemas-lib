@@ -81,7 +81,7 @@ describe('Schema.catch', () => {
   //
 
   test('catch int deve funcionar corretamente', () => {
-    const intCatch = int.catch();
+    const intCatch = int().catch();
 
     //
     //
@@ -98,7 +98,7 @@ describe('Schema.catch', () => {
   //
 
   test('catch int deve funcionar corretamente', () => {
-    const intCatch = int.catch();
+    const intCatch = int().catch();
 
     //
     //
@@ -117,7 +117,7 @@ describe('Schema.catch', () => {
   test('catch com object deve funcionar corretamente', () => {
     const querySchema = object({
       search: trimmed.catch(),
-      id: id.catch(),
+      id: id().catch(),
     });
 
     //
@@ -149,7 +149,7 @@ describe('Schema.catch', () => {
   test('aaaaaaaaaaaaaaa', () => {
     const querySchema = object({
       search: trimmed.catch(),
-      id: id.catch(),
+      id: id().catch(),
     });
 
     assert.deepEqual(querySchema.parse({ id: 'arroz' }), {});

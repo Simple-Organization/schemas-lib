@@ -9,7 +9,7 @@ describe('array schema', () => {
   //
 
   test('Deve ter gerado a tipagem com sucesso', () => {
-    const arrayInt = array(int);
+    const arrayInt = array(int());
 
     assert.equal(arrayInt.meta.jsType, '(number)[]');
   });
@@ -18,7 +18,7 @@ describe('array schema', () => {
   //
 
   test('Deve executar parse do array com sucesso', () => {
-    const arrayInt = array(int);
+    const arrayInt = array(int());
 
     assert.deepEqual(arrayInt.safeParse([]), []);
     assert.deepEqual(arrayInt.safeParse([1, 2, 3]), [1, 2, 3]);
@@ -37,7 +37,7 @@ describe('array schema', () => {
   //
 
   test('Deve checar se a array tem cumprimento específico', () => {
-    const arrayInt = array(int).between(2, 4);
+    const arrayInt = array(int()).between(2, 4);
 
     assertSchemaIssue(arrayInt, 'min_array_length', ['0']);
     assertSchemaIssue(arrayInt, 'min_array_length', []);

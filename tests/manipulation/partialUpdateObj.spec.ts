@@ -10,9 +10,9 @@ describe('partialUpdateObj schema', () => {
 
   test('Deve ser gerado o object partial com sucesso', () => {
     const obj = object({
-      id: int,
+      id: int(),
       name: trimmed,
-      tags: array(int),
+      tags: array(int()),
     });
 
     const partial = partialUpdateObj(
@@ -40,9 +40,9 @@ describe('partialUpdateObj schema', () => {
 
   test('Deve ser gerado o object partial com nullable e nullsih com sucesso', () => {
     const obj = object({
-      id: int,
+      id: int(),
       name: trimmed.required(),
-      tags: array(int).nullable(),
+      tags: array(int()).nullable(),
       obs: trimmed.nullish(),
       outro: trimmed.optional(),
     });

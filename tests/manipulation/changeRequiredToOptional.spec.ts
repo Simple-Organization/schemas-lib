@@ -10,7 +10,7 @@ describe('changeRequiredToOptional', () => {
   test('should convert all required properties to optional', () => {
     const shape = {
       name: nameField,
-      age: int.between(0, 140),
+      age: int().between(0, 140),
     };
 
     const result = changeRequiredToOptional(shape);
@@ -22,7 +22,7 @@ describe('changeRequiredToOptional', () => {
   test('should convert all nullable properties to nullish', () => {
     const shape = {
       name: nameField.nullable(),
-      age: int.between(0, 140).nullable(),
+      age: int().between(0, 140).nullable(),
     };
 
     const result = changeRequiredToOptional(shape);
