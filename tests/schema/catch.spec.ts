@@ -116,7 +116,7 @@ describe('Schema.catch', () => {
 
   test('catch com object deve funcionar corretamente', () => {
     const querySchema = object({
-      search: trimmed.catch(),
+      search: trimmed().catch(),
       id: id().catch(),
     });
 
@@ -148,7 +148,7 @@ describe('Schema.catch', () => {
 
   test('aaaaaaaaaaaaaaa', () => {
     const querySchema = object({
-      search: trimmed.catch(),
+      search: trimmed().catch(),
       id: id().catch(),
     });
 

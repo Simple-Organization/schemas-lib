@@ -69,30 +69,30 @@ describe('text schema', () => {
   //
 
   test('Deve checar se text é uma string com required', () => {
-    assert.deepEqual(trimmed.meta, {
+    assert.deepEqual(trimmed().meta, {
       jsType: 'string',
     });
 
-    assert.equal(trimmed.safeParse('   a   '), 'a');
+    assert.equal(trimmed().safeParse('   a   '), 'a');
 
-    assertSchemaIssue(trimmed, 'required', '          '); // Por ser required e como string vazia é null, então não é nullable
-    assertSchemaIssue(trimmed, 'not_string_type', 0);
-    assertSchemaIssue(trimmed, 'not_string_type', new Map());
-    assertSchemaIssue(trimmed, 'not_string_type', new Date());
+    assertSchemaIssue(trimmed(), 'required', '          '); // Por ser required e como string vazia é null, então não é nullable
+    assertSchemaIssue(trimmed(), 'not_string_type', 0);
+    assertSchemaIssue(trimmed(), 'not_string_type', new Map());
+    assertSchemaIssue(trimmed(), 'not_string_type', new Date());
   });
 
   //
   //
 
   test('Deve checar se é uma string com nullish', () => {
-    const nullishText = trimmed.nullish();
+    const nullishText = trimmed().nullish();
 
     assert.deepEqual(nullishText.meta, {
       jsType: 'string',
       mode: 'nullish',
     });
 
-    assert.equal(trimmed.safeParse('a'), 'a');
+    assert.equal(trimmed().safeParse('a'), 'a');
     assert.equal(nullishText.safeParse('  a   '), 'a');
     assert.equal(nullishText.safeParse('        '), null); // Por ser nullish
 
@@ -105,9 +105,9 @@ describe('text schema', () => {
   //
 
   test('Deve checar se a string tem cumprimento específico', () => {
-    const textMin2 = trimmed.min(2);
-    const textMax2 = trimmed.max(2);
-    const textBetween_2_and_4 = trimmed.between(2, 4);
+    const textMin2 = trimmed().min(2);
+    const textMax2 = trimmed().max(2);
+    const textBetween_2_and_4 = trimmed().between(2, 4);
 
     assertSchemaIssue(textMin2, 'min_length', '0');
     assertSchemaIssue(textMin2, 'min_length', '  0  ');
@@ -124,24 +124,24 @@ describe('text schema', () => {
 
   test('Deve checar se a string é uma URL válida', () => {
     assert.equal(
-      url.safeParse('http://localhost:3000'),
+      url().safeParse('http://localhost:3000'),
       'http://localhost:3000',
     );
-    assert.equal(url.safeParse('localhost:3000'), 'http://localhost:3000');
+    assert.equal(url().safeParse('localhost:3000'), 'http://localhost:3000');
     assert.equal(
-      url.safeParse('localhost:3000?a=1'),
+      url().safeParse('localhost:3000?a=1'),
       'http://localhost:3000?a=1',
     );
     assert.equal(
-      url.safeParse('localhost:3000?a=1#a'),
+      url().safeParse('localhost:3000?a=1#a'),
       'http://localhost:3000?a=1#a',
     );
     assert.equal(
-      url.safeParse('localhost:3000/a?a=1#a'),
+      url().safeParse('localhost:3000/a?a=1#a'),
       'http://localhost:3000/a?a=1#a',
     );
     assert.equal(
-      url.safeParse('arrroz_asdasdsadasd_asd'),
+      url().safeParse('arrroz_asdasdsadasd_asd'),
       'http://arrroz_asdasdsadasd_asd',
     );
   });
@@ -150,15 +150,15 @@ describe('text schema', () => {
   //
 
   test('Deve checar se a string é um int válido', () => {
-    const textIntBetween8 = intString.between(2, 8);
+    const textIntBetween8 = intString().between(2, 8);
 
-    assert.equal(intString.safeParse('   1   '), '1');
-    assert.equal(intString.safeParse('123'), '123');
+    assert.equal(intString().safeParse('   1   '), '1');
+    assert.equal(intString().safeParse('123'), '123');
 
     assert.equal(textIntBetween8.safeParse('   12345678   '), '12345678');
     assert.equal(textIntBetween8.safeParse('12345678'), '12345678');
 
-    assertSchemaIssue(intString, 'not_integer', 'a');
+    assertSchemaIssue(intString(), 'not_integer', 'a');
     assertSchemaIssue(textIntBetween8, 'min_length', '1');
   });
 });

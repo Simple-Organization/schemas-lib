@@ -9,7 +9,7 @@ import { assert } from 'chai';
 describe('changeRequiredToOptional', () => {
   test('should convert all required properties to optional', () => {
     const shape = {
-      name: nameField,
+      name: nameField(),
       age: int().between(0, 140),
     };
 
@@ -21,7 +21,7 @@ describe('changeRequiredToOptional', () => {
 
   test('should convert all nullable properties to nullish', () => {
     const shape = {
-      name: nameField.nullable(),
+      name: nameField().nullable(),
       age: int().between(0, 140).nullable(),
     };
 

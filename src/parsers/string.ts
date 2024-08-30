@@ -34,6 +34,8 @@ export function trimParser(value: any): Issue | string {
 /**
  * A string, but always trim in the start of the parse
  */
-export const trimmed = new StringSchema([trimParser, stringParser], {
-  jsType: 'string',
-});
+export function trimmed() {
+  return new StringSchema([trimParser, stringParser], {
+    jsType: 'string',
+  });
+}

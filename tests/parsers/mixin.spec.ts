@@ -9,13 +9,13 @@ describe('mixin schema', () => {
   //
 
   test('Deve executar parse do mixin com sucesso', () => {
-    const metaEnum = mixin([int(), trimmed]);
+    const metaEnum = mixin([int(), trimmed()]);
 
     // const a: Infer<typeof metaEnum> = null as any;
 
     assert.deepEqual(metaEnum.meta, {
       jsType: '(number) | (string)',
-      mixin: [int(), trimmed],
+      mixin: [int(), trimmed()],
     });
 
     assert.equal(metaEnum.safeParse('1'), 1 as any);

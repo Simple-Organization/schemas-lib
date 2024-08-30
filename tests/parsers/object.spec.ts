@@ -19,12 +19,12 @@ describe('object schema', () => {
     const obj1 = object({ id: int() });
     assert.equal(obj1.meta.jsType, '{"id":number}');
 
-    const obj2 = object({ id: int(), name: trimmed.nullish() });
+    const obj2 = object({ id: int(), name: trimmed().nullish() });
     assert.equal(obj2.meta.jsType, '{"id":number;"name"?:string|null}');
 
     const obj3 = object({
       ids: array(int()).optional(),
-      name: trimmed.nullable(),
+      name: trimmed().nullable(),
     });
     assert.equal(obj3.meta.jsType, '{"ids"?:(number)[];"name":string|null}');
 
@@ -191,7 +191,7 @@ describe('object schema', () => {
   //
 
   test('omit() deve funcionar com sucesso', () => {
-    const objSchema = object({ id: int(), name: trimmed });
+    const objSchema = object({ id: int(), name: trimmed() });
 
     const result: Issue = objSchema.safeParse({ id: 1 }) as unknown as Issue;
 
@@ -206,7 +206,7 @@ describe('object schema', () => {
   //
 
   test('pick() deve funcionar com sucesso', () => {
-    const objSchema = object({ id: int(), name: trimmed });
+    const objSchema = object({ id: int(), name: trimmed() });
 
     const result: Issue = objSchema.safeParse({ id: 1 }) as unknown as Issue;
 

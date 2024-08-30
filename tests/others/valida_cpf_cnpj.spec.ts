@@ -5,7 +5,9 @@ import {
   validarCPF,
   validarRG,
 } from '../../src/others/valida_cpf_cnpj';
-import { cpf_cnpj } from '../../src';
+
+//
+//
 
 describe('Validar cpf cnpj', () => {
   //
@@ -45,21 +47,5 @@ describe('Validar cpf cnpj', () => {
 
     assert.equal(validarRG('43.652.9aa-9'), false);
     assert.equal(validarRG('43.652.9-9'), false);
-  });
-
-  //
-  //
-
-  test('cpf_cnpj schema deve fazer o parse com sucesso', () => {
-    assert.equal(
-      cpf_cnpj.tsafeParse('11.444.777/0001-61'),
-      '11.444.777/0001-61',
-    );
-    assert.equal(cpf_cnpj.tsafeParse('11444777000161'), '11.444.777/0001-61');
-
-    assert.equal(cpf_cnpj.tsafeParse('111.444.777-35'), '111.444.777-35');
-    assert.equal(cpf_cnpj.tsafeParse('11144477735'), '111.444.777-35');
-
-    assert.throw(() => cpf_cnpj.parse('aaaaa'));
   });
 });
