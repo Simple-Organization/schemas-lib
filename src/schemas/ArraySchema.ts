@@ -1,6 +1,5 @@
 import type { SchemaMeta, SchemaParser } from '../types';
 import { Issue } from '../Issue';
-import { addPrototypeMinMax } from '../utils/utils';
 import { Schema } from './Schema';
 
 //
@@ -30,9 +29,56 @@ export class ArraySchema<
     this.element = meta.element as any;
   }
 
-  declare min: (value: number) => typeof this;
-  declare max: (value: number) => typeof this;
-  declare between: (min: number, max: number) => typeof this;
+  //
+  //
+
+  min(value: number): this {
+    function minArrayLengthParser(
+      value: any,
+      meta: SchemaMeta,
+      originalValue: any,
+    ) {
+      if (typeof meta.min === 'number' && value.length < meta.min) {
+        return new Issue('min_array_length', meta, originalValue);
+      }
+
+      return value;
+    }
+
+    const clone = this.clone();
+    clone.meta.min = value;
+    clone.parsers.push(minArrayLengthParser);
+    return clone;
+  }
+
+  //
+  //
+
+  max(value: number): this {
+    function maxArrayLengthParser(
+      value: any,
+      meta: SchemaMeta,
+      originalValue: any,
+    ) {
+      if (typeof meta.max === 'number' && value.length > meta.max) {
+        return new Issue('max_array_length', meta, originalValue);
+      }
+
+      return value;
+    }
+
+    const clone = this.clone();
+    clone.meta.max = value;
+    clone.parsers.push(maxArrayLengthParser);
+    return clone;
+  }
+
+  //
+  //
+
+  between(min: number, max: number): this {
+    return this.min(min).max(max);
+  }
 
   //
   //  Sobreescrita da tipagem métodos
@@ -43,39 +89,6 @@ export class ArraySchema<
   declare nullish: () => ArraySchema<T | null | undefined>;
   declare required: () => ArraySchema<Exclude<T, undefined | null>>;
   declare default: (
-    defaultSetter?: T | null |  (() => T),
+    defaultSetter?: T | null | (() => T),
   ) => ArraySchema<T | null | undefined>;
 }
-
-//
-//
-
-addPrototypeMinMax(
-  ArraySchema,
-  //
-  //
-  function minArrayLengthParser(
-    value: any,
-    meta: SchemaMeta,
-    originalValue: any,
-  ) {
-    if (typeof meta.min === 'number' && value.length < meta.min) {
-      return new Issue('min_array_length', meta, originalValue);
-    }
-
-    return value;
-  },
-  //
-  //
-  function maxArrayLengthParser(
-    value: any,
-    meta: SchemaMeta,
-    originalValue: any,
-  ) {
-    if (typeof meta.max === 'number' && value.length > meta.max) {
-      return new Issue('max_array_length', meta, originalValue);
-    }
-
-    return value;
-  },
-);

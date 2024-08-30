@@ -2,6 +2,9 @@ import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
 
+//
+//
+
 export function intParser(
   value: any,
   meta: SchemaMeta,
@@ -32,3 +35,6 @@ export function intParser(
  * Only integer numbers, can be bigger than 32 bits integers
  */
 export const int = new NumberSchema([intParser], { jsType: 'number' });
+// export function int() {
+//   return new NumberSchema([intParser], { jsType: 'number' });
+// }

@@ -1,5 +1,4 @@
 import { Schema } from '../schemas/Schema';
-import { SchemaMeta } from '../types';
 
 //
 //
@@ -131,44 +130,4 @@ export function getParsedType(data: any): (typeof parsedType)[number] {
     default:
       return 'unknown';
   }
-}
-
-//
-//
-
-export function addPrototypeMinMax(
-  Schema: Function,
-  minParser: (value: any, meta: SchemaMeta, originalValue: any) => any,
-  maxParser: (value: any, meta: SchemaMeta, originalValue: any) => any,
-): void {
-  Schema.prototype.min = function min(value: any) {
-    const clone = this.clone();
-
-    clone.meta.min = value;
-
-    clone.parsers.push(minParser);
-
-    return clone;
-  };
-
-  Schema.prototype.max = function max(value: any) {
-    const clone = this.clone();
-
-    clone.meta.max = value;
-
-    clone.parsers.push(maxParser);
-
-    return clone;
-  };
-
-  Schema.prototype.between = function between(min: any, max: any) {
-    const clone = this.clone();
-
-    clone.meta.min = min;
-    clone.meta.max = max;
-
-    clone.parsers.push(minParser, maxParser);
-
-    return clone;
-  };
 }

@@ -1,7 +1,6 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { Schema } from './Schema';
-import { addPrototypeMinMax } from '../utils/utils';
 
 //
 //
@@ -33,15 +32,59 @@ export class DatetimeSchema<T = string> extends Schema<T> {
   /**
    * If the value is a Date, it will mutate toISOString()
    */
-  declare min: (value: string | Date) => typeof this;
+  min(value: string | Date): this {
+    function minDatetimeParser(
+      value: any,
+      meta: SchemaMeta,
+      originalValue: any,
+    ) {
+      if (meta.min instanceof Date) {
+        meta.min = meta.min.toISOString();
+      }
+
+      if (typeof meta.min === 'string' && value < meta.min) {
+        return new Issue('min_datetime', meta, originalValue);
+      }
+      return value;
+    }
+
+    const clone = this.clone();
+    clone.meta.min = value;
+    clone.parsers.push(minDatetimeParser);
+    return clone;
+  }
+
   /**
    * If the value is a Date, it will mutate toISOString()
    */
-  declare max: (value: string | Date) => typeof this;
+  max(value: string | Date): this {
+    function maxDatetimeParser(
+      value: any,
+      meta: SchemaMeta,
+      originalValue: any,
+    ) {
+      if (meta.min instanceof Date) {
+        meta.min = meta.min.toISOString();
+      }
+
+      if (typeof meta.max === 'string' && value < meta.max) {
+        return new Issue('max_datetime', meta, originalValue);
+      }
+      return value;
+    }
+
+    const clone = this.clone();
+    clone.meta.max = value;
+    clone.parsers.push(maxDatetimeParser);
+    return clone;
+  }
+
   /**
    * If the value is a Date, it will mutate toISOString()
    */
-  declare between: (min: string | Date, max: string | Date) => typeof this;
+  between(min: string | Date, max: string | Date): this {
+    return this.min(min).max(max);
+  }
 
   /**
    * Converts to date and then to UTC string again
@@ -86,34 +129,3 @@ export class DatetimeSchema<T = string> extends Schema<T> {
     defaultSetter?: T | null | (() => T),
   ) => DatetimeSchema<T | null | undefined>;
 }
-
-//
-//
-
-addPrototypeMinMax(
-  DatetimeSchema,
-  //
-  //
-  function minDatetimeParser(value: any, meta: SchemaMeta, originalValue: any) {
-    if (meta.min instanceof Date) {
-      meta.min = meta.min.toISOString();
-    }
-
-    if (typeof meta.min === 'string' && value < meta.min) {
-      return new Issue('min_datetime', meta, originalValue);
-    }
-    return value;
-  },
-  //
-  //
-  function maxDatetimeParser(value: any, meta: SchemaMeta, originalValue: any) {
-    if (meta.min instanceof Date) {
-      meta.min = meta.min.toISOString();
-    }
-
-    if (typeof meta.max === 'string' && value < meta.max) {
-      return new Issue('max_datetime', meta, originalValue);
-    }
-    return value;
-  },
-);

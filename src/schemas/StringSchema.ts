@@ -1,15 +1,51 @@
 import type { SchemaMeta } from '../types';
 import { Issue } from '../Issue';
 import { Schema } from './Schema';
-import { addPrototypeMinMax } from '../utils/utils';
 
 //
 //
 
 export class StringSchema<T = string> extends Schema<T> {
-  declare min: (value: number) => typeof this;
-  declare max: (value: number) => typeof this;
-  declare between: (min: number, max: number) => typeof this;
+  //
+  //
+
+  min(value: number): this {
+    function minLengthParser(value: any, meta: SchemaMeta, originalValue: any) {
+      if (typeof meta.min === 'number' && value.length < meta.min) {
+        return new Issue('min_length', meta, originalValue);
+      }
+      return value;
+    }
+
+    const clone = this.clone();
+    clone.meta.min = value;
+    clone.parsers.push(minLengthParser);
+    return clone;
+  }
+
+  //
+  //
+
+  max(value: number): this {
+    function maxLengthParser(value: any, meta: SchemaMeta, originalValue: any) {
+      if (typeof meta.max === 'number' && value.length > meta.max) {
+        return new Issue('max_length', meta, originalValue);
+      }
+      return value;
+    }
+
+    const clone = this.clone();
+    clone.meta.max = value;
+    clone.parsers.push(maxLengthParser);
+    return clone;
+  }
+
+  //
+  //
+
+  between(min: number, max: number): this {
+    return this.min(min).max(max);
+  }
 
   /**
    *
@@ -47,26 +83,3 @@ export class StringSchema<T = string> extends Schema<T> {
     defaultSetter?: T | null | (() => T),
   ) => StringSchema<T | null | undefined>;
 }
-
-//
-//
-
-addPrototypeMinMax(
-  StringSchema,
-  //
-  //
-  function minLengthParser(value: any, meta: SchemaMeta, originalValue: any) {
-    if (typeof meta.min === 'number' && value.length < meta.min) {
-      return new Issue('min_length', meta, originalValue);
-    }
-    return value;
-  },
-  //
-  //
-  function maxLengthParser(value: any, meta: SchemaMeta, originalValue: any) {
-    if (typeof meta.max === 'number' && value.length > meta.max) {
-      return new Issue('max_length', meta, originalValue);
-    }
-    return value;
-  },
-);

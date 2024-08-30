@@ -1,5 +1,11 @@
 ## Changelog
 
+### [3.0.0-next.0] - 2024-08-30
+
+Removed
+
+- `addPrototypeMinMax` now the lib has better tree shaking because of that removal
+
 ### [2.0.0] - 2024-08-14
 
 Change

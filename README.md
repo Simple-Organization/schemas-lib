@@ -163,6 +163,24 @@ const object_with_email = object({
 const _distinct = distinct('type', [obj1, obj2]);
 ```
 
+## Versão 3.0.0
+
+A versão 3 vai adotar algumas diferenças da 2, sendo que todos os `Schemas` serão criados com uma função
+
+Exemplo:
+
+```ts
+import { string, int } from 'schemas-lib';
+
+// Atualmente
+const schema = string.min(1).max(10);
+
+// Versão 3
+const schema = string().min(1).max(10);
+```
+
+Essa mudança é para dar mais consistencia e melhorar o `Three shaking` da lib, pois no momento atual, o `Three shaking` não funciona muito bem por modificar o `prototype` dos `Schemas`
+
 ## Changelog
 
 View the changelog at [CHANGELOG.md](CHANGELOG.md)
