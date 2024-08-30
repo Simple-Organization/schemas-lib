@@ -21,7 +21,7 @@ A primeira diferença é que **schemas-lib** foca em fazer parsing de **query st
 Então um `object` ou `array` ao receber uma string, já considera que seja um json e faz parse
 
 ```ts
-const obj = object({ id: int });
+const obj = object({ id: int() });
 obj.parse('{ "id": 1 }'); // { id: 1 }
 ```
 
@@ -34,7 +34,7 @@ import { z } from 'zod';
 import { trimmed, string } from 'schemas-lib';
 
 const zodSchema = z.string().trim();
-const schemaLib = trimmed; // trimmed é o mesmo que zod.string().trim()
+const schemaLib = trimmed(); // trimmed é o mesmo que zod.string().trim()
 ```
 
 Quando se faz qualquer operação com o `trimmed` ele é clonado como no zod para não alterar o schema original e manter a integridade do schema
@@ -49,15 +49,15 @@ Creating a simple string schema
 import { trimmed, string } from 'schemas-lib';
 
 // creating a schema for strings
-const mySchema = trimmed;
+const mySchema = trimmed();
 
 // parsing
-trimmed.parse('tuna'); // => "tuna"
-trimmed.parse(12); // => throws ZodError
+trimmed().parse('tuna'); // => "tuna"
+trimmed().parse(12); // => throws ZodError
 
 // "safe" parsing (doesn't throw error if validation fails)
-string.safeParse('tuna'); // => 'tuna'
-string.safeParse(12); // => Issue object
+string().safeParse('tuna'); // => 'tuna'
+string().safeParse(12); // => Issue object
 ```
 
 Creating an object schema
@@ -66,7 +66,7 @@ Creating an object schema
 import { object, trimmed, Infer } from 'schemas-lib';
 
 const user_schema = object({
-  username: trimmed,
+  username: trimmed(),
 });
 
 user_schema.parse({ username: 'Ludwig   ' }); // { username: 'Ludwig' }
