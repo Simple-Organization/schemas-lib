@@ -1,91 +1,143 @@
-import { Issue, ObjectIssue } from '../Issue';
-import { ArrayMeta, ArraySchema } from '../schemas/ArraySchema';
-import { ObjectSchema } from '../schemas/ObjectSchema';
-import { Schema } from '../schemas/Schema';
+import type { ValidationErrorRecord } from '../validationErrors';
+import {
+  NewSchema,
+  type ISchema,
+  type SafeParseReturn,
+} from '../schemas/NewSchema';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 
 //
 //
 
-export function arrayParser(
-  value: any,
-  meta: ArrayMeta,
-  originalValue: any,
-): Issue | any[] {
+export class ArraySchema<S extends ISchema<any>>
+  implements ISchema<Array<S extends ISchema<infer E> ? E : never>>
+{
+  element: S;
+  /** Property used only for type inference */
+  declare readonly _o: Array<S extends ISchema<infer E> ? E : never>;
+  declare readonly isSchema: true;
+
+  req = true;
+  strict = false;
+
+  def?: () => Array<S extends ISchema<infer E> ? E : never>;
+  parent?: ISchema<any>;
+
   //
-  //  If the value is a string, try to parse it as JSON
+  //
 
-  if (typeof value === 'string') {
-    try {
-      value = JSON.parse(value);
-    } catch {
-      return new Issue('not_valid_json', meta, originalValue);
+  constructor(readonly elementSchema: S) {
+    this.element = elementSchema;
+  }
+
+  internalParse(
+    originalValue: any,
+  ): SafeParseReturn<Array<S extends ISchema<infer E> ? E : never>> {
+    let value = originalValue;
+
+    //
+    //  If the value is a string, try to parse it as JSON
+
+    if (typeof value === 'string') {
+      if (value === '') {
+        value = null;
+      } else {
+        try {
+          value = JSON.parse(value);
+        } catch {
+          return safeParseError('not_valid_json', this, originalValue);
+        }
+      }
+    } else if (value === undefined) {
+      value = null;
     }
-  }
 
-  //
-  //  If the value is not an array, return an error
+    if (value === null) {
+      if (this.req) {
+        return safeParseError('required', this, originalValue);
+      }
+      if (this.def) {
+        return safeParseSuccess(this.def());
+      }
+      return safeParseSuccess();
+    }
 
-  if (!Array.isArray(value)) {
-    return new Issue('not_array', meta, originalValue);
-  }
+    //
+    //  If the value is not an array, return an error
 
-  //
-  //  Clone the array
+    if (!Array.isArray(value)) {
+      return safeParseError('not_array', this, originalValue);
+    }
 
-  const arrayClone = [...value];
+    //
+    //  Validates each element of the array
 
-  //
-  //  Parse each element
+    const results: SafeParseReturn<any>[] = [];
+    const output: any[] = [];
 
-  const element = meta.element!;
+    for (const item of value) {
+      const result = this.element.safeParse(item);
 
-  let errors: ObjectIssue | undefined;
-
-  //
-
-  for (let i = 0; i < arrayClone.length; i++) {
-    const parsedProp = element.safeParse(arrayClone[i]);
-
-    if (parsedProp instanceof Issue) {
-      if (!errors) {
-        errors = new ObjectIssue('array_shape', meta, originalValue);
+      if (!result.success) {
+        return safeParseError('invalid_array_element', this, originalValue);
       }
 
-      errors.errors[i] = parsedProp;
-    } else {
-      arrayClone[i] = parsedProp;
+      output.push(result.data);
+      results.push(result);
     }
+
+    return safeParseSuccess(
+      output as Array<S extends ISchema<infer E> ? E : never>,
+    );
   }
 
   //
+  //  Schema info about optional, required, default
+  //
 
-  if (errors) {
-    return errors;
+  declare optional: () => ISchema<
+    | Exclude<Array<S extends ISchema<infer E> ? E : never>, null>
+    | null
+    | undefined
+  >;
+  /** Set to default value when the value is null or undefined */
+  declare default: (
+    defaultSetter:
+      | (() => Array<S extends ISchema<infer E> ? E : never>)
+      | Array<S extends ISchema<infer E> ? E : never>,
+  ) => ArraySchema<S>;
+  /**
+   * Parse the value, throw {@link SafeParseReturn} when the value is invalid
+   */
+  declare parse: (
+    originalValue: any,
+  ) => Array<S extends ISchema<infer E> ? E : never>;
+  /**
+   * Parse the value, return {@link SafeParseReturn} when the value is invalid
+   */
+  declare safeParse: (
+    originalValue: any,
+  ) => SafeParseReturn<Array<S extends ISchema<infer E> ? E : never>>;
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
-
-  return arrayClone;
 }
 
 //
 //
 
-export function array<T>(
-  element: Schema<T> | ObjectSchema<T>,
-): ArraySchema<T[], Schema<T[]>> {
-  if (!(element instanceof Schema)) {
-    throw new Error('The element must be a instance of Schema');
-  }
+ArraySchema.prototype.optional = NewSchema.prototype.optional as any;
+ArraySchema.prototype.default = NewSchema.prototype.default as any;
+ArraySchema.prototype.safeParse = NewSchema.prototype.safeParse as any;
+ArraySchema.prototype.parse = NewSchema.prototype.parse as any;
+(ArraySchema.prototype as any).isSchema = true;
 
-  let jsType = element.meta.jsType;
+//
+//
 
-  if (element.meta.namedJSType) {
-    jsType = element.meta.namedJSType;
-  }
-
-  const schema = new ArraySchema([arrayParser], {
-    jsType: `(${jsType})[]`,
-    element,
-  });
-
-  return schema;
+export function array<T extends ISchema<any>>(
+  elementSchema: T,
+): ArraySchema<T> {
+  return new ArraySchema(elementSchema);
 }

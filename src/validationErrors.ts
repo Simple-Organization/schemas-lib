@@ -126,6 +126,7 @@ export const validationErrors: ValidationErrorRecord = {
   not_cnpj: `O campo não é um CNPJ válido`,
 
   invalid_object_value: 'Erro temporário, não é possível validar o objeto',
+  invalid_array_element: 'Erro temporário, não é possível validar o array',
 };
 
 //
