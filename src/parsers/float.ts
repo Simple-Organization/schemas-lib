@@ -5,19 +5,6 @@ import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
 //
 
 export class NumberSchema extends NewSchema<number> {
-  private _min: number | undefined;
-  private _max: number | undefined;
-
-  //
-  //
-
-  clone(): this {
-    const clone = super.clone() as this;
-    clone._min = this._min;
-    clone._max = this._max;
-    return clone;
-  }
-
   //
   //
 
@@ -59,43 +46,15 @@ export class NumberSchema extends NewSchema<number> {
       return safeParseError('not_finite', this, originalValue);
     }
 
-    if (this._min && value < this._min) {
+    if (this.vMin && value < this.vMin) {
       return safeParseError('min_number', this, originalValue);
     }
 
-    if (this._max && value > this._max) {
+    if (this.vMax && value > this.vMax) {
       return safeParseError('max_number', this, originalValue);
     }
 
     return safeParseSuccess(value);
-  }
-
-  //
-  //
-
-  min(value: number): this {
-    const clone = this.clone();
-    clone._min = value;
-    return clone;
-  }
-
-  //
-  //
-
-  max(value: number): this {
-    const clone = this.clone();
-    clone._max = value;
-    return clone;
-  }
-
-  //
-  //
-
-  between(min: number, max: number): this {
-    const clone = this.clone();
-    clone._min = min;
-    clone._max = max;
-    return clone;
   }
 }
 

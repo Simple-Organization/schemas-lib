@@ -17,6 +17,8 @@ export abstract class NewSchema<T> {
   declare readonly _o: T;
   _required = true;
   _default?: () => T;
+  vMin: number | undefined;
+  vMax: number | undefined;
 
   //
   //  Important methods
@@ -26,6 +28,8 @@ export abstract class NewSchema<T> {
     const clone = new (this.constructor as any)();
     clone._required = this._required;
     clone._default = this._default;
+    clone._min = this.vMin;
+    clone._max = this.vMax;
     return /* @__PURE__ */ clone;
   }
 
@@ -85,5 +89,33 @@ export abstract class NewSchema<T> {
     }
 
     return parsed.data!;
+  }
+
+  //
+  //
+
+  min(value: number): this {
+    const clone = this.clone();
+    clone.vMin = value;
+    return clone;
+  }
+
+  //
+  //
+
+  max(value: number): this {
+    const clone = this.clone();
+    clone.vMax = value;
+    return clone;
+  }
+
+  //
+  //
+
+  between(min: number, max: number): this {
+    const clone = this.clone();
+    clone.vMin = min;
+    clone.vMax = max;
+    return clone;
   }
 }
