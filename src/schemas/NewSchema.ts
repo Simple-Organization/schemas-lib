@@ -20,7 +20,6 @@ export type ISchema<T> = {
   safeParse: (originalValue: any) => SafeParseReturn<T>;
   optional: () => ISchema<Exclude<T, null> | null | undefined>;
   default: (defaultSetter: (() => T) | T) => ISchema<T>;
-  parent?: ISchema<any>;
 };
 
 //
@@ -32,7 +31,6 @@ export abstract class NewSchema<T> {
   declare readonly isSchema: true;
   req = true;
   def?: () => T;
-  parent?: ISchema<any>;
 
   //
   //  Important methods

@@ -18,10 +18,8 @@ export class ArraySchema<S extends ISchema<any>>
   declare readonly isSchema: true;
 
   req = true;
-  strict = false;
 
   def?: () => Array<S extends ISchema<infer E> ? E : never>;
-  parent?: ISchema<any>;
 
   //
   //
