@@ -4,6 +4,7 @@ import { SchemaLibError } from '../SchemaLibError';
 //
 
 export type SafeParseReturn<T> = {
+  success: boolean;
   data?: T;
   error?: SchemaLibError;
 }
@@ -63,7 +64,8 @@ export abstract class NewSchema<T> {
 
     if (parsed.error && this._default) {
       return {
-        data: this._default()
+        data: this._default(),
+        success: true,
       }
     }
 

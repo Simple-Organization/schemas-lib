@@ -21,6 +21,7 @@ Table of contents
 - Normalização para `undefined`
 - Todos campos de `number` já fazem `coerce`
 - Campo `boolean()` é sempre [`stringbool()`](https://v4.zod.dev/v4#stringbool)
+- Números nunca permitem valores infinitos ou `NaN`
 
 
 ```ts

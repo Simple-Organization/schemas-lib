@@ -1,4 +1,4 @@
-import { NewSchema } from './schemas/NewSchema';
+import { NewSchema, SafeParseReturn } from './schemas/NewSchema';
 import { validationErrors } from './validationErrors';
 
 export class SchemaLibError {
@@ -46,6 +46,26 @@ export class SchemaLibError {
 
     return error;
   }
+}
+
+//
+//
+
+export function safeParseError<T>(
+  code: string,
+  owner: NewSchema<T>,
+  originalValue: any,
+): SafeParseReturn<T> {
+  return { success: false, error: new SchemaLibError(code, owner, originalValue) }
+}
+
+//
+//
+
+export function safeParseSuccess<T>(
+  data?: T
+): SafeParseReturn<T> {
+  return { success: true, data }
 }
 
 //

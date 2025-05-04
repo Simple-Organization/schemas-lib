@@ -1,7 +1,9 @@
 {
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
+    "*.ts": "${basename}.test.ts",
     "package.json": "bun.lock, .gitignore, .prettierrc.yml, tsconfig.json"
   },
-  "explorer.fileNesting.expand": false
+  "explorer.fileNesting.expand": false,
+  "editor.formatOnSave": true
 }

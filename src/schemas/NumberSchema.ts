@@ -1,43 +1,85 @@
-import { Issue } from '../Issue';
-import { SchemaMeta } from '../types';
-import { Schema } from './Schema';
+import {
+  safeParseError,
+  safeParseSuccess,
+  SchemaLibError,
+} from '../SchemaLibError';
+import { NewSchema, SafeParseReturn } from './NewSchema';
 
 //
 //
 
-export class NumberSchema<T = number> extends Schema<T> {
+export class NumberSchema extends NewSchema<number> {
+  private _min: number | undefined;
+  private _max: number | undefined;
+
   //
-  //  Sobreescrita da tipagem métodos
   //
 
-  declare optional: () => NumberSchema<Exclude<T, null> | undefined>;
-  declare nullable: () => NumberSchema<Exclude<T, undefined> | null>;
-  declare nullish: () => NumberSchema<T | null | undefined>;
-  declare required: () => NumberSchema<Exclude<T, undefined | null>>;
+  clone(): this {
+    const clone = super.clone() as this;
+    clone._min = this._min;
+    clone._max = this._max;
+    return clone;
+  }
 
-  /**
-   * Set to default value when the value is null or undefined
-   *
-   * AND IT SETs TO NULLISH MODE
-   */
-  declare default: (
-    defaultSetter?: T | null | (() => T),
-  ) => NumberSchema<T | null | undefined>;
+  //
+  //
+
+  _safeParse(originalValue: any): SafeParseReturn<number> {
+    let value = originalValue;
+
+    if (typeof value === 'string') {
+      value = value.trim();
+      if (value === '') {
+        value = undefined;
+      } else {
+        value = Number(value);
+      }
+    } else if (value === null) {
+      value = undefined;
+    }
+
+    if (value === undefined) {
+      if (this._required) {
+        return safeParseError('required', this, originalValue);
+      }
+
+      if (this._default) {
+        return safeParseSuccess(this._default());
+      }
+
+      return safeParseSuccess();
+    }
+
+    if (typeof value !== 'number') {
+      return safeParseError('not_number_type', this, originalValue);
+    }
+
+    if (Number.isNaN(value)) {
+      return safeParseError('nan', this, originalValue);
+    }
+
+    if (!Number.isFinite(value)) {
+      return safeParseError('not_finite', this, originalValue);
+    }
+
+    if (this._min && value < this._min) {
+      return safeParseError('min_number', this, originalValue);
+    }
+
+    if (this._max && value > this._max) {
+      return safeParseError('max_number', this, originalValue);
+    }
+
+    return safeParseSuccess(value);
+  }
 
   //
   //
 
   min(value: number): this {
-    function minNumberParser(value: any, meta: SchemaMeta, originalValue: any) {
-      if (typeof meta.min === 'number' && value < meta.min) {
-        return new Issue('min_number', meta, originalValue);
-      }
-      return value;
-    }
-
     const clone = this.clone();
-    clone.meta.min = value;
-    clone.parsers.push(minNumberParser);
+    clone._min = value;
     return clone;
   }
 
@@ -45,16 +87,8 @@ export class NumberSchema<T = number> extends Schema<T> {
   //
 
   max(value: number): this {
-    function maxNumberParser(value: any, meta: SchemaMeta, originalValue: any) {
-      if (typeof meta.max === 'number' && value > meta.max) {
-        return new Issue('max_number', meta, originalValue);
-      }
-      return value;
-    }
-
     const clone = this.clone();
-    clone.meta.max = value;
-    clone.parsers.push(maxNumberParser);
+    clone._max = value;
     return clone;
   }
 
@@ -62,6 +96,9 @@ export class NumberSchema<T = number> extends Schema<T> {
   //
 
   between(min: number, max: number): this {
-    return this.min(min).max(max);
+    const clone = this.clone();
+    clone._min = min;
+    clone._max = max;
+    return clone;
   }
 }
