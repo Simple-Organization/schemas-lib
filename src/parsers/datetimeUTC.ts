@@ -1,48 +1,49 @@
-import { Issue } from '../Issue';
-import { DatetimeMeta, DatetimeSchema } from '../schemas/DatetimeSchema';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
 
 //
 //
 
-export function datetimeParser(
-  value: any,
-  meta: DatetimeMeta,
-  originalValue: any,
-): Issue | string {
-  if (typeof value === 'number') {
-    value = new Date(value);
-  }
+export class DatetimeSchema extends NewSchema<string> {
+  _safeParse(originalValue: any): SafeParseReturn<string> {
+    let value = originalValue;
 
-  if (value instanceof Date) {
-    value = value.toISOString();
-  }
-
-  if (typeof value === 'string') {
-    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)) {
-      return new Issue('not_utc_datetime_string', meta, originalValue);
-    }
-
-    if (meta.ensure !== false) {
-      //
-      // Converts to date and then to UTC string again
-      // This is to ensure that the date is in the correct format
-      value = new Date(value).toISOString();
-    }
-
-    if (meta.closeCurrent !== false) {
-      const year = +value.substring(0, 4);
-
-      if (year < 2015 || year > 2030) {
-        return new Issue('datetime_out_range', meta, originalValue);
+    if (typeof value === 'string') {
+      value = value.trim();
+      if (value === '') {
+        value = undefined;
       }
+    } else if (value === null) {
+      value = undefined;
     }
 
-    if (/\.\d+Z$/.test(value)) {
-      return value.replace(/\.\d+Z$/, 'Z');
+    if (value === undefined) {
+      if (this._required) {
+        return safeParseError('required', this, originalValue);
+      }
+      if (this._default) {
+        return safeParseSuccess(this._default());
+      }
+      return safeParseSuccess();
     }
+
+    if (typeof value === 'number') {
+      value = new Date(value);
+    }
+
+    if (value instanceof Date) {
+      value = value.toISOString();
+    }
+
+    if (typeof value === 'string') {
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)) {
+        return safeParseError('not_utc_datetime_string', this, originalValue);
+      }
+      return safeParseSuccess(value);
+    }
+
+    return safeParseError('not_datetime_type', this, originalValue);
   }
-
-  return value;
 }
 
 /**
@@ -51,7 +52,5 @@ export function datetimeParser(
  * Removes the milliseconds
  */
 export function datetimeUTC() {
-  return new DatetimeSchema([datetimeParser], {
-    jsType: 'string',
-  });
+  return new DatetimeSchema();
 }

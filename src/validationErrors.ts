@@ -62,7 +62,7 @@ export const validationErrors: Record<
   //  datetime
 
   not_utc_datetime_string: 'O campo é uma string, mas não é de datetime UTC',
-  datetime_out_range: `O campo está fora do intervalo de datas de 2015 a 2030`,
+  not_datetime_type: expectedType('number|string|Date'),
 
   //
   //  object
