@@ -1,5 +1,4 @@
 import type { ISchema } from './schemas/Schema';
-import type { SchemaMeta } from './types';
 import type { EnumSchema } from './parsers/enumType';
 import type { LiteralSchema } from './parsers/literal';
 import { falseOptions, trueOptions } from './parsers/boolean';
@@ -72,9 +71,9 @@ export const validationErrors: ValidationErrorRecord = {
 
   not_utc_datetime_string: 'O campo é uma string, mas não é de datetime UTC',
   not_datetime_type: expectedType('number|string|Date'),
-  min_datetime: (originalValue: Date, meta: SchemaMeta) =>
+  min_datetime: (originalValue: Date, meta: ISchema<string>) =>
     `O campo é menor ${meta.min}`,
-  max_datetime: (originalValue: Date, meta: SchemaMeta) =>
+  max_datetime: (originalValue: Date, meta: ISchema<string>) =>
     `O campo é maior ${meta.max}`,
 
   //
@@ -83,7 +82,7 @@ export const validationErrors: ValidationErrorRecord = {
   not_valid_json: 'O campo não é um JSON válido',
   not_object: expectedType('object'),
   object_shape: 'Pelo menos um dos campos do objeto não tem o formato esperado',
-  object_extra_keys(originalValue: Record<string, any>, meta: ObjectMeta) {
+  object_extra_keys(originalValue: Record<string, any>, meta: ISchema<string>) {
     const shapeKeys = Object.keys(meta.shape!);
     const valueKeys = Object.keys(originalValue);
 
@@ -110,7 +109,7 @@ export const validationErrors: ValidationErrorRecord = {
 
   //
   //  distinct
-  not_distinct_prop: (originalValue: any, meta: SchemaMeta) =>
+  not_distinct_prop: (originalValue: any, meta: ISchema<string>) =>
     `O campo não possui a propriedade '${meta.distinctProp}' ou ela não é válida`,
 
   //

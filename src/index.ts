@@ -13,5 +13,6 @@ export { validationErrors } from './validationErrors';
 // Issues
 export { Issue, ObjectIssue, IssueError, CustomIssue } from './Issue';
 
-// Types
-export type { SchemaMeta, Infer, Mutator, SchemaParser } from './types';
+// Default
+export { Schema } from './schemas/Schema';
+export type { ISchema, Infer, SafeParseReturn } from './schemas/Schema';

@@ -25,6 +25,11 @@ export type ISchema<T> = {
 //
 //
 
+export type Infer<T extends Schema<any>> = T['_o'];
+
+//
+//
+
 export abstract class Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
