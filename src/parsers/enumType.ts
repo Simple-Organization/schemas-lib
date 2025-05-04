@@ -1,24 +1,56 @@
-import type { SchemaMeta } from '../types';
-import { Issue } from '../Issue';
-import { Schema } from '../schemas/Schema';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
 
 //
 //
 
-export function enumParser(
-  value: any,
-  meta: SchemaMeta,
-  originalValue: any,
-): Issue | string {
-  if (typeof value !== 'string') {
-    return new Issue('not_string_type', meta, originalValue);
+export class EnumSchema extends NewSchema<string> {
+  enum: string[] = [];
+
+  //
+  //
+
+  clone(): this {
+    const clone = super.clone() as this;
+    clone.enum = this.enum;
+    return clone;
   }
 
-  if (!meta.enum?.includes(value)) {
-    return new Issue('not_enum', meta, originalValue);
-  }
+  //
+  //
 
-  return value;
+  _safeParse(originalValue: any): SafeParseReturn<string> {
+    let value = originalValue;
+
+    if (typeof value === 'string') {
+      value = value.trim();
+      if (value === '') {
+        value = undefined;
+      }
+    } else if (value === null) {
+      value = undefined;
+    }
+
+    if (value === undefined) {
+      if (this._required) {
+        return safeParseError('required', this, originalValue);
+      }
+      if (this._default) {
+        return safeParseSuccess(this._default());
+      }
+      return safeParseSuccess();
+    }
+
+    if (typeof value !== 'string') {
+      return safeParseError('not_string_type', this, originalValue);
+    }
+
+    if (!this.enum.includes(value)) {
+      return safeParseError('not_enum', this, originalValue);
+    }
+
+    return safeParseSuccess(value);
+  }
 }
 
 //
@@ -27,10 +59,8 @@ export function enumParser(
 export function enumType<
   E extends string | number,
   T extends Readonly<[...E[]]>,
->(values: T): Schema<T[number]> {
-  const schema = new Schema<any>([enumParser]);
-
-  schema.meta.enum = values as any;
+>(values: T): NewSchema<T[number]> {
+  const schema = new EnumSchema();
 
   //
   //  Dev generation values
@@ -49,7 +79,5 @@ export function enumType<
     );
   }
 
-  schema.meta.jsType = array.map((v) => "'" + v + "'").join('|');
-
-  return schema;
+  return schema as any as NewSchema<T[number]>;
 }

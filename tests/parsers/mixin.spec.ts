@@ -2,14 +2,14 @@ import { describe, test } from 'mocha';
 import { assert } from 'chai';
 import { Issue, int, trimmed } from '../../src';
 import { assertSchemaIssue } from '../util';
-import { mixin } from '../../src/parsers/mixin';
+import { union } from '../../src/parsers/union';
 
 describe('mixin schema', () => {
   //
   //
 
   test('Deve executar parse do mixin com sucesso', () => {
-    const metaEnum = mixin([int(), trimmed()]);
+    const metaEnum = union([int(), trimmed()]);
 
     // const a: Infer<typeof metaEnum> = null as any;
 

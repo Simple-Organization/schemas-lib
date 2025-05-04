@@ -33,14 +33,12 @@ export function mixinParser(
 //
 
 /**
- * Mixin or Union or 'Or' type
+ * Union or 'Or' type
  */
-export function mixin<E extends Schema<any>, T extends Readonly<[...E[]]>>(
+export function union<E extends Schema<any>, T extends Readonly<[...E[]]>>(
   schemas: T,
 ): Schema<T[number]['_o']> {
   const schema = new Schema<any>([mixinParser]);
-
-  schema.meta.mixin = schemas as any;
 
   //
   //  Dev generation values
@@ -58,8 +56,6 @@ export function mixin<E extends Schema<any>, T extends Readonly<[...E[]]>>(
       `All values of the mixin must be Schema. Received: ${array}`,
     );
   }
-
-  schema.meta.jsType = array.map((v) => '(' + v.meta.jsType + ')').join(' | ');
 
   return schema;
 }

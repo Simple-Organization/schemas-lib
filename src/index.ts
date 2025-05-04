@@ -10,7 +10,7 @@ export { ArraySchema } from './schemas/ArraySchema';
 export { object, strict } from './parsers/object';
 export { array } from './parsers/array';
 export { enumType } from './parsers/enumType';
-export { mixin } from './parsers/mixin';
+export { union as mixin } from './parsers/union';
 export { distinct, literal } from './parsers/distinct';
 
 export { string, trimmed } from './parsers/string';
