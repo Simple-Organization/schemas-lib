@@ -1,4 +1,5 @@
 import type { ValidationErrorRecord } from '../validationErrors';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { NewSchema, type ISchema, type SafeParseReturn } from './NewSchema';
 
 //
@@ -27,24 +28,52 @@ type MakePartial<T extends ObjectSchemaRecord> = {
 //
 //
 
-export abstract class NewObjectSchema<
-  R extends ObjectSchemaRecord,
-  T = MakePartial<R>,
-> implements ISchema<T>
+export class NewObjectSchema<R extends ObjectSchemaRecord, T = MakePartial<R>>
+  implements ISchema<T>
 {
   /** Property used only for type inference */
   declare readonly _o: T;
+  declare readonly isSchema: true;
   req = true;
   def?: () => T;
   name?: string;
   parent?: ISchema<any>;
 
   //
+  //
+
+  constructor(public shape: R) {
+    if (typeof shape !== 'object' || shape === null) {
+      throw new Error(
+        'You must provide a shape to the object schema and must be an object',
+      );
+    }
+
+    //
+    //  Creates the shape and clones all child schemas
+    //  giving the parent schema to them and setting the name
+    let clone: ISchema<any>;
+
+    for (const key of Object.keys(shape)) {
+      if (!('isSchema' in shape[key])) {
+        throw new Error(
+          `Expected value['${key}'] to be a instance of Schema, but received: ${shape[key]}`,
+        );
+      }
+
+      clone = shape[key].clone();
+      clone.name = key;
+      clone.parent = this;
+      (shape as any)[key] = clone;
+    }
+  }
+
+  //
   //  Important methods
   //
 
   clone(): typeof this {
-    const clone = new (this.constructor as any)() as typeof this;
+    const clone = new (this.constructor as any)(this.shape) as typeof this;
     clone.req = this.req;
     clone.def = this.def;
     clone.name = this.name;
@@ -52,7 +81,45 @@ export abstract class NewObjectSchema<
     return clone;
   }
 
-  abstract internalParse(originalValue: any): SafeParseReturn<T>;
+  internalParse(originalValue: any): SafeParseReturn<T> {
+    let value = originalValue;
+
+    //
+    //  If the value is a string, try to parse it as JSON
+
+    if (typeof value === 'string') {
+      if (value === '') {
+        value = null;
+      } else {
+        try {
+          value = JSON.parse(value);
+        } catch {
+          return safeParseError('not_valid_json', this, originalValue);
+        }
+      }
+    } else if (value === undefined) {
+      value = null;
+    }
+
+    if (value === null) {
+      if (this.req) {
+        return safeParseError('required', this, originalValue);
+      }
+      if (this.def) {
+        return safeParseSuccess(this.def());
+      }
+      return safeParseSuccess();
+    }
+
+    //
+    //  If the value is not an object, return an error
+
+    if (typeof value !== 'object') {
+      return safeParseError('not_object', this, originalValue);
+    }
+
+    return null as any;
+  }
 
   //
   //  Schema info about optional, required, default
@@ -62,35 +129,14 @@ export abstract class NewObjectSchema<
   declare required: () => ISchema<Exclude<T, null> | undefined>;
   /** Set to default value when the value is null or undefined */
   declare default: (defaultSetter: (() => T) | T) => NewObjectSchema<R, T>;
-
   /**
-   * Parse the value, return Issue when the value is invalid
+   * Parse the value, throw {@link SafeParseReturn} when the value is invalid
    */
-  safeParse(originalValue: any): SafeParseReturn<T> {
-    const parsed = this.internalParse(originalValue);
-
-    if (parsed.error && this.def) {
-      return {
-        data: this.def(),
-        success: true,
-      };
-    }
-
-    return parsed;
-  }
-
+  declare parse: (originalValue: any) => T;
   /**
-   * Parse the value, throw IssueError when the value is invalid
+   * Parse the value, return {@link SafeParseReturn} when the value is invalid
    */
-  parse(originalValue: any): T {
-    const parsed = this.safeParse(originalValue);
-
-    if (parsed.error) {
-      throw parsed;
-    }
-
-    return parsed.data!;
-  }
+  declare safeParse: (originalValue: any) => SafeParseReturn<T>;
 
   getErrors(): ValidationErrorRecord {
     throw new Error('Method not implemented.');
@@ -103,3 +149,6 @@ export abstract class NewObjectSchema<
 NewObjectSchema.prototype.required = NewSchema.prototype.required as any;
 NewObjectSchema.prototype.optional = NewSchema.prototype.optional as any;
 NewObjectSchema.prototype.default = NewSchema.prototype.default as any;
+NewObjectSchema.prototype.safeParse = NewSchema.prototype.safeParse as any;
+NewObjectSchema.prototype.parse = NewSchema.prototype.parse as any;
+(NewObjectSchema.prototype as any).isSchema = true;

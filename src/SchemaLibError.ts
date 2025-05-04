@@ -47,7 +47,7 @@ export class SchemaLibError {
 
 export function safeParseError<T>(
   code: string,
-  owner: NewSchema<T>,
+  owner: ISchema<T>,
   originalValue: any,
 ): SafeParseReturn<T> {
   return {

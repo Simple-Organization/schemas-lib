@@ -20,6 +20,7 @@ export type SafeParseReturn<T> = {
 export abstract class MinMaxSchema<T> implements ISchema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
+  declare readonly isSchema: true;
   req = true;
   def?: () => T;
   name?: string;
@@ -119,3 +120,4 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
 MinMaxSchema.prototype.required = NewSchema.prototype.required as any;
 MinMaxSchema.prototype.optional = NewSchema.prototype.optional as any;
 MinMaxSchema.prototype.default = NewSchema.prototype.default as any;
+(MinMaxSchema.prototype as any).isSchema = true;

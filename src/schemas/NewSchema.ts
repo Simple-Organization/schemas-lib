@@ -14,6 +14,8 @@ export type SafeParseReturn<T> = {
 //
 
 export type ISchema<T> = {
+  readonly _o?: T;
+  readonly isSchema: true;
   parse: (originalValue: any) => T;
   safeParse: (originalValue: any) => SafeParseReturn<T>;
   optional: () => ISchema<Exclude<T, null> | null | undefined>;
@@ -22,7 +24,6 @@ export type ISchema<T> = {
   clone: () => ISchema<T>;
   name?: string;
   parent?: ISchema<any>;
-  _o?: T;
 };
 
 //
@@ -31,6 +32,7 @@ export type ISchema<T> = {
 export abstract class NewSchema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
+  declare readonly isSchema: true;
   req = true;
   def?: () => T;
   name?: string;
@@ -109,6 +111,11 @@ export abstract class NewSchema<T> {
 
   abstract getErrors(): ValidationErrorRecord;
 }
+
+//
+//
+
+(NewSchema.prototype as any).isSchema = true;
 
 //
 //
