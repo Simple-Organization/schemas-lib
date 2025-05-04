@@ -1,9 +1,5 @@
 import type { ValidationErrorRecord } from '../validationErrors';
-import {
-  NewSchema,
-  type ISchema,
-  type SafeParseReturn,
-} from '../schemas/NewSchema';
+import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 
 //
@@ -109,10 +105,10 @@ export class UnionSchema<S extends readonly ISchema<any>[]>
 //
 //
 
-UnionSchema.prototype.optional = NewSchema.prototype.optional as any;
-UnionSchema.prototype.default = NewSchema.prototype.default as any;
-UnionSchema.prototype.safeParse = NewSchema.prototype.safeParse as any;
-UnionSchema.prototype.parse = NewSchema.prototype.parse as any;
+UnionSchema.prototype.optional = Schema.prototype.optional as any;
+UnionSchema.prototype.default = Schema.prototype.default as any;
+UnionSchema.prototype.safeParse = Schema.prototype.safeParse as any;
+UnionSchema.prototype.parse = Schema.prototype.parse as any;
 (UnionSchema.prototype as any).isSchema = true;
 
 //

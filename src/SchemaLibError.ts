@@ -1,4 +1,4 @@
-import { type ISchema, type SafeParseReturn } from './schemas/NewSchema';
+import { type ISchema, type SafeParseReturn } from './schemas/Schema';
 import { validationErrors } from './validationErrors';
 
 export class SchemaLibError {

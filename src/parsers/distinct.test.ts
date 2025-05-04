@@ -77,8 +77,15 @@ test('Deve ser opcional com sucesso', () => {
 });
 
 test('Deve ter default com sucesso', () => {
-  const defaultValue = { type: 'dog', breed: 'labrador', age: 10 };
-  const defaultSchema = schema.default(() => defaultValue);
+  const defaultValue: { type: 'dog'; breed: 'labrador'; age: number } = {
+    type: 'dog',
+    breed: 'labrador',
+    age: 10,
+  };
+  const defaultSchema = schema.default(
+    () => defaultValue as { type: 'dog'; breed: 'labrador'; age: number },
+  );
+
   expect(defaultSchema.safeParse('')).toEqual({
     success: true,
     data: defaultValue,

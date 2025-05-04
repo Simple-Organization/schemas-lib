@@ -3,7 +3,8 @@ export { object, strict } from './parsers/object';
 export { array } from './parsers/array';
 export { enumType } from './parsers/enumType';
 export { union } from './parsers/union';
-export { distinct, literal } from './parsers/distinct';
+export { literal } from './parsers/literal';
+export { distinct } from './parsers/distinct';
 
 export { string, trimmed } from './parsers/string';
 export { int } from './parsers/int';

@@ -1,4 +1,4 @@
-import type { ISchema } from './schemas/NewSchema';
+import type { ISchema } from './schemas/Schema';
 import type { SchemaMeta } from './types';
 import type { EnumSchema } from './parsers/enumType';
 import type { LiteralSchema } from './parsers/literal';

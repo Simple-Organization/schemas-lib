@@ -1,6 +1,6 @@
 import type { SchemaLibError } from '../SchemaLibError';
 import type { ValidationErrorRecord } from '../validationErrors';
-import { NewSchema, type ISchema } from './NewSchema';
+import { Schema, type ISchema } from './Schema';
 
 //
 //
@@ -100,6 +100,6 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
 //
 //
 
-MinMaxSchema.prototype.optional = NewSchema.prototype.optional as any;
-MinMaxSchema.prototype.default = NewSchema.prototype.default as any;
+MinMaxSchema.prototype.optional = Schema.prototype.optional as any;
+MinMaxSchema.prototype.default = Schema.prototype.default as any;
 (MinMaxSchema.prototype as any).isSchema = true;

@@ -1,4 +1,4 @@
-import type { SafeParseReturn } from '../schemas/NewSchema';
+import type { SafeParseReturn } from '../schemas/Schema';
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { MinMaxSchema } from '../schemas/MinMaxSchema';

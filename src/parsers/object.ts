@@ -1,9 +1,5 @@
 import type { ValidationErrorRecord } from '../validationErrors';
-import {
-  NewSchema,
-  type ISchema,
-  type SafeParseReturn,
-} from '../schemas/NewSchema';
+import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 
 //
@@ -167,10 +163,10 @@ export class ObjectSchema<
 //
 //
 
-ObjectSchema.prototype.optional = NewSchema.prototype.optional as any;
-ObjectSchema.prototype.default = NewSchema.prototype.default as any;
-ObjectSchema.prototype.safeParse = NewSchema.prototype.safeParse as any;
-ObjectSchema.prototype.parse = NewSchema.prototype.parse as any;
+ObjectSchema.prototype.optional = Schema.prototype.optional as any;
+ObjectSchema.prototype.default = Schema.prototype.default as any;
+ObjectSchema.prototype.safeParse = Schema.prototype.safeParse as any;
+ObjectSchema.prototype.parse = Schema.prototype.parse as any;
 (ObjectSchema.prototype as any).isSchema = true;
 
 //

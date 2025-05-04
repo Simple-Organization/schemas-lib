@@ -1,11 +1,11 @@
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
+import { Schema, type SafeParseReturn } from '../schemas/Schema';
 
 //
 //
 
-export class EnumSchema extends NewSchema<string> {
+export class EnumSchema extends Schema<string> {
   enum: string[] = [];
 
   //
@@ -55,7 +55,7 @@ export class EnumSchema extends NewSchema<string> {
 export function enumType<
   E extends string | number,
   T extends Readonly<[...E[]]>,
->(values: T): NewSchema<T[number]> {
+>(values: T): Schema<T[number]> {
   const schema = new EnumSchema();
 
   //
@@ -75,5 +75,5 @@ export function enumType<
     );
   }
 
-  return schema as any as NewSchema<T[number]>;
+  return schema as any as Schema<T[number]>;
 }

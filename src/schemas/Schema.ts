@@ -25,7 +25,7 @@ export type ISchema<T> = {
 //
 //
 
-export abstract class NewSchema<T> {
+export abstract class Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
   declare readonly isSchema: true;
@@ -42,7 +42,7 @@ export abstract class NewSchema<T> {
   //  Schema info about optional, required
   //
 
-  optional(): NewSchema<Exclude<T, null> | null | undefined> {
+  optional(): Schema<Exclude<T, null> | null | undefined> {
     this.req = false;
     return this as any;
   }
@@ -50,7 +50,7 @@ export abstract class NewSchema<T> {
   /**
    * Set to default value when the value is null or undefined
    */
-  default(defaultSetter: (() => T) | T): NewSchema<T> {
+  default(defaultSetter: (() => T) | T): Schema<T> {
     this.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
@@ -92,7 +92,7 @@ export abstract class NewSchema<T> {
 //
 //
 
-(NewSchema.prototype as any).isSchema = true;
+(Schema.prototype as any).isSchema = true;
 
 //
 //

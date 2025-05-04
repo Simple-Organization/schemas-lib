@@ -1,6 +1,6 @@
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
+import { Schema, type SafeParseReturn } from '../schemas/Schema';
 
 //
 //
@@ -10,7 +10,7 @@ export type Primitive = string | number | bigint | boolean | null | undefined;
 //
 //
 
-export class LiteralSchema<T extends Primitive> extends NewSchema<T> {
+export class LiteralSchema<T extends Primitive> extends Schema<T> {
   constructor(public literal: T) {
     super();
   }

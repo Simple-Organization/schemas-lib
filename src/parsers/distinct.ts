@@ -1,10 +1,6 @@
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import {
-  NewSchema,
-  type ISchema,
-  type SafeParseReturn,
-} from '../schemas/NewSchema';
+import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
 import { ObjectSchema } from './object';
 
 //
@@ -18,7 +14,7 @@ export type Primitive = string | number | bigint | boolean | null | undefined;
 export class DistinctSchema<
   Prop extends string,
   Schemas extends readonly ObjectSchema<any>[],
-> extends NewSchema<Schemas[number]['_o']> {
+> extends Schema<Schemas[number]['_o']> {
   declare readonly _o: Schemas[number]['_o'];
   declare readonly isSchema: true;
 
