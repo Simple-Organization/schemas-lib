@@ -1,5 +1,17 @@
 ## Changelog
 
+### [3.0.0-next.1] - 2025-05-03
+
+Removed
+
+- `parsers` Agora todo tipo é uma classe própria
+- `addParser` suporte
+- `Issue` substituido por `SchemaLibError`
+- `jsType` suporte
+- `nullable` suporte
+- `nullish` suporte
+- `meta` suporte
+
 ### [3.0.0-next.0] - 2024-08-30
 
 Removed
