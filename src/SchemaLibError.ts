@@ -59,6 +59,8 @@ export function safeParseError<T>(
 //
 //
 
-export function safeParseSuccess<T>(data?: T): SafeParseReturn<T> {
+export function safeParseSuccess<T>(
+  data: T | undefined | null = null,
+): SafeParseReturn<T> {
   return { success: true, data };
 }

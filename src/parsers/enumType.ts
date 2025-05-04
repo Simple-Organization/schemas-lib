@@ -26,13 +26,13 @@ export class EnumSchema extends NewSchema<string> {
     if (typeof value === 'string') {
       value = value.trim();
       if (value === '') {
-        value = undefined;
+        value = null;
       }
-    } else if (value === null) {
-      value = undefined;
+    } else if (value === undefined) {
+      value = null;
     }
 
-    if (value === undefined) {
+    if (value === null) {
       if (this.req) {
         return safeParseError('required', this, originalValue);
       }

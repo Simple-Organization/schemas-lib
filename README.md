@@ -12,15 +12,15 @@ Table of contents
 
 ## Introdução
 
-**schemas-lib** é uma biblioteca Node.js inspirada no **Zod**, desenvolvida para validação de esquemas e tipagem estática em TypeScript. Assim como o Zod, porém ela é muito mais embarcada e focada em **query strings**, **forms** e salvar em **banco de dados**. **schemas-lib** não faz validação para campos como **Set** e coisas como `.optional()` aceita tanto `null` quanto `undefined`, mas vai normalizar para `undefined`
+**schemas-lib** é uma biblioteca Node.js inspirada no **Zod**, desenvolvida para validação de esquemas e tipagem estática em TypeScript. Assim como o Zod, porém ela é muito mais embarcada e focada em **query strings**, **forms** e salvar em **banco de dados**. **schemas-lib** não faz validação para campos como **Set** e coisas como `.optional()` aceita tanto `null` quanto `undefined`, mas vai normalizar para `null`
 
 **schemas-lib** é focado nos casos de uso da [Simple Organization](https://github.com/Simple-Organization), mas também tenta ter uma api até que compatível com o zod, especialmente por conta de LLMs e geração de código automático
 
-O código atual não está 100% otimizado e tem muita repetição de código para garantir o funcionamento correto com menos abstrações
+O código atual não está 100% otimizado e tem muita repetição de código e redundancia para garantir o funcionamento correto com menos abstrações
 
 ## Diferenças com outras libs
 
-- Normalização para `undefined`
+- Normalização para `null`
 - Todos campos de `number` já fazem `coerce`
 - Campo `boolean()` é sempre [`stringbool()`](https://v4.zod.dev/v4#stringbool)
 - Números nunca permitem valores infinitos ou `NaN`

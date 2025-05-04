@@ -55,9 +55,9 @@ test('Deve ser opcional com sucesso', () => {
   // @ts-ignore
   schema.enum = ['A', 'B'];
 
-  expect(schema.safeParse('')).toEqual({ success: true });
-  expect(schema.safeParse(undefined)).toEqual({ success: true });
-  expect(schema.safeParse(null)).toEqual({ success: true });
+  expect(schema.safeParse('')).toEqual({ success: true, data: null });
+  expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
+  expect(schema.safeParse(null)).toEqual({ success: true, data: null });
   expect(schema.safeParse('A')).toEqual({ success: true, data: 'A' });
 });
 

@@ -1,6 +1,8 @@
 import { test, expect } from 'bun:test';
 import { string, StringSchema, trimmed } from './string';
 import { SchemaLibError } from '../SchemaLibError';
+import type { ISchema } from '../schemas/NewSchema';
+import type { MinMaxSchema } from '../schemas/MinMaxSchema';
 
 //
 //
@@ -68,15 +70,15 @@ test.each([[trimmed() as StringSchema], [string() as StringSchema]])(
 //
 
 test.each([
-  [trimmed().optional() as StringSchema],
-  [string().optional() as StringSchema],
+  [trimmed().optional() as MinMaxSchema<string | null | undefined>],
+  [string().optional() as MinMaxSchema<string | null | undefined>],
 ])('Deve ser opcional com sucesso', (schema) => {
-  expect(schema.safeParse('')).toEqual({ success: true });
-  if (schema.trim) {
-    expect(schema.safeParse('   ')).toEqual({ success: true });
+  expect(schema.safeParse('')).toEqual({ success: true, data: null });
+  if ((schema as StringSchema).trim) {
+    expect(schema.safeParse('   ')).toEqual({ success: true, data: null });
   }
-  expect(schema.safeParse(undefined)).toEqual({ success: true });
-  expect(schema.safeParse(null)).toEqual({ success: true });
+  expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
+  expect(schema.safeParse(null)).toEqual({ success: true, data: null });
   expect(schema.safeParse('1')).toEqual({ success: true, data: '1' });
 });
 
