@@ -20,15 +20,14 @@ export class URLSchema extends Schema<string> {
       return safeParseSuccess();
     }
 
+    if (typeof value !== 'string')
+      return safeParseError('not_string', this, originalValue);
+
+    if (!value.startsWith('http://') && !value.startsWith('https://')) {
+      value = 'http://' + value;
+    }
+
     try {
-      if (typeof value !== 'string') {
-        return safeParseError('not_url', this, originalValue);
-      }
-
-      if (!value.startsWith('http://') && !value.startsWith('https://')) {
-        value = 'http://' + value;
-      }
-
       const url = new URL(value);
       hostname.lastIndex = 0;
       if (!hostname.test(url.hostname))

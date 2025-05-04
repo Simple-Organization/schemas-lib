@@ -1,6 +1,7 @@
 import { Schema, type SafeParseReturn } from '../schemas/Schema';
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { email_regex, ipv4_regex } from './zodRegexes';
 
 //
 //
@@ -45,9 +46,17 @@ export class RegexSchema extends Schema<string> {
   }
 }
 
-/**
- * A string with a regex
- */
+/** A string with a regex */
 export function regex(regex: RegExp, msg?: string) {
   return new RegexSchema(regex, msg);
+}
+
+/** ipv4 */
+export function ipv4() {
+  return new RegexSchema(ipv4_regex, 'O campo não é um ipv4');
+}
+
+/** email */
+export function email() {
+  return new RegexSchema(email_regex, 'O campo não é um email');
 }

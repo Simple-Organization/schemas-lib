@@ -36,7 +36,7 @@ export const uuid6: RegExp = uuid(6);
 export const uuid7: RegExp = uuid(7);
 
 /** Practical email validation */
-export const email: RegExp =
+export const email_regex: RegExp =
   /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/;
 
 /** Equivalent to the HTML5 input[type=email] validation implemented by browsers. Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email */
@@ -59,7 +59,7 @@ export function emoji(): RegExp {
   return new RegExp(_emoji, 'u');
 }
 
-export const ipv4: RegExp =
+export const ipv4_regex: RegExp =
   /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
 export const ipv6: RegExp =
   /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})$/;
@@ -69,7 +69,7 @@ export const cidrv4: RegExp =
 export const cidrv6: RegExp =
   /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4})?::([0-9a-fA-F]{1,4}:?){0,6})\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/;
 
-export const ip: RegExp = new RegExp(`(${ipv4.source})|(${ipv6.source})`);
+export const ip: RegExp = new RegExp(`(${ipv4_regex.source})|(${ipv6.source})`);
 
 // https://stackoverflow.com/questions/7860392/determine-if-string-is-in-base64-using-javascript
 export const base64: RegExp =
