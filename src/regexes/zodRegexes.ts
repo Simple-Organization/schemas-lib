@@ -128,7 +128,7 @@ export const string = (params?: {
 };
 
 export const bigint: RegExp = /^\d+n?$/;
-export const integer: RegExp = /^\d+$/;
+export const integer_regex: RegExp = /^\d+$/;
 export const number: RegExp = /^-?\d+(?:\.\d+)?/i;
 export const boolean: RegExp = /true|false/i;
 const _null: RegExp = /null/i;

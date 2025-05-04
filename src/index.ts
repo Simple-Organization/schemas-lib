@@ -1,5 +1,5 @@
 // Parsers and prebuiltin schemas
-export * as z from './z';
+export * as s from './s';
 
 // Utils
 export { getParsedType } from './utils/utils';

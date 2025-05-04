@@ -1,7 +1,7 @@
 ///////////////////////////
 ////     base type     ////
 
-import { z } from '.';
+import { s } from '.';
 
 ///////////////////////////
 export interface $ZodIssueBase {
