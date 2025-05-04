@@ -1,7 +1,7 @@
 import { Schema, type SafeParseReturn } from '../schemas/Schema';
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { hostname } from './zodRegexes';
+import { hostname_regex } from './zodRegexes';
 
 //
 //
@@ -29,8 +29,8 @@ export class URLSchema extends Schema<string> {
 
     try {
       const url = new URL(value);
-      hostname.lastIndex = 0;
-      if (!hostname.test(url.hostname))
+      hostname_regex.lastIndex = 0;
+      if (!hostname_regex.test(url.hostname))
         return safeParseError('not_url', this, originalValue);
     } catch (_) {
       return safeParseError('not_url', this, originalValue);

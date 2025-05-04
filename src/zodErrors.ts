@@ -1,8 +1,5 @@
 ///////////////////////////
 ////     base type     ////
-
-import { s } from '.';
-
 ///////////////////////////
 export interface $ZodIssueBase {
   readonly code?: string;
