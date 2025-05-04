@@ -1,3 +1,4 @@
+import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
 
@@ -14,7 +15,7 @@ export class BooleanSchema extends NewSchema<boolean> {
   //
   //
 
-  _safeParse(originalValue: any): SafeParseReturn<boolean> {
+  internalParse(originalValue: any): SafeParseReturn<boolean> {
     let value = originalValue;
 
     if (typeof value === 'string') {
@@ -43,6 +44,10 @@ export class BooleanSchema extends NewSchema<boolean> {
     } else {
       return safeParseError('boolean_type', this, originalValue);
     }
+  }
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
 }
 

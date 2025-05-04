@@ -10,15 +10,19 @@ import { getParsedType } from './utils/utils';
 //
 //
 
-export const validationErrors: Record<
+export type ValidationErrorRecord = Record<
   string,
   string | ((originalValue: any, schema: ISchema<any>) => string)
-> = {
+>;
+
+//
+//
+
+export const validationErrors: ValidationErrorRecord = {
   //
-  //  Required, Optional and nullable
+  //  Required, Optional
 
   required: 'O campo é obrigatório',
-  not_nullable: 'O campo não pode ser nulo',
   not_optional: 'O campo não pode ser undefined',
 
   //

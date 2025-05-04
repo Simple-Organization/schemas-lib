@@ -1,3 +1,4 @@
+import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
 
@@ -26,7 +27,7 @@ export class LiteralSchema<T extends Primitive> extends NewSchema<T> {
   //
   //
 
-  _safeParse(originalValue: any): SafeParseReturn<T> {
+  internalParse(originalValue: any): SafeParseReturn<T> {
     let value = originalValue;
 
     if (typeof value === 'string') {
@@ -53,6 +54,10 @@ export class LiteralSchema<T extends Primitive> extends NewSchema<T> {
     }
 
     return safeParseSuccess(value);
+  }
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
 }
 

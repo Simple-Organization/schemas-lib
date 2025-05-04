@@ -1,4 +1,5 @@
 import type { SafeParseReturn } from '../schemas/NewSchema';
+import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { MinMaxSchema } from '../schemas/MinMaxSchema';
 
@@ -20,7 +21,7 @@ export class StringSchema extends MinMaxSchema<string> {
   //
   //
 
-  _safeParse(originalValue: any): SafeParseReturn<string> {
+  internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
     if (typeof value === 'string') {
@@ -60,6 +61,10 @@ export class StringSchema extends MinMaxSchema<string> {
     }
 
     return safeParseSuccess(value);
+  }
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
 }
 

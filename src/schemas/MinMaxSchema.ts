@@ -1,4 +1,5 @@
 import type { SchemaLibError } from '../SchemaLibError';
+import type { ValidationErrorRecord } from '../validationErrors';
 import type { ISchema } from './NewSchema';
 
 //
@@ -42,7 +43,8 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
     return clone as any;
   }
 
-  abstract _safeParse(originalValue: any): SafeParseReturn<T>;
+  abstract internalParse(originalValue: any): SafeParseReturn<T>;
+  abstract getErrors(): ValidationErrorRecord;
 
   //
   //  Schema info about optional, required
@@ -75,7 +77,7 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
    * Parse the value, return Issue when the value is invalid
    */
   safeParse(originalValue: any): SafeParseReturn<T> {
-    const parsed = this._safeParse(originalValue);
+    const parsed = this.internalParse(originalValue);
 
     if (parsed.error && this.def) {
       return {

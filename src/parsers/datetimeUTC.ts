@@ -1,3 +1,4 @@
+import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { MinMaxSchema } from '../schemas/MinMaxSchema';
 import type { SafeParseReturn } from '../schemas/NewSchema';
@@ -6,7 +7,7 @@ import type { SafeParseReturn } from '../schemas/NewSchema';
 //
 
 export class DatetimeSchema extends MinMaxSchema<string> {
-  _safeParse(originalValue: any): SafeParseReturn<string> {
+  internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
     if (typeof value === 'string') {
@@ -63,7 +64,7 @@ export class DatetimeSchema extends MinMaxSchema<string> {
   }
 
   min(value: number | Date | string): this {
-    const min = this._safeParse(value);
+    const min = this.internalParse(value);
     if (!min.success) {
       throw new Error(`Invalid min value: ${min.error}`);
     }
@@ -74,7 +75,7 @@ export class DatetimeSchema extends MinMaxSchema<string> {
   }
 
   max(value: number | Date | string): this {
-    const max = this._safeParse(value);
+    const max = this.internalParse(value);
     if (!max.success) {
       throw new Error(`Invalid max value: ${max.error}`);
     }
@@ -85,12 +86,12 @@ export class DatetimeSchema extends MinMaxSchema<string> {
   }
 
   between(min: number | Date | string, max: number | Date | string): this {
-    const _min = this._safeParse(min);
+    const _min = this.internalParse(min);
     if (!_min.success) {
       throw new Error(`Invalid min value: ${_min.error}`);
     }
 
-    const _max = this._safeParse(max);
+    const _max = this.internalParse(max);
     if (!_max.success) {
       throw new Error(`Invalid max value: ${_max.error}`);
     }
@@ -99,6 +100,10 @@ export class DatetimeSchema extends MinMaxSchema<string> {
     clone.vMin = new Date(_min.data!).getTime();
     clone.vMax = new Date(_max.data!).getTime();
     return clone;
+  }
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
 }
 

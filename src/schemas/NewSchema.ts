@@ -1,3 +1,4 @@
+import type { ValidationErrorRecord } from '../validationErrors';
 import { SchemaLibError } from '../SchemaLibError';
 
 //
@@ -8,6 +9,9 @@ export type SafeParseReturn<T> = {
   data?: T;
   error?: SchemaLibError;
 };
+
+//
+//
 
 export type ISchema<T> = {
   parse: (originalValue: any) => T;
@@ -45,29 +49,29 @@ export abstract class NewSchema<T> {
     return clone as any;
   }
 
-  abstract _safeParse(originalValue: any): SafeParseReturn<T>;
+  abstract internalParse(originalValue: any): SafeParseReturn<T>;
 
   //
   //  Schema info about optional, required
   //
 
   optional(): NewSchema<Exclude<T, null> | null | undefined> {
-    const clone = /* @__PURE__ */ this.clone();
+    const clone = this.clone();
     clone.req = false;
-    return /* @__PURE__ */ clone as any;
+    return clone as any;
   }
 
   required(): NewSchema<Exclude<T, null> | undefined> {
-    const clone = /* @__PURE__ */ this.clone();
+    const clone = this.clone();
     clone.req = true;
-    return /* @__PURE__ */ clone as any;
+    return clone as any;
   }
 
   /**
    * Set to default value when the value is null or undefined
    */
   default(defaultSetter: (() => T) | T): NewSchema<T | null | undefined> {
-    const clone = /* @__PURE__ */ this.clone();
+    const clone = this.clone();
     clone.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
@@ -78,7 +82,7 @@ export abstract class NewSchema<T> {
    * Parse the value, return Issue when the value is invalid
    */
   safeParse(originalValue: any): SafeParseReturn<T> {
-    const parsed = this._safeParse(originalValue);
+    const parsed = this.internalParse(originalValue);
 
     if (parsed.error && this.def) {
       return {
@@ -102,4 +106,13 @@ export abstract class NewSchema<T> {
 
     return parsed.data!;
   }
+
+  abstract getErrors(): ValidationErrorRecord;
 }
+
+//
+//
+
+export const defaultValidationErrors: ValidationErrorRecord = {
+  required: 'O campo é obrigatório',
+};

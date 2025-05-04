@@ -1,9 +1,10 @@
-import { type SafeParseReturn } from '../schemas/NewSchema';
+import type { SafeParseReturn } from '../schemas/NewSchema';
+import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { MinMaxSchema } from '../schemas/MinMaxSchema';
 
 class IntSchema extends MinMaxSchema<number> {
-  _safeParse(originalValue: any): SafeParseReturn<number> {
+  internalParse(originalValue: any): SafeParseReturn<number> {
     let value = originalValue;
 
     if (typeof value === 'string') {
@@ -46,6 +47,10 @@ class IntSchema extends MinMaxSchema<number> {
     }
 
     return safeParseSuccess(value);
+  }
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
 }
 
