@@ -17,6 +17,7 @@ test('Deve executar o safeParse com sucesso', () => {
   expect(schema.safeParse('true')).toEqual({ success: true, data: true });
   expect(schema.safeParse('1')).toEqual({ success: true, data: true });
   expect(schema.safeParse('on')).toEqual({ success: true, data: true });
+  expect(schema.safeParse('   on   ')).toEqual({ success: true, data: true });
 
   // false options
   expect(schema.safeParse(false)).toEqual({ success: true, data: false });

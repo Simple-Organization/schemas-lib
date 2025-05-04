@@ -50,8 +50,6 @@ export function literal<T extends Primitive>(value: T): Schema<T> {
     );
   }
 
-  schema.meta.jsType = `${typeof value === 'string' ? `"${value}"` : value}`;
-
   return schema;
 }
 
