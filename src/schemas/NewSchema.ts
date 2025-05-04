@@ -9,24 +9,40 @@ export type SafeParseReturn<T> = {
   error?: SchemaLibError;
 };
 
+export type ISchema<T> = {
+  parse: (originalValue: any) => T;
+  safeParse: (originalValue: any) => SafeParseReturn<T>;
+  optional: () => ISchema<Exclude<T, null> | null | undefined>;
+  required: () => ISchema<Exclude<T, null> | undefined>;
+  default: (defaultSetter: (() => T) | T) => ISchema<T | null | undefined>;
+  clone: () => ISchema<T>;
+  name?: string;
+  parent?: ISchema<any>;
+  _o?: T;
+};
+
 //
 //
 
 export abstract class NewSchema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
-  _required = true;
-  _default?: () => T;
+  req = true;
+  def?: () => T;
+  name?: string;
+  parent?: ISchema<any>;
 
   //
   //  Important methods
   //
 
   clone(): typeof this {
-    const clone = new (this.constructor as any)();
-    clone._required = this._required;
-    clone._default = this._default;
-    return /* @__PURE__ */ clone;
+    const clone = new (this.constructor as any)() as NewSchema<T>;
+    clone.req = this.req;
+    clone.def = this.def;
+    clone.name = this.name;
+    clone.parent = this.parent;
+    return clone as any;
   }
 
   abstract _safeParse(originalValue: any): SafeParseReturn<T>;
@@ -37,13 +53,13 @@ export abstract class NewSchema<T> {
 
   optional(): NewSchema<Exclude<T, null> | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
-    clone._required = false;
+    clone.req = false;
     return /* @__PURE__ */ clone as any;
   }
 
   required(): NewSchema<Exclude<T, null> | undefined> {
     const clone = /* @__PURE__ */ this.clone();
-    clone._required = true;
+    clone.req = true;
     return /* @__PURE__ */ clone as any;
   }
 
@@ -52,7 +68,7 @@ export abstract class NewSchema<T> {
    */
   default(defaultSetter: (() => T) | T): NewSchema<T | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
-    clone._default = (
+    clone.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
     return clone as any;
@@ -64,9 +80,9 @@ export abstract class NewSchema<T> {
   safeParse(originalValue: any): SafeParseReturn<T> {
     const parsed = this._safeParse(originalValue);
 
-    if (parsed.error && this._default) {
+    if (parsed.error && this.def) {
       return {
-        data: this._default(),
+        data: this.def(),
         success: true,
       };
     }

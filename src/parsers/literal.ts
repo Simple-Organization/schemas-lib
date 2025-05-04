@@ -1,5 +1,5 @@
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
+import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
 
 //
 //
@@ -39,11 +39,11 @@ export class LiteralSchema<T extends Primitive> extends NewSchema<T> {
     }
 
     if (value === undefined) {
-      if (this._required) {
+      if (this.req) {
         return safeParseError('required', this, originalValue);
       }
-      if (this._default) {
-        return safeParseSuccess(this._default());
+      if (this.def) {
+        return safeParseSuccess(this.def());
       }
       return safeParseSuccess();
     }

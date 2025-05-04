@@ -1,4 +1,5 @@
-import { SchemaLibError } from '../SchemaLibError';
+import type { SchemaLibError } from '../SchemaLibError';
+import type { ISchema } from './NewSchema';
 
 //
 //
@@ -15,11 +16,13 @@ export type SafeParseReturn<T> = {
 /**
  * Schema que permite definir valores minimos e maximos
  */
-export abstract class MinMaxSchema<T> {
+export abstract class MinMaxSchema<T> implements ISchema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
-  _required = true;
-  _default?: () => T;
+  req = true;
+  def?: () => T;
+  name?: string;
+  parent?: ISchema<any>;
   vMin: number | undefined;
   vMax: number | undefined;
 
@@ -28,12 +31,15 @@ export abstract class MinMaxSchema<T> {
   //
 
   clone(): typeof this {
-    const clone = new (this.constructor as any)();
-    clone._required = this._required;
-    clone._default = this._default;
-    clone._min = this.vMin;
-    clone._max = this.vMax;
-    return /* @__PURE__ */ clone;
+    const clone = new (this.constructor as any)() as MinMaxSchema<T>;
+    clone.req = this.req;
+    clone.def = this.def;
+    clone.name = this.name;
+    clone.parent = this.parent;
+
+    clone.vMin = this.vMin;
+    clone.vMax = this.vMax;
+    return clone as any;
   }
 
   abstract _safeParse(originalValue: any): SafeParseReturn<T>;
@@ -43,15 +49,15 @@ export abstract class MinMaxSchema<T> {
   //
 
   optional(): MinMaxSchema<Exclude<T, null> | null | undefined> {
-    const clone = /* @__PURE__ */ this.clone();
-    clone._required = false;
-    return /* @__PURE__ */ clone as any;
+    const clone = this.clone();
+    clone.req = false;
+    return clone as any;
   }
 
   required(): MinMaxSchema<Exclude<T, null> | undefined> {
-    const clone = /* @__PURE__ */ this.clone();
-    clone._required = true;
-    return /* @__PURE__ */ clone as any;
+    const clone = this.clone();
+    clone.req = true;
+    return clone as any;
   }
 
   /**
@@ -59,7 +65,7 @@ export abstract class MinMaxSchema<T> {
    */
   default(defaultSetter: (() => T) | T): MinMaxSchema<T | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
-    clone._default = (
+    clone.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
     return clone as any;
@@ -71,9 +77,9 @@ export abstract class MinMaxSchema<T> {
   safeParse(originalValue: any): SafeParseReturn<T> {
     const parsed = this._safeParse(originalValue);
 
-    if (parsed.error && this._default) {
+    if (parsed.error && this.def) {
       return {
-        data: this._default(),
+        data: this.def(),
         success: true,
       };
     }

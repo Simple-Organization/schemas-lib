@@ -1,4 +1,8 @@
-import { NewSchema, SafeParseReturn } from './schemas/NewSchema';
+import {
+  type ISchema,
+  NewSchema,
+  type SafeParseReturn,
+} from './schemas/NewSchema';
 import { validationErrors } from './validationErrors';
 
 export class SchemaLibError {
@@ -6,7 +10,7 @@ export class SchemaLibError {
 
   constructor(
     readonly code: string,
-    readonly owner: NewSchema<any>,
+    readonly owner: ISchema<any>,
     originalValue: any,
   ) {
     this.value = originalValue;
@@ -28,20 +32,10 @@ export class SchemaLibError {
   }
 
   toString() {
-    if (this.meta.errors && this.meta.errors[this.code]) {
-      const error = this.meta.errors[this.code];
-
-      if (typeof error === 'function') {
-        return error(this.value, this.meta);
-      }
-
-      return error;
-    }
-
     const error = validationErrors[this.code];
 
     if (typeof error === 'function') {
-      return error(this.value, this.meta);
+      return error(this.value, this.owner);
     }
 
     return error;
@@ -56,38 +50,15 @@ export function safeParseError<T>(
   owner: NewSchema<T>,
   originalValue: any,
 ): SafeParseReturn<T> {
-  return { success: false, error: new SchemaLibError(code, owner, originalValue) }
+  return {
+    success: false,
+    error: new SchemaLibError(code, owner, originalValue),
+  };
 }
 
 //
 //
 
-export function safeParseSuccess<T>(
-  data?: T
-): SafeParseReturn<T> {
-  return { success: true, data }
-}
-
-//
-//
-
-/**
- * Issue used by ObjectSchema and ArraySchema
- */
-export class ObjectIssue extends SchemaLibError {
-  readonly errors: Record<string, SchemaLibError> = {};
-
-  serialize() {
-    const errors: Record<string, any> = {};
-
-    for (const key of Object.keys(this.errors)) {
-      errors[key] = this.errors[key].serialize();
-    }
-
-    return errors;
-  }
-
-  toString() {
-    return JSON.stringify(this.serialize());
-  }
+export function safeParseSuccess<T>(data?: T): SafeParseReturn<T> {
+  return { success: true, data };
 }

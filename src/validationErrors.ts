@@ -1,6 +1,10 @@
-import { falseOptions, trueOptions } from './parsers/boolean';
+import type { ISchema } from './schemas/NewSchema';
 import type { ObjectMeta } from './schemas/ObjectSchema';
-import { type SchemaMeta } from './types';
+import type { SchemaMeta } from './types';
+import type { EnumSchema } from './parsers/enumType';
+import type { LiteralSchema } from './parsers/literal';
+import { falseOptions, trueOptions } from './parsers/boolean';
+import { MinMaxSchema } from './schemas/MinMaxSchema';
 import { getParsedType } from './utils/utils';
 
 //
@@ -8,7 +12,7 @@ import { getParsedType } from './utils/utils';
 
 export const validationErrors: Record<
   string,
-  string | ((originalValue: any, meta: SchemaMeta) => string)
+  string | ((originalValue: any, schema: ISchema<any>) => string)
 > = {
   //
   //  Required, Optional and nullable
@@ -29,21 +33,22 @@ export const validationErrors: Record<
   not_number_string: `O campo  é uma string, mas não é um texto de número`,
   not_number_type: expectedType('number'),
   nan: 'O campo deve ser um número diferente de NaN',
-  min_number: (originalValue: number, meta: SchemaMeta) =>
-    `O campo é menor ${meta.min}`,
-  max_number: (originalValue: number, meta: SchemaMeta) =>
-    `O campo é maior ${meta.max}`,
+  min_number: (originalValue: number, schema: ISchema<number>) =>
+    `O campo é menor ${(schema as MinMaxSchema<number>).vMin}`,
+  max_number: (originalValue: number, schema: ISchema<number>) =>
+    `O campo é maior ${(schema as MinMaxSchema<number>).vMax}`,
 
   //
   //  string
 
   not_string_type: expectedType('string'),
-  min_length: (originalValue: string, meta: SchemaMeta) =>
-    `O campo tem menos caracteres que o mínimo ${meta.min}`,
-  max_length: (originalValue: string, meta: SchemaMeta) =>
-    `O campo tem mais caracteres que o máximo ${meta.max}`,
-  not_includes: (originalValue: string, meta: SchemaMeta) =>
-    `O campo não contém o texto ${meta.includes}`,
+  min_length: (originalValue: string, schema: ISchema<string>) =>
+    `O campo tem menos caracteres que o mínimo ${(schema as MinMaxSchema<string>).vMin}`,
+  max_length: (originalValue: string, schema: ISchema<string>) =>
+    `O campo tem mais caracteres que o máximo ${(schema as MinMaxSchema<string>).vMax}`,
+
+  not_includes: (originalValue: string, schema: ISchema<string>) =>
+    `O campo não contém o texto ${(schema as EnumSchema).enum}`,
 
   //
   //  boolean
@@ -56,8 +61,8 @@ export const validationErrors: Record<
   //
   //  enum
 
-  not_enum: (originalValue: any, meta: SchemaMeta) =>
-    `O campo não é um dos valores do enum ${meta.enum}`,
+  not_enum: (originalValue: any, schema: ISchema<string>) =>
+    `O campo não é um dos valores do enum ${(schema as EnumSchema).enum}`,
 
   //
   //  datetime
@@ -90,15 +95,15 @@ export const validationErrors: Record<
   not_array: expectedType('array'),
   array_shape:
     'Pelo menos um dos elementos da array não tem o formato esperado',
-  min_array_length: (originalValue: any[], meta: SchemaMeta) =>
-    `O campo tem menos elementos que o mínimo ${meta.min}`,
-  max_array_length: (originalValue: any[], meta: SchemaMeta) =>
-    `O campo tem mais elementos que o máximo ${meta.max}`,
+  min_array_length: (originalValue: any[], schema: ISchema<any[]>) =>
+    `O campo tem menos elementos que o mínimo ${(schema as MinMaxSchema<any[]>).vMin}`,
+  max_array_length: (originalValue: any[], schema: ISchema<any[]>) =>
+    `O campo tem mais elementos que o máximo ${(schema as MinMaxSchema<any[]>).vMax}`,
 
   //
   //  literal
-  not_literal_equal: (originalValue: any, meta: SchemaMeta) =>
-    `O campo não é igual ao valor literal ${meta.literal}`,
+  not_literal_equal: (originalValue: any, schema: ISchema<any>) =>
+    `O campo não é igual ao valor literal ${(schema as LiteralSchema<any>).literal}`,
 
   //
   //  distinct
