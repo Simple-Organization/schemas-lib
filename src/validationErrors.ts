@@ -1,5 +1,6 @@
+import { falseOptions, trueOptions } from './parsers/boolean';
 import type { ObjectMeta } from './schemas/ObjectSchema';
-import { falseOptions, trueOptions, type SchemaMeta } from './types';
+import { type SchemaMeta } from './types';
 import { getParsedType } from './utils/utils';
 
 //

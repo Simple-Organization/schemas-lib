@@ -1,21 +1,48 @@
-import { Issue } from '../Issue';
-import { Schema } from '../schemas/Schema';
-import { SchemaMeta, falseOptions, trueOptions } from '../types';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
 
 //
 //
 
-export function booleanParser(
-  value: any,
-  meta: SchemaMeta,
-  originalValue: any,
-): Issue | boolean {
-  if (trueOptions.includes(value)) {
-    return true;
-  } else if (falseOptions.includes(value)) {
-    return false;
-  } else {
-    return new Issue('boolean_type', meta, originalValue);
+export const trueOptions = [true, 1, 'true', '1', 'on'] as const;
+export const falseOptions = [false, 0, 'false', '0', 'off'] as const;
+
+//
+//
+
+export class BooleanSchema extends NewSchema<boolean> {
+  //
+  //
+
+  _safeParse(originalValue: any): SafeParseReturn<boolean> {
+    let value = originalValue;
+
+    if (typeof value === 'string') {
+      value = value.trim();
+      if (value === '') {
+        value = undefined;
+      }
+    } else if (value === null) {
+      value = undefined;
+    }
+
+    if (value === undefined) {
+      if (this._required) {
+        return safeParseError('required', this, originalValue);
+      }
+      if (this._default) {
+        return safeParseSuccess(this._default());
+      }
+      return safeParseSuccess();
+    }
+
+    if (trueOptions.includes(value)) {
+      return safeParseSuccess(true);
+    } else if (falseOptions.includes(value)) {
+      return safeParseSuccess(false);
+    } else {
+      return safeParseError('boolean_type', this, originalValue);
+    }
   }
 }
 
@@ -30,7 +57,5 @@ export function booleanParser(
  * `on` and `off` are for `HTMLInput[type='checkbox']`
  */
 export function boolean() {
-  return new Schema<boolean>([booleanParser], {
-    jsType: 'boolean',
-  });
+  return new BooleanSchema();
 }

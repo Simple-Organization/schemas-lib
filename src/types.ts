@@ -4,12 +4,6 @@ import type { Schema } from './schemas/Schema';
 //
 //
 
-export const trueOptions = [true, 1, 'true', '1', 'on'] as const;
-export const falseOptions = [false, 0, 'false', '0', 'off'] as const;
-
-//
-//
-
 export type Infer<T extends Schema<any>> = T['_o'];
 
 /**
@@ -39,7 +33,7 @@ export type SchemaMeta = {
 
   default?: () => any;
 
-  /** 
+  /**
    * Property that indicates that when parse() throws a error, it should return the default value
    */
   catch?: boolean;
