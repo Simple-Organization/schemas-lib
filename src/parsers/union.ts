@@ -1,61 +1,130 @@
-import type { SchemaMeta } from '../types';
-import { Issue } from '../Issue';
-import { Schema } from '../schemas/Schema';
+import type { ValidationErrorRecord } from '../validationErrors';
+import {
+  NewSchema,
+  type ISchema,
+  type SafeParseReturn,
+} from '../schemas/NewSchema';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 
 //
 //
 
-export function mixinParser(
-  value: any,
-  meta: SchemaMeta,
-  originalValue: any,
-): unknown {
-  let firstIssue: Issue | undefined;
+export class UnionSchema<S extends ISchema<any>[]>
+  implements ISchema<S[number] extends ISchema<infer E> ? E : never>
+{
+  schemas: S;
+  /** Property used only for type inference */
+  declare readonly _o: S[number] extends ISchema<infer E> ? E : never;
+  declare readonly isSchema: true;
 
-  for (const mixinSchema of meta.mixin!) {
-    value = mixinSchema.safeParse(originalValue);
+  req = true;
 
-    if (value instanceof Issue) {
-      if (!firstIssue) {
-        firstIssue = value;
-      }
+  def?: () => S[number] extends ISchema<infer E> ? E : never;
 
-      continue;
+  //
+  //
+
+  constructor(schemas: S) {
+    if (!Array.isArray(schemas) || schemas.length < 2) {
+      throw new Error(
+        `You must provide at least 2 schemas for the union. Received: ${schemas.length}`,
+      );
     }
-
-    return value;
+    if (schemas.some((v) => typeof v !== 'object' || !(v as any).isSchema)) {
+      throw new Error(
+        `All values of the union must be Schema. Received: ${schemas}`,
+      );
+    }
+    this.schemas = schemas;
   }
 
-  return firstIssue;
+  internalParse(
+    originalValue: any,
+  ): SafeParseReturn<S[number] extends ISchema<infer E> ? E : never> {
+    let value = originalValue;
+    if (typeof value === 'string') {
+      if (value === '') {
+        value = null;
+      }
+    } else if (value === undefined) {
+      value = null;
+    }
+
+    if (value === null) {
+      if (this.req) {
+        return safeParseError('required', this, originalValue);
+      }
+
+      if (this.def) {
+        return safeParseSuccess(this.def());
+      }
+
+      return safeParseSuccess();
+    }
+
+    let firstError: SafeParseReturn<any> | undefined;
+
+    for (const schema of this.schemas) {
+      const result = schema.safeParse(value);
+      if (result.success) {
+        return safeParseSuccess(result.data);
+      }
+      if (!firstError) {
+        firstError = result;
+      }
+    }
+
+    // return firstError ?? safeParseError('union_no_match', this, originalValue);
+    return safeParseError('union_no_match', this, originalValue);
+  }
+
+  //
+  //  Schema info about optional, required, default
+  //
+
+  declare optional: () => ISchema<
+    | Exclude<S[number] extends ISchema<infer E> ? E : never, null>
+    | null
+    | undefined
+  >;
+  /** Set to default value when the value is null or undefined */
+  declare default: (
+    defaultSetter:
+      | (() => S[number] extends ISchema<infer E> ? E : never)
+      | (S[number] extends ISchema<infer E> ? E : never),
+  ) => UnionSchema<S>;
+  /**
+   * Parse the value, throw {@link SafeParseReturn} when the value is invalid
+   */
+  declare parse: (
+    originalValue: any,
+  ) => S[number] extends ISchema<infer E> ? E : never;
+  /**
+   * Parse the value, return {@link SafeParseReturn} when the value is invalid
+   */
+  declare safeParse: (
+    originalValue: any,
+  ) => SafeParseReturn<S[number] extends ISchema<infer E> ? E : never>;
+
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
+  }
 }
 
 //
 //
 
-/**
- * Union or 'Or' type
- */
-export function union<E extends Schema<any>, T extends Readonly<[...E[]]>>(
-  schemas: T,
-): Schema<T[number]['_o']> {
-  const schema = new Schema<any>([mixinParser]);
+UnionSchema.prototype.optional = NewSchema.prototype.optional as any;
+UnionSchema.prototype.default = NewSchema.prototype.default as any;
+UnionSchema.prototype.safeParse = NewSchema.prototype.safeParse as any;
+UnionSchema.prototype.parse = NewSchema.prototype.parse as any;
+(UnionSchema.prototype as any).isSchema = true;
 
-  //
-  //  Dev generation values
+//
+//
 
-  const array = schemas as any as Schema<any>[];
-
-  if (array.length < 2) {
-    throw new Error(
-      `You must provide at least 2 values for the mixin. Received: ${array.length}`,
-    );
-  }
-
-  if (array.some((v) => !(v instanceof Schema))) {
-    throw new Error(
-      `All values of the mixin must be Schema. Received: ${array}`,
-    );
-  }
-
-  return schema;
+export function union<T extends ISchema<any>[]>(
+  schemas: [...T],
+): UnionSchema<T> {
+  return new UnionSchema(schemas);
 }
