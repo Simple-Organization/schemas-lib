@@ -124,6 +124,8 @@ export const validationErrors: ValidationErrorRecord = {
   not_cpf_cnpj: `O campo não é um CPF ou CNPJ válido`,
   not_cpf: `O campo não é um CPF válido`,
   not_cnpj: `O campo não é um CNPJ válido`,
+
+  invalid_object_value: 'Erro temporário, não é possível validar o objeto',
 };
 
 //
