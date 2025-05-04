@@ -5,17 +5,6 @@ import { SchemaLibError } from '../SchemaLibError';
 //
 //
 
-test('Deve clonar o schema com sucesso', () => {
-  const schema = int();
-
-  const clone = schema.clone();
-
-  expect(clone).toEqual(schema);
-});
-
-//
-//
-
 test('Deve executar o safeParse com sucesso', () => {
   const schema = int();
 

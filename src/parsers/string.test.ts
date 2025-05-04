@@ -1,19 +1,7 @@
 import { test, expect } from 'bun:test';
 import { string, StringSchema, trimmed } from './string';
 import { SchemaLibError } from '../SchemaLibError';
-import type { ISchema } from '../schemas/NewSchema';
 import type { MinMaxSchema } from '../schemas/MinMaxSchema';
-
-//
-//
-
-test('Deve clonar o schema com sucesso', () => {
-  const schema = trimmed();
-
-  const clone = schema.clone();
-
-  expect(clone).toEqual(schema);
-});
 
 //
 //

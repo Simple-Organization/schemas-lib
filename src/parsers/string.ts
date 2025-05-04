@@ -12,15 +12,6 @@ export class StringSchema extends MinMaxSchema<string> {
   //
   //
 
-  clone(): this {
-    const clone = super.clone() as this;
-    clone.trim = this.trim;
-    return clone;
-  }
-
-  //
-  //
-
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 

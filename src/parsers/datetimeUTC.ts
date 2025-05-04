@@ -69,9 +69,8 @@ export class DatetimeSchema extends MinMaxSchema<string> {
       throw new Error(`Invalid min value: ${min.error}`);
     }
 
-    const clone = this.clone();
-    clone.vMin = new Date(min.data!).getTime();
-    return clone;
+    this.vMin = new Date(min.data!).getTime();
+    return this;
   }
 
   max(value: number | Date | string): this {
@@ -80,26 +79,14 @@ export class DatetimeSchema extends MinMaxSchema<string> {
       throw new Error(`Invalid max value: ${max.error}`);
     }
 
-    const clone = this.clone();
-    clone.vMax = new Date(max.data!).getTime();
-    return clone;
+    this.vMax = new Date(max.data!).getTime();
+    return this;
   }
 
   between(min: number | Date | string, max: number | Date | string): this {
-    const _min = this.internalParse(min);
-    if (!_min.success) {
-      throw new Error(`Invalid min value: ${_min.error}`);
-    }
-
-    const _max = this.internalParse(max);
-    if (!_max.success) {
-      throw new Error(`Invalid max value: ${_max.error}`);
-    }
-
-    const clone = this.clone();
-    clone.vMin = new Date(_min.data!).getTime();
-    clone.vMax = new Date(_max.data!).getTime();
-    return clone;
+    this.min(min);
+    this.max(max);
+    return this;
   }
 
   getErrors(): ValidationErrorRecord {

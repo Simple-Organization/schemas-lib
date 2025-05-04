@@ -11,15 +11,6 @@ export class EnumSchema extends NewSchema<string> {
   //
   //
 
-  clone(): this {
-    const clone = super.clone() as this;
-    clone.enum = this.enum;
-    return clone;
-  }
-
-  //
-  //
-
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 

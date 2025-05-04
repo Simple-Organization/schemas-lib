@@ -18,15 +18,6 @@ export class LiteralSchema<T extends Primitive> extends NewSchema<T> {
   //
   //
 
-  clone(): this {
-    const clone = super.clone() as this;
-    clone.literal = this.literal;
-    return clone;
-  }
-
-  //
-  //
-
   internalParse(originalValue: any): SafeParseReturn<T> {
     let value = originalValue;
 

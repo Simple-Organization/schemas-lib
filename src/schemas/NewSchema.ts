@@ -19,10 +19,7 @@ export type ISchema<T> = {
   parse: (originalValue: any) => T;
   safeParse: (originalValue: any) => SafeParseReturn<T>;
   optional: () => ISchema<Exclude<T, null> | null | undefined>;
-  required: () => ISchema<Exclude<T, null> | undefined>;
   default: (defaultSetter: (() => T) | T) => ISchema<T>;
-  clone: () => ISchema<T>;
-  name?: string;
   parent?: ISchema<any>;
 };
 
@@ -35,21 +32,11 @@ export abstract class NewSchema<T> {
   declare readonly isSchema: true;
   req = true;
   def?: () => T;
-  name?: string;
   parent?: ISchema<any>;
 
   //
   //  Important methods
   //
-
-  clone(): typeof this {
-    const clone = new (this.constructor as any)() as NewSchema<T>;
-    clone.req = this.req;
-    clone.def = this.def;
-    clone.name = this.name;
-    clone.parent = this.parent;
-    return clone as any;
-  }
 
   abstract internalParse(originalValue: any): SafeParseReturn<T>;
 
@@ -58,26 +45,18 @@ export abstract class NewSchema<T> {
   //
 
   optional(): NewSchema<Exclude<T, null> | null | undefined> {
-    const clone = this.clone();
-    clone.req = false;
-    return clone as any;
-  }
-
-  required(): NewSchema<Exclude<T, null> | undefined> {
-    const clone = this.clone();
-    clone.req = true;
-    return clone as any;
+    this.req = false;
+    return this as any;
   }
 
   /**
    * Set to default value when the value is null or undefined
    */
   default(defaultSetter: (() => T) | T): NewSchema<T> {
-    const clone = this.clone();
-    clone.def = (
+    this.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
-    return clone as any;
+    return this;
   }
 
   /**

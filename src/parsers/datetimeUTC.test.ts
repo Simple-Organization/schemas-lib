@@ -2,12 +2,6 @@ import { test, expect } from 'bun:test';
 import { datetimeUTC } from './datetimeUTC';
 import { SchemaLibError } from '../SchemaLibError';
 
-test('Deve clonar o schema com sucesso', () => {
-  const schema = datetimeUTC();
-  const clone = schema.clone();
-  expect(clone).toEqual(schema);
-});
-
 test('Deve executar o safeParse com sucesso', () => {
   const schema = datetimeUTC();
 

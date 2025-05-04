@@ -5,9 +5,7 @@
 Table of contents
 
 - [Introdução](#introdução)
-- [Características Principais](#características-principais)
 - [Diferenças com outras libs](#diferenças-com-outras-libs)
-- [Basic usage](#basic-usage)
 - [Changelog](#changelog)
 
 ## Introdução
@@ -16,102 +14,39 @@ Table of contents
 
 **schemas-lib** é focado nos casos de uso da [Simple Organization](https://github.com/Simple-Organization), mas também tenta ter uma api até que compatível com o zod, especialmente por conta de LLMs e geração de código automático
 
-O código atual não está 100% otimizado e tem muita repetição de código e redundancia para garantir o funcionamento correto com menos abstrações
+O código atual não está 100% otimizado e tem muita repetição de código e redundancia para garantir o funcionamento correto com menos abstrações, mesmo assim ele deve ser muito mais rápido do que o Zod em todos aspectos, `TypeScript inference`, `parse`, e `runtime instanciation`
 
 ## Diferenças com outras libs
 
-- Normalização para `null`
-- Todos campos de `number` já fazem `coerce`
+- [Schemas são mutáveis](#schemas-são-mutáveis)
+- [Normalização para `null`](#normalização-para-null)
+- [Todos campos de `number` e date já fazem `coerce`](#todos-campos-de-number-e-date-já-fazem-coerce)
 - Campo `boolean()` é sempre [`stringbool()`](https://v4.zod.dev/v4#stringbool)
 - Números nunca permitem valores infinitos ou `NaN`
+
+### Schemas são mutáveis
+
+Por que essa decisão?
+
+Simplificação do código na base de códigos do **schemas-lib** e ganho de performance para `runtime instanciation`
+
+### Normalização para null
+
+Por que essa decisão?
+
+Para evitar problemas de `undefined` e `null` em `query strings` e `forms`, o que é o foco do **schemas-lib**
+
+Não tendo que diferenciar entre `null` e `undefined`, o código fica mais simples e fácil de entender, não há a necessidade de fazer `nullable()` e `nullish()`, e reduz drasticamente o número de `if` e `else` no código do **schemas-lib** e fica mais fácil de criar `schemas` customizados
+
+### Todos campos de number já fazem coerce
+
+Por que essa decisão?
+
+Para simplificar o uso de `query strings` e `forms`, o que é o foco do **schemas-lib**, assim é necessário muito menos código para enviar um form do frontend para o backend, e o código fica mais simples e fácil de entender
 
 ```ts
 const obj = object({ id: z.int() });
 obj.parse({ id: '1' }); // { id: 1 }
-```
-
-## Basic usage
-
-Creating a simple string schema
-
-```ts
-import { trimmed, string } from 'schemas-lib';
-
-// creating a schema for strings
-const mySchema = trimmed();
-
-// parsing
-trimmed().parse('tuna'); // => "tuna"
-trimmed().parse(12); // => throws ZodError
-
-// "safe" parsing (doesn't throw error if validation fails)
-string().safeParse('tuna'); // => 'tuna'
-string().safeParse(12); // => Issue object
-```
-
-Creating an object schema
-
-```ts
-import { object, trimmed, Infer } from 'schemas-lib';
-
-const user_schema = object({
-  username: trimmed(),
-});
-
-user_schema.parse({ username: 'Ludwig   ' }); // { username: 'Ludwig' }
-
-// extract the inferred type
-type User = infer<typeof User>;
-// { username: string }
-```
-
-## Primitives
-
-```ts
-import {
-  array,
-  boolean,
-  datetimeUTC,
-  enumType,
-  float,
-  int,
-  mixin,
-  number,
-  object,
-  partialUpdateObj,
-  strict,
-  string,
-  trimmed,
-} from 'schemas-lib';
-
-// Most used types
-trimmed;
-boolean;
-int;
-
-// generic string and number
-string;
-number;
-float;
-
-// objects
-object;
-strict;
-partialUpdateObj;
-
-array;
-enumType;
-mixin;
-
-datetimeUTC;
-
-// prebuilt
-id;
-intString;
-url;
-nameField;
-email;
-date;
 ```
 
 ### datetimeUTC

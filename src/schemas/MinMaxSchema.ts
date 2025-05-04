@@ -23,7 +23,6 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
   declare readonly isSchema: true;
   req = true;
   def?: () => T;
-  name?: string;
   parent?: ISchema<any>;
   vMin: number | undefined;
   vMax: number | undefined;
@@ -31,18 +30,6 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
   //
   //  Important methods
   //
-
-  clone(): typeof this {
-    const clone = new (this.constructor as any)() as MinMaxSchema<T>;
-    clone.req = this.req;
-    clone.def = this.def;
-    clone.name = this.name;
-    clone.parent = this.parent;
-
-    clone.vMin = this.vMin;
-    clone.vMax = this.vMax;
-    return clone as any;
-  }
 
   abstract internalParse(originalValue: any): SafeParseReturn<T>;
   abstract getErrors(): ValidationErrorRecord;
@@ -52,7 +39,6 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
   //
 
   declare optional: () => MinMaxSchema<Exclude<T, null> | null | undefined>;
-  declare required: () => MinMaxSchema<Exclude<T, null> | undefined>;
   /** Set to default value when the value is null or undefined */
   declare default: (defaultSetter: (() => T) | T) => MinMaxSchema<T>;
 
@@ -89,35 +75,31 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
   //
 
   min(value: number): this {
-    const clone = this.clone();
-    clone.vMin = value;
-    return clone;
+    this.vMin = value;
+    return this;
   }
 
   //
   //
 
   max(value: number): this {
-    const clone = this.clone();
-    clone.vMax = value;
-    return clone;
+    this.vMax = value;
+    return this;
   }
 
   //
   //
 
   between(min: number, max: number): this {
-    const clone = this.clone();
-    clone.vMin = min;
-    clone.vMax = max;
-    return clone;
+    this.vMin = min;
+    this.vMax = max;
+    return this;
   }
 }
 
 //
 //
 
-MinMaxSchema.prototype.required = NewSchema.prototype.required as any;
 MinMaxSchema.prototype.optional = NewSchema.prototype.optional as any;
 MinMaxSchema.prototype.default = NewSchema.prototype.default as any;
 (MinMaxSchema.prototype as any).isSchema = true;

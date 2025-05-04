@@ -36,49 +36,18 @@ export class NewObjectSchema<R extends ObjectSchemaRecord, T = MakePartial<R>>
   declare readonly isSchema: true;
   req = true;
   def?: () => T;
-  name?: string;
   parent?: ISchema<any>;
+  readonly keys: string[] = [];
 
   //
   //
 
-  constructor(public shape: R) {
+  constructor(readonly shape: R) {
     if (typeof shape !== 'object' || shape === null) {
       throw new Error(
         'You must provide a shape to the object schema and must be an object',
       );
     }
-
-    //
-    //  Creates the shape and clones all child schemas
-    //  giving the parent schema to them and setting the name
-    let clone: ISchema<any>;
-
-    for (const key of Object.keys(shape)) {
-      if (!('isSchema' in shape[key])) {
-        throw new Error(
-          `Expected value['${key}'] to be a instance of Schema, but received: ${shape[key]}`,
-        );
-      }
-
-      clone = shape[key].clone();
-      clone.name = key;
-      clone.parent = this;
-      (shape as any)[key] = clone;
-    }
-  }
-
-  //
-  //  Important methods
-  //
-
-  clone(): typeof this {
-    const clone = new (this.constructor as any)(this.shape) as typeof this;
-    clone.req = this.req;
-    clone.def = this.def;
-    clone.name = this.name;
-    clone.parent = this.parent;
-    return clone;
   }
 
   internalParse(originalValue: any): SafeParseReturn<T> {
@@ -118,7 +87,21 @@ export class NewObjectSchema<R extends ObjectSchemaRecord, T = MakePartial<R>>
       return safeParseError('not_object', this, originalValue);
     }
 
-    return null as any;
+    //
+    //  Validates each key of the object
+
+    const shape = this.shape;
+    const results: Record<string, SafeParseReturn<any>> = {};
+
+    for (const key of this.keys) {
+      results[key] = shape[key].safeParse(value[key]);
+    }
+
+    //
+
+    const newObject: Record<string, any> = {};
+
+    return value as any;
   }
 
   //
@@ -126,7 +109,6 @@ export class NewObjectSchema<R extends ObjectSchemaRecord, T = MakePartial<R>>
   //
 
   declare optional: () => ISchema<Exclude<T, null> | null | undefined>;
-  declare required: () => ISchema<Exclude<T, null> | undefined>;
   /** Set to default value when the value is null or undefined */
   declare default: (defaultSetter: (() => T) | T) => NewObjectSchema<R, T>;
   /**
@@ -146,7 +128,6 @@ export class NewObjectSchema<R extends ObjectSchemaRecord, T = MakePartial<R>>
 //
 //
 
-NewObjectSchema.prototype.required = NewSchema.prototype.required as any;
 NewObjectSchema.prototype.optional = NewSchema.prototype.optional as any;
 NewObjectSchema.prototype.default = NewSchema.prototype.default as any;
 NewObjectSchema.prototype.safeParse = NewSchema.prototype.safeParse as any;
