@@ -64,6 +64,10 @@ export const validationErrors: Record<
 
   not_utc_datetime_string: 'O campo é uma string, mas não é de datetime UTC',
   not_datetime_type: expectedType('number|string|Date'),
+  min_datetime: (originalValue: Date, meta: SchemaMeta) =>
+    `O campo é menor ${meta.min}`,
+  max_datetime: (originalValue: Date, meta: SchemaMeta) =>
+    `O campo é maior ${meta.max}`,
 
   //
   //  object

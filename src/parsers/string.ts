@@ -1,10 +1,11 @@
-import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
+import { SafeParseReturn } from '../schemas/NewSchema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { MinMaxSchema } from '../schemas/MinMaxSchema';
 
 //
 //
 
-export class StringSchema extends NewSchema<string> {
+export class StringSchema extends MinMaxSchema<string> {
   trim = true;
 
   //
@@ -50,11 +51,11 @@ export class StringSchema extends NewSchema<string> {
       return safeParseError('not_string_type', this, originalValue);
     }
 
-    if (this.vMin && value.length < this.vMin) {
+    if (this.vMin !== undefined && value.length < this.vMin) {
       return safeParseError('min_number', this, originalValue);
     }
 
-    if (this.vMax && value.length > this.vMax) {
+    if (this.vMax !== undefined && value.length > this.vMax) {
       return safeParseError('max_number', this, originalValue);
     }
 

@@ -91,3 +91,47 @@ test('Deve ter default com sucesso', () => {
   expect(schema.safeParse(null)).toEqual({ success: true, data: 1 });
   expect(schema.safeParse(2)).toEqual({ success: true, data: 2 });
 });
+
+//
+//
+
+test('Deve ter testar min, max e between', () => {
+  const schema1 = int().min(1);
+  const schema2 = int().max(10);
+  const schema3 = int().between(1, 10);
+
+  expect(schema1.safeParse(0)).toEqual({
+    success: false,
+    error: new SchemaLibError('min_number', schema1, 0),
+  });
+
+  expect(schema1.safeParse(1)).toEqual({
+    success: true,
+    data: 1,
+  });
+
+  expect(schema2.safeParse(2)).toEqual({
+    success: true,
+    data: 2,
+  });
+
+  expect(schema2.safeParse(10)).toEqual({
+    success: true,
+    data: 10,
+  });
+
+  expect(schema2.safeParse(11)).toEqual({
+    success: false,
+    error: new SchemaLibError('max_number', schema2, 11),
+  });
+
+  expect(schema3.safeParse(0)).toEqual({
+    success: false,
+    error: new SchemaLibError('min_number', schema3, 0),
+  });
+
+  expect(schema3.safeParse(1)).toEqual({
+    success: true,
+    data: 1,
+  });
+});

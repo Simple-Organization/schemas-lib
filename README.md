@@ -16,6 +16,8 @@ Table of contents
 
 **schemas-lib** é focado nos casos de uso da [Simple Organization](https://github.com/Simple-Organization), mas também tenta ter uma api até que compatível com o zod, especialmente por conta de LLMs e geração de código automático
 
+O código atual não está 100% otimizado e tem muita repetição de código para garantir o funcionamento correto com menos abstrações
+
 ## Diferenças com outras libs
 
 - Normalização para `undefined`

@@ -12,11 +12,16 @@ export type SafeParseReturn<T> = {
 //
 //
 
-export abstract class NewSchema<T> {
+/**
+ * Schema que permite definir valores minimos e maximos
+ */
+export abstract class MinMaxSchema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
   _required = true;
   _default?: () => T;
+  vMin: number | undefined;
+  vMax: number | undefined;
 
   //
   //  Important methods
@@ -26,6 +31,8 @@ export abstract class NewSchema<T> {
     const clone = new (this.constructor as any)();
     clone._required = this._required;
     clone._default = this._default;
+    clone._min = this.vMin;
+    clone._max = this.vMax;
     return /* @__PURE__ */ clone;
   }
 
@@ -35,13 +42,13 @@ export abstract class NewSchema<T> {
   //  Schema info about optional, required
   //
 
-  optional(): NewSchema<Exclude<T, null> | null | undefined> {
+  optional(): MinMaxSchema<Exclude<T, null> | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
     clone._required = false;
     return /* @__PURE__ */ clone as any;
   }
 
-  required(): NewSchema<Exclude<T, null> | undefined> {
+  required(): MinMaxSchema<Exclude<T, null> | undefined> {
     const clone = /* @__PURE__ */ this.clone();
     clone._required = true;
     return /* @__PURE__ */ clone as any;
@@ -50,7 +57,7 @@ export abstract class NewSchema<T> {
   /**
    * Set to default value when the value is null or undefined
    */
-  default(defaultSetter: (() => T) | T): NewSchema<T | null | undefined> {
+  default(defaultSetter: (() => T) | T): MinMaxSchema<T | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
     clone._default = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
@@ -85,5 +92,33 @@ export abstract class NewSchema<T> {
     }
 
     return parsed.data!;
+  }
+
+  //
+  //
+
+  min(value: number): this {
+    const clone = this.clone();
+    clone.vMin = value;
+    return clone;
+  }
+
+  //
+  //
+
+  max(value: number): this {
+    const clone = this.clone();
+    clone.vMax = value;
+    return clone;
+  }
+
+  //
+  //
+
+  between(min: number, max: number): this {
+    const clone = this.clone();
+    clone.vMin = min;
+    clone.vMax = max;
+    return clone;
   }
 }

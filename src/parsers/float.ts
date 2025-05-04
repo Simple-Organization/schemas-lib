@@ -1,10 +1,11 @@
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { NewSchema, SafeParseReturn } from '../schemas/NewSchema';
+import { MinMaxSchema } from '../schemas/MinMaxSchema';
+import { SafeParseReturn } from '../schemas/NewSchema';
 
 //
 //
 
-export class NumberSchema extends NewSchema<number> {
+export class NumberSchema extends MinMaxSchema<number> {
   //
   //
 
@@ -46,11 +47,11 @@ export class NumberSchema extends NewSchema<number> {
       return safeParseError('not_finite', this, originalValue);
     }
 
-    if (this.vMin && value < this.vMin) {
+    if (this.vMin !== undefined && value < this.vMin) {
       return safeParseError('min_number', this, originalValue);
     }
 
-    if (this.vMax && value > this.vMax) {
+    if (this.vMax !== undefined && value > this.vMax) {
       return safeParseError('max_number', this, originalValue);
     }
 

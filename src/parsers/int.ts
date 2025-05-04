@@ -1,8 +1,8 @@
 import { SafeParseReturn } from '../schemas/NewSchema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { NumberSchema } from './float';
+import { MinMaxSchema } from '../schemas/MinMaxSchema';
 
-class IntSchema extends NumberSchema {
+class IntSchema extends MinMaxSchema<number> {
   _safeParse(originalValue: any): SafeParseReturn<number> {
     let value = originalValue;
 
@@ -35,6 +35,14 @@ class IntSchema extends NumberSchema {
 
     if (!Number.isInteger(value)) {
       return safeParseError('not_integer', this, originalValue);
+    }
+
+    if (this.vMin !== undefined && value < this.vMin) {
+      return safeParseError('min_number', this, originalValue);
+    }
+
+    if (this.vMax !== undefined && value > this.vMax) {
+      return safeParseError('max_number', this, originalValue);
     }
 
     return safeParseSuccess(value);

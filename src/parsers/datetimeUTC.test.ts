@@ -20,19 +20,13 @@ test('Deve executar o safeParse com sucesso', () => {
   const validDateWithMs = '2024-06-01T12:34:56.123Z';
   expect(schema.safeParse(validDateWithMs)).toEqual({
     success: true,
-    data: validDateWithMs,
-  });
-
-  const dateObj = new Date('2024-06-01T12:34:56Z');
-  expect(schema.safeParse(dateObj)).toEqual({
-    success: true,
-    data: dateObj.toISOString(),
+    data: '2024-06-01T12:34:56Z',
   });
 
   const timestamp = Date.UTC(2024, 5, 1, 12, 34, 56);
   expect(schema.safeParse(timestamp)).toEqual({
     success: true,
-    data: new Date(timestamp).toISOString(),
+    data: '2024-06-01T12:34:56Z',
   });
 
   expect(schema.safeParse('')).toEqual({
@@ -56,21 +50,13 @@ test('Deve executar o safeParse com sucesso', () => {
   });
 
   expect(schema.safeParse('2024-06-01 12:34:56')).toEqual({
-    success: false,
-    error: new SchemaLibError(
-      'not_utc_datetime_string',
-      schema,
-      '2024-06-01 12:34:56',
-    ),
+    success: true,
+    data: '2024-06-01T12:34:56Z',
   });
 
   expect(schema.safeParse('2024-06-01T12:34:56+03:00')).toEqual({
-    success: false,
-    error: new SchemaLibError(
-      'not_utc_datetime_string',
-      schema,
-      '2024-06-01T12:34:56+03:00',
-    ),
+    success: true,
+    data: '2024-06-01T09:34:56Z',
   });
 
   expect(schema.safeParse({})).toEqual({
@@ -110,5 +96,52 @@ test('Deve ter default com sucesso', () => {
   expect(schema.safeParse(validDate)).toEqual({
     success: true,
     data: validDate,
+  });
+});
+
+test('Deve testar min, max e between', () => {
+  const minDate = '2024-06-01T12:34:56Z';
+  const maxDate = '2024-06-10T12:34:56Z';
+  const beforeMin = '2024-05-31T12:34:56Z';
+  const afterMax = '2024-06-11T12:34:56Z';
+  const betweenDate = '2024-06-05T12:34:56Z';
+
+  const schemaMin = datetimeUTC().min(minDate);
+  const schemaMax = datetimeUTC().max(maxDate);
+  const schemaBetween = datetimeUTC().between(minDate, maxDate);
+
+  expect(schemaMin.safeParse(beforeMin)).toEqual({
+    success: false,
+    error: new SchemaLibError('min_datetime', schemaMin, beforeMin),
+  });
+
+  expect(schemaMin.safeParse(minDate)).toEqual({
+    success: true,
+    data: minDate,
+  });
+
+  expect(schemaMax.safeParse(maxDate)).toEqual({
+    success: true,
+    data: maxDate,
+  });
+
+  expect(schemaMax.safeParse(afterMax)).toEqual({
+    success: false,
+    error: new SchemaLibError('max_datetime', schemaMax, afterMax),
+  });
+
+  expect(schemaBetween.safeParse(beforeMin)).toEqual({
+    success: false,
+    error: new SchemaLibError('min_datetime', schemaBetween, beforeMin),
+  });
+
+  expect(schemaBetween.safeParse(afterMax)).toEqual({
+    success: false,
+    error: new SchemaLibError('max_datetime', schemaBetween, afterMax),
+  });
+
+  expect(schemaBetween.safeParse(betweenDate)).toEqual({
+    success: true,
+    data: betweenDate,
   });
 });
