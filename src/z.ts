@@ -11,3 +11,9 @@ export { int } from './parsers/int';
 export { float, number } from './parsers/float';
 export { boolean } from './parsers/boolean';
 export { datetimeUTC } from './parsers/datetimeUTC';
+
+// Regex schemas
+export { regex } from './regexes/regex';
+// export { email } from './regexes/email';
+export { url } from './regexes/url';
+// export { uuid } from './regexes/uuid';

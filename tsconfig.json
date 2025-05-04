@@ -3,6 +3,7 @@
     "lib": ["ESNext", "DOM"],
     "outDir": "dist/types",
     "module": "ESNext",
+    "target": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,

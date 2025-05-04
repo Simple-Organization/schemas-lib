@@ -32,6 +32,7 @@ export class RegexSchema extends Schema<string> {
     if (typeof value !== 'string')
       return safeParseError('not_string_type', this, originalValue);
 
+    this.regex.lastIndex = 0; // Reset the regex index to 0
     if (!this.regex.test(value)) {
       return safeParseError(this.msg || 'not_regex', this, originalValue);
     }
