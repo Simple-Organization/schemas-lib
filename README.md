@@ -12,34 +12,21 @@ Table of contents
 
 ## Introdução
 
-**schemas-lib** é uma biblioteca Node.js inspirada no **Zod**, desenvolvida para validação de esquemas e tipagem estática em TypeScript. Assim como o Zod, **schemas-lib** oferece uma interface intuitiva e expressiva para definir e validar estruturas de dados, proporcionando uma experiência de desenvolvimento robusta e confiável.
+**schemas-lib** é uma biblioteca Node.js inspirada no **Zod**, desenvolvida para validação de esquemas e tipagem estática em TypeScript. Assim como o Zod, porém ela é muito mais embarcada e focada em **query strings**, **forms** e salvar em **banco de dados**. **schemas-lib** não faz validação para campos como **Set** e coisas como `.optional()` aceita tanto `null` quanto `undefined`, mas vai normalizar para `undefined`
+
+**schemas-lib** é focado nos casos de uso da [Simple Organization](https://github.com/Simple-Organization)
 
 ## Diferenças com outras libs
 
-A primeira diferença é que **schemas-lib** foca em fazer parsing de **query strings** e **forms**, então alguns campos como **boolean** aceitam valores como `"on"` por padrão
+- Normalização para `undefined`
+- Todos campos de `number` já fazem `coerce`
+- Campo `boolean()` é sempre [`stringbool()`](https://v4.zod.dev/v4#stringbool)
 
-Então um `object` ou `array` ao receber uma string, já considera que seja um json e faz parse
-
-```ts
-const obj = object({ id: int() });
-obj.parse('{ "id": 1 }'); // { id: 1 }
-```
-
-Uma das diferenças entre uma lib como a `zod` é que o **schemas-lib** possui o foco em **reusar** instancias como **trimmed**, salvando um pouco de performance de maneira geral (linter, build, production)
-
-E o **schemas-lib** faz uso extenso do **trimmed**, assim quase todos os campos costumam receber **trim** por padrão
 
 ```ts
-import { z } from 'zod';
-import { trimmed, string } from 'schemas-lib';
-
-const zodSchema = z.string().trim();
-const schemaLib = trimmed(); // trimmed é o mesmo que zod.string().trim()
+const obj = object({ id: z.int() });
+obj.parse({ id: '1' }); // { id: 1 }
 ```
-
-Quando se faz qualquer operação com o `trimmed` ele é clonado como no zod para não alterar o schema original e manter a integridade do schema
-
-O **schemas-lib** gera a tipagem do objeto em uma propriedade do **meta**, `meta.jsType`aonde possue um Type do TypeScript
 
 ## Basic usage
 

@@ -1,0 +1,7 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": "bun.lock, .gitignore, .prettierrc.yml, tsconfig.json"
+  },
+  "explorer.fileNesting.expand": false
+}
