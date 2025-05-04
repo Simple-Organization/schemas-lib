@@ -39,23 +39,14 @@ export class UnionSchema<S extends readonly ISchema<any>[]>
 
   internalParse(originalValue: any): SafeParseReturn<OutputOf<S[number]>> {
     let value = originalValue;
-    if (typeof value === 'string') {
-      if (value === '') {
-        value = null;
-      }
-    } else if (value === undefined) {
-      value = null;
-    }
+
+    // Boilerplate to normalize the value without trimming
+    if (value === '') value = null;
+    else if (value === undefined) value = null;
 
     if (value === null) {
-      if (this.req) {
-        return safeParseError('required', this, originalValue);
-      }
-
-      if (this.def) {
-        return safeParseSuccess(this.def());
-      }
-
+      if (this.req) return safeParseError('required', this, originalValue);
+      if (this.def) return safeParseSuccess(this.def());
       return safeParseSuccess();
     }
 

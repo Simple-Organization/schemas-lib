@@ -58,6 +58,9 @@ export class ObjectSchema<
     }
   }
 
+  //
+  //
+
   internalParse(originalValue: any): SafeParseReturn<T> {
     let value = originalValue;
 
@@ -120,6 +123,9 @@ export class ObjectSchema<
     return safeParseSuccess(output as T);
   }
 
+  //
+  //
+
   private _strictParser(
     value: Record<string, any>,
     output: Record<string, any>,
@@ -144,15 +150,8 @@ export class ObjectSchema<
   //
 
   declare optional: () => ISchema<Exclude<T, null> | null | undefined>;
-  /** Set to default value when the value is null or undefined */
   declare default: (defaultSetter: (() => T) | T) => ObjectSchema<R, T>;
-  /**
-   * Parse the value, throw {@link SafeParseReturn} when the value is invalid
-   */
   declare parse: (originalValue: any) => T;
-  /**
-   * Parse the value, return {@link SafeParseReturn} when the value is invalid
-   */
   declare safeParse: (originalValue: any) => SafeParseReturn<T>;
 
   getErrors(): ValidationErrorRecord {

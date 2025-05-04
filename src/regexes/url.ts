@@ -6,16 +6,6 @@ import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 //
 
 export class URLSchema extends Schema<string> {
-  constructor(
-    readonly regex?: RegExp,
-    readonly msg?: string,
-  ) {
-    super();
-  }
-
-  //
-  //
-
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 

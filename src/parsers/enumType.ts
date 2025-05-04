@@ -14,22 +14,13 @@ export class EnumSchema extends Schema<string> {
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
-    if (typeof value === 'string') {
-      value = value.trim();
-      if (value === '') {
-        value = null;
-      }
-    } else if (value === undefined) {
-      value = null;
-    }
+    // Boilerplate to normalize the value without trimming
+    if (value === '') value = null;
+    else if (value === undefined) value = null;
 
     if (value === null) {
-      if (this.req) {
-        return safeParseError('required', this, originalValue);
-      }
-      if (this.def) {
-        return safeParseSuccess(this.def());
-      }
+      if (this.req) return safeParseError('required', this, originalValue);
+      if (this.def) return safeParseSuccess(this.def());
       return safeParseSuccess();
     }
 

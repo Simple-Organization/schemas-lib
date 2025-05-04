@@ -15,7 +15,7 @@ export class StringSchema extends MinMaxSchema<string> {
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
-    // Boilerplate to normalize the value
+    // Boilerplate to normalize the value with trimming
     if (typeof value === 'string') {
       if (this.trim) value = value.trim();
       if (value === '') value = null;

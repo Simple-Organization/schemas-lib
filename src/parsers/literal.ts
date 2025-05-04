@@ -13,6 +13,19 @@ export type Primitive = string | number | bigint | boolean | null | undefined;
 export class LiteralSchema<T extends Primitive> extends Schema<T> {
   constructor(public literal: T) {
     super();
+
+    if (
+      typeof literal !== 'string' &&
+      typeof literal !== 'number' &&
+      typeof literal !== 'bigint' &&
+      typeof literal !== 'boolean' &&
+      literal !== null &&
+      literal !== undefined
+    ) {
+      throw new Error(
+        `The literal value must be a primitive different than symbol. Received: ${literal}`,
+      );
+    }
   }
 
   //
@@ -21,22 +34,13 @@ export class LiteralSchema<T extends Primitive> extends Schema<T> {
   internalParse(originalValue: any): SafeParseReturn<T> {
     let value = originalValue;
 
-    if (typeof value === 'string') {
-      value = value.trim();
-      if (value === '') {
-        value = null;
-      }
-    } else if (value === undefined) {
-      value = null;
-    }
+    // Boilerplate to normalize the value without trimming
+    if (value === '') value = null;
+    else if (value === undefined) value = null;
 
     if (value === null) {
-      if (this.req) {
-        return safeParseError('required', this, originalValue);
-      }
-      if (this.def) {
-        return safeParseSuccess(this.def());
-      }
+      if (this.req) return safeParseError('required', this, originalValue);
+      if (this.def) return safeParseSuccess(this.def());
       return safeParseSuccess();
     }
 
@@ -56,23 +60,5 @@ export class LiteralSchema<T extends Primitive> extends Schema<T> {
  * Support for literal values different than symbol
  */
 export function literal<T extends Primitive>(value: T): LiteralSchema<T> {
-  const schema = new LiteralSchema<T>(value);
-
-  //
-  //  Dev generation values
-
-  if (
-    typeof value !== 'string' &&
-    typeof value !== 'number' &&
-    typeof value !== 'bigint' &&
-    typeof value !== 'boolean' &&
-    value !== null &&
-    value !== undefined
-  ) {
-    throw new Error(
-      `The literal value must be a primitive different than symbol. Received: ${value}`,
-    );
-  }
-
-  return schema;
+  return new LiteralSchema<T>(value);
 }

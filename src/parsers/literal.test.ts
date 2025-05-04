@@ -10,11 +10,6 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 'abc',
   });
 
-  expect(schema.safeParse('  abc  ')).toEqual({
-    success: true,
-    data: 'abc',
-  });
-
   expect(schema.safeParse('def')).toEqual({
     success: false,
     error: new SchemaLibError('not_literal_equal', schema, 'def'),
