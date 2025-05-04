@@ -1,6 +1,10 @@
 import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
+import {
+  NewSchema,
+  type ISchema,
+  type SafeParseReturn,
+} from '../schemas/NewSchema';
 import { ObjectSchema } from './object';
 
 //
@@ -102,9 +106,14 @@ export class DistinctSchema<
 //
 //
 
+type InferSchemaType<T> = T extends ISchema<infer U> ? U : never;
+
 export function distinct<
-  Prop extends string,
-  Schemas extends readonly ObjectSchema<any>[],
->(discriminator: Prop, schemas: Schemas): DistinctSchema<Prop, Schemas> {
-  return new DistinctSchema(discriminator, schemas);
+  Schemas extends readonly ISchema<any>[],
+  Discriminator extends string,
+>(
+  discriminator: Discriminator,
+  schemas: Schemas,
+): ISchema<InferSchemaType<Schemas[number]>> {
+  return new DistinctSchema(discriminator, schemas as any);
 }
