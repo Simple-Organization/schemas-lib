@@ -1,8 +1,4 @@
-import {
-  safeParseError,
-  safeParseSuccess,
-  SchemaLibError,
-} from '../SchemaLibError';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { NewSchema, SafeParseReturn } from './NewSchema';
 
 //

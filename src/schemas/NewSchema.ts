@@ -7,7 +7,7 @@ export type SafeParseReturn<T> = {
   success: boolean;
   data?: T;
   error?: SchemaLibError;
-}
+};
 
 //
 //
@@ -35,7 +35,7 @@ export abstract class NewSchema<T> {
   //  Schema info about optional, required
   //
 
-  optional(): NewSchema<Exclude<T, null> | null |  undefined> {
+  optional(): NewSchema<Exclude<T, null> | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
     clone._required = false;
     return /* @__PURE__ */ clone as any;
@@ -50,9 +50,11 @@ export abstract class NewSchema<T> {
   /**
    * Set to default value when the value is null or undefined
    */
-  default(defaultSetter: (() => T)): NewSchema<T | null | undefined> {
+  default(defaultSetter: (() => T) | T): NewSchema<T | null | undefined> {
     const clone = /* @__PURE__ */ this.clone();
-    clone._default = defaultSetter;
+    clone._default = (
+      typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
+    ) as () => T;
     return clone as any;
   }
 
@@ -66,7 +68,7 @@ export abstract class NewSchema<T> {
       return {
         data: this._default(),
         success: true,
-      }
+      };
     }
 
     return parsed;

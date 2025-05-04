@@ -1,39 +1,52 @@
-import type { SchemaMeta } from '../types';
-import { Issue } from '../Issue';
 import { NumberSchema } from '../schemas/NumberSchema';
+import { SafeParseReturn } from '../schemas/NewSchema';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 
-//
-//
+class IntSchema extends NumberSchema {
+  _safeParse(originalValue: any): SafeParseReturn<number> {
+    let value = originalValue;
 
-export function intParser(
-  value: any,
-  meta: SchemaMeta,
-  originalValue: any,
-): Issue | number {
-  if (typeof value === 'string') {
-    if (value === '') {
-      value = null;
-    } else if (!/^\s*\d+\s*$/.test(value)) {
-      return new Issue('not_number_string', meta, originalValue);
-    } else {
-      value = +value;
+    if (typeof value === 'string') {
+      value = value.trim();
+      if (value === '') {
+        value = undefined;
+      } else {
+        value = Number(value);
+      }
+    } else if (value === null) {
+      value = undefined;
     }
-  } else {
+
+    if (value === undefined) {
+      if (this._required) {
+        return safeParseError('required', this, originalValue);
+      }
+
+      if (this._default) {
+        return safeParseSuccess(this._default());
+      }
+
+      return safeParseSuccess();
+    }
+
     if (typeof value !== 'number') {
-      return new Issue('not_number_type', meta, originalValue);
+      return safeParseError('not_number_type', this, value);
     }
 
     if (!Number.isInteger(value)) {
-      return new Issue('not_integer', meta, originalValue);
+      return safeParseError('not_integer', this, originalValue);
     }
-  }
 
-  return value;
+    return safeParseSuccess(value);
+  }
 }
+
+//
+//
 
 /**
  * Only integer numbers, can be bigger than 32 bits integers
  */
 export function int() {
-  return new NumberSchema([intParser], { jsType: 'number' });
+  return new IntSchema();
 }

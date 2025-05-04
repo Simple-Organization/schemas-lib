@@ -1,12 +1,12 @@
 import { test, expect } from 'bun:test';
-import { NumberSchema } from '../../src';
+import { int } from './int';
 import { SchemaLibError } from '../SchemaLibError';
 
 //
 //
 
 test('Deve clonar o schema com sucesso', () => {
-  const schema = new NumberSchema();
+  const schema = int();
 
   const clone = schema.clone();
 
@@ -17,7 +17,7 @@ test('Deve clonar o schema com sucesso', () => {
 //
 
 test('Deve executar o safeParse com sucesso', () => {
-  const schema = new NumberSchema();
+  const schema = int();
 
   expect(schema.safeParse(1)).toEqual({
     success: true,
@@ -30,8 +30,8 @@ test('Deve executar o safeParse com sucesso', () => {
   });
 
   expect(schema.safeParse('1.2')).toEqual({
-    success: true,
-    data: 1.2,
+    success: false,
+    error: new SchemaLibError('not_integer', schema, '1.2'),
   });
 
   expect(schema.safeParse('')).toEqual({
@@ -62,7 +62,7 @@ test('Deve executar o safeParse com sucesso', () => {
 
   expect(schema.safeParse('a')).toEqual({
     success: false,
-    error: new SchemaLibError('nan', schema, 'a'),
+    error: new SchemaLibError('not_integer', schema, 'a'),
   });
 });
 
@@ -70,7 +70,7 @@ test('Deve executar o safeParse com sucesso', () => {
 //
 
 test('Deve ser opcional com sucesso', () => {
-  const schema = new NumberSchema().optional();
+  const schema = int().optional();
 
   expect(schema.safeParse('')).toEqual({ success: true });
   expect(schema.safeParse('   ')).toEqual({ success: true });
@@ -83,7 +83,7 @@ test('Deve ser opcional com sucesso', () => {
 //
 
 test('Deve ter default com sucesso', () => {
-  const schema = new NumberSchema().default(() => 1);
+  const schema = int().default(() => 1);
 
   expect(schema.safeParse('')).toEqual({ success: true, data: 1 });
   expect(schema.safeParse('   ')).toEqual({ success: true, data: 1 });
