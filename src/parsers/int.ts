@@ -1,6 +1,6 @@
-import { NumberSchema } from '../schemas/NumberSchema';
 import { SafeParseReturn } from '../schemas/NewSchema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { NumberSchema } from './float';
 
 class IntSchema extends NumberSchema {
   _safeParse(originalValue: any): SafeParseReturn<number> {

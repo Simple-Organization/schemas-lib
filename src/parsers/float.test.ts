@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { NumberSchema } from '../../src';
+import { NumberSchema } from './float';
 import { SchemaLibError } from '../SchemaLibError';
 
 //
