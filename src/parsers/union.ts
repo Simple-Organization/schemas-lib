@@ -9,17 +9,20 @@ import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 //
 //
 
-export class UnionSchema<S extends ISchema<any>[]>
-  implements ISchema<S[number] extends ISchema<infer E> ? E : never>
+// Utilitário para extrair o tipo de saída de um ISchema
+type OutputOf<T> = T extends ISchema<infer O> ? O : never;
+
+export class UnionSchema<S extends readonly ISchema<any>[]>
+  implements ISchema<OutputOf<S[number]>>
 {
   schemas: S;
   /** Property used only for type inference */
-  declare readonly _o: S[number] extends ISchema<infer E> ? E : never;
+  declare readonly _o: OutputOf<S[number]>;
   declare readonly isSchema: true;
 
   req = true;
 
-  def?: () => S[number] extends ISchema<infer E> ? E : never;
+  def?: () => OutputOf<S[number]>;
 
   //
   //
@@ -38,9 +41,7 @@ export class UnionSchema<S extends ISchema<any>[]>
     this.schemas = schemas;
   }
 
-  internalParse(
-    originalValue: any,
-  ): SafeParseReturn<S[number] extends ISchema<infer E> ? E : never> {
+  internalParse(originalValue: any): SafeParseReturn<OutputOf<S[number]>> {
     let value = originalValue;
     if (typeof value === 'string') {
       if (value === '') {
@@ -67,7 +68,7 @@ export class UnionSchema<S extends ISchema<any>[]>
     for (const schema of this.schemas) {
       const result = schema.safeParse(value);
       if (result.success) {
-        return safeParseSuccess(result.data);
+        return safeParseSuccess(result.data as OutputOf<S[number]>);
       }
       if (!firstError) {
         firstError = result;
@@ -83,28 +84,22 @@ export class UnionSchema<S extends ISchema<any>[]>
   //
 
   declare optional: () => ISchema<
-    | Exclude<S[number] extends ISchema<infer E> ? E : never, null>
-    | null
-    | undefined
+    Exclude<OutputOf<S[number]>, null> | null | undefined
   >;
   /** Set to default value when the value is null or undefined */
   declare default: (
-    defaultSetter:
-      | (() => S[number] extends ISchema<infer E> ? E : never)
-      | (S[number] extends ISchema<infer E> ? E : never),
+    defaultSetter: (() => OutputOf<S[number]>) | OutputOf<S[number]>,
   ) => UnionSchema<S>;
   /**
    * Parse the value, throw {@link SafeParseReturn} when the value is invalid
    */
-  declare parse: (
-    originalValue: any,
-  ) => S[number] extends ISchema<infer E> ? E : never;
+  declare parse: (originalValue: any) => OutputOf<S[number]>;
   /**
    * Parse the value, return {@link SafeParseReturn} when the value is invalid
    */
   declare safeParse: (
     originalValue: any,
-  ) => SafeParseReturn<S[number] extends ISchema<infer E> ? E : never>;
+  ) => SafeParseReturn<OutputOf<S[number]>>;
 
   getErrors(): ValidationErrorRecord {
     throw new Error('Method not implemented.');
@@ -123,8 +118,8 @@ UnionSchema.prototype.parse = NewSchema.prototype.parse as any;
 //
 //
 
-export function union<T extends ISchema<any>[]>(
-  schemas: [...T],
+export function union<T extends readonly ISchema<any>[]>(
+  schemas: T,
 ): UnionSchema<T> {
   return new UnionSchema(schemas);
 }

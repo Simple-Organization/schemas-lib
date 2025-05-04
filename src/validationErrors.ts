@@ -126,6 +126,8 @@ export const validationErrors: ValidationErrorRecord = {
 
   invalid_object_value: 'Erro temporário, não é possível validar o objeto',
   invalid_array_element: 'Erro temporário, não é possível validar o array',
+  union_no_match:
+    'Erro temporário, não é possível validar o union, nenhum dos schemas bateu',
 };
 
 //

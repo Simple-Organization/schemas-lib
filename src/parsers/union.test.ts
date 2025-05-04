@@ -2,7 +2,6 @@ import { test, expect } from 'bun:test';
 import { union } from './union';
 import { int } from './int';
 import { SchemaLibError } from '../SchemaLibError';
-import { NewSchema } from '../schemas/NewSchema';
 import { string } from './string';
 
 //
