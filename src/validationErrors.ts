@@ -128,6 +128,10 @@ export const validationErrors: ValidationErrorRecord = {
   invalid_array_element: 'Erro temporário, não é possível validar o array',
   union_no_match:
     'Erro temporário, não é possível validar o union, nenhum dos schemas bateu',
+  invalid_discriminator:
+    'Erro temporário, não é possível validar o discriminador',
+  missing_discriminator:
+    'Erro temporário, não é possível validar o discriminador, ele não foi encontrado',
 };
 
 //

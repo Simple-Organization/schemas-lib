@@ -1,22 +1,7 @@
-import type { SchemaMeta } from '../types';
-import { Issue } from '../Issue';
-import { Schema } from '../schemas/Schema';
-import { ObjectSchema } from '../schemas/ObjectSchema';
-
-//
-//
-
-export function literalParser(
-  value: any,
-  meta: SchemaMeta,
-  originalValue: any,
-): Issue | string {
-  if (value !== meta.literal) {
-    return new Issue('not_literal_equal', meta, originalValue);
-  }
-
-  return value;
-}
+import type { ValidationErrorRecord } from '../validationErrors';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { NewSchema, type SafeParseReturn } from '../schemas/NewSchema';
+import { ObjectSchema } from './object';
 
 //
 //
@@ -26,121 +11,100 @@ export type Primitive = string | number | bigint | boolean | null | undefined;
 //
 //
 
-/**
- * Support for literal values different than symbol
- */
-export function literal<T extends Primitive>(value: T): Schema<T> {
-  const schema = new Schema<any>([literalParser]);
+export class DistinctSchema<
+  Prop extends string,
+  Schemas extends readonly ObjectSchema<any>[],
+> extends NewSchema<Schemas[number]['_o']> {
+  declare readonly _o: Schemas[number]['_o'];
+  declare readonly isSchema: true;
 
-  schema.meta.literal = value as any;
+  readonly discriminator: Prop;
+  readonly schemas: Schemas;
+  private readonly schemaMap: Map<any, ObjectSchema<any>>;
 
-  //
-  //  Dev generation values
+  constructor(discriminator: Prop, schemas: Schemas) {
+    super();
+    this.discriminator = discriminator;
+    this.schemas = schemas;
 
-  if (
-    typeof value !== 'string' &&
-    typeof value !== 'number' &&
-    typeof value !== 'bigint' &&
-    typeof value !== 'boolean' &&
-    value !== null &&
-    value !== undefined
-  ) {
-    throw new Error(
-      `The literal value must be a primitive different than symbol. Received: ${value}`,
-    );
+    // Build schema map and check for unique literals
+    const map = new Map<any, ObjectSchema<any>>();
+    for (const schema of schemas) {
+      if (!(schema instanceof ObjectSchema)) {
+        throw new Error('All schemas must be ObjectSchema');
+      }
+      const discSchema = schema.shape[discriminator];
+      if (!discSchema || !('literal' in discSchema)) {
+        throw new Error(
+          `Each schema must have the discriminator property "${discriminator}" as a literal`,
+        );
+      }
+      const literal = (discSchema as any).literal;
+      if (map.has(literal)) {
+        throw new Error(
+          `Duplicate literal value "${literal}" for discriminator "${discriminator}"`,
+        );
+      }
+      map.set(literal, schema);
+    }
+    this.schemaMap = map;
   }
 
-  return schema;
-}
+  internalParse(originalValue: any): SafeParseReturn<Schemas[number]['_o']> {
+    let value = originalValue;
 
-//
-//
+    if (typeof value === 'string') {
+      if (value === '') {
+        value = null;
+      } else {
+        try {
+          value = JSON.parse(value);
+        } catch {
+          return safeParseError('not_valid_json', this, originalValue);
+        }
+      }
+    } else if (value === undefined) {
+      value = null;
+    }
 
-export function distinctParser(
-  value: any,
-  meta: SchemaMeta,
-  originalValue: any,
-): unknown {
-  if (value === null || typeof value !== 'object') {
-    return new Issue('not_object', meta, originalValue);
+    if (value === null) {
+      if (this.req) {
+        return safeParseError('required', this, originalValue);
+      }
+      if (this.def) {
+        return safeParseSuccess(this.def());
+      }
+      return safeParseSuccess();
+    }
+
+    if (typeof value !== 'object' || value === null) {
+      return safeParseError('not_object', this, originalValue);
+    }
+
+    const discValue = value[this.discriminator];
+    if (discValue === undefined) {
+      return safeParseError('missing_discriminator', this, originalValue);
+    }
+
+    const schema = this.schemaMap.get(discValue);
+    if (!schema) {
+      return safeParseError('invalid_discriminator', this, originalValue);
+    }
+
+    return schema.safeParse(originalValue);
   }
 
-  const prop = meta.distinctProp!;
-
-  if (value[prop] === undefined) {
-    return new Issue('not_distinct_prop', meta, originalValue);
+  getErrors(): ValidationErrorRecord {
+    throw new Error('Method not implemented.');
   }
-
-  const distincSchema = meta.distinctObjs!.get(value[prop]);
-
-  if (!distincSchema) {
-    return new Issue('not_distinct_prop', meta, originalValue);
-  }
-
-  return distincSchema.safeParse(originalValue);
 }
 
 //
 //
 
 export function distinct<
-  E extends ObjectSchema<any>,
-  T extends Readonly<[...E[]]>,
->(distinctProp: string, schemas: T): Schema<T[number]['_o']> {
-  const schema = new Schema<any>([distinctParser]);
-
-  if (typeof distinctProp !== 'string') {
-    throw new Error(
-      `The distinctProp must be a string. Received: ${distinctProp}`,
-    );
-  }
-
-  //
-  //  jsType generation values
-
-  for (const obj of schemas) {
-    //
-    if (!(obj instanceof ObjectSchema)) {
-      throw new Error(
-        `All values of the distinctType must be ObjectSchema. Received: ${obj}`,
-      );
-    }
-
-    if (!obj.shape.hasOwnProperty(distinctProp)) {
-      throw new Error(
-        `All values of the distinctType must have the distinctProp '${distinctProp}'. Received: ${obj}`,
-      );
-    }
-
-    if (!obj.shape[distinctProp].meta.literal) {
-      throw new Error(
-        `All values of the distinctType must have the distinctProp '${distinctProp}' as literal. Received: ${obj}`,
-      );
-    }
-  }
-
-  const literals = schemas.map((s) => s.shape[distinctProp].meta.literal);
-
-  // Check if all literals are different
-  if (new Set(literals).size !== literals.length) {
-    throw new Error(
-      `All values of the distinctType must have different literals. Received: ${literals}`,
-    );
-  }
-
-  schema.meta.jsType = schemas.map((s) => `(${s.meta.jsType!})`).join('|');
-
-  //
-  //
-
-  const distinctObjs: Map<string, ObjectSchema<any>> = new Map();
-
-  schemas.forEach((s) => {
-    distinctObjs.set(s.shape[distinctProp].meta.literal, s);
-  });
-
-  schema.meta.distinctProp = distinctProp;
-  schema.meta.distinctObjs = distinctObjs;
-
-  return schema;
+  Prop extends string,
+  Schemas extends readonly ObjectSchema<any>[],
+>(discriminator: Prop, schemas: Schemas): DistinctSchema<Prop, Schemas> {
+  return new DistinctSchema(discriminator, schemas);
 }
