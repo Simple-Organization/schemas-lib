@@ -5,12 +5,13 @@
 Removed
 
 - `parsers` Agora todo tipo é uma classe própria
-- `addParser` suporte
-- `Issue` substituido por `SchemaLibError`
-- `jsType` suporte
+- `addParser` suporte (Com a simplificação do código, não faz sentido ter isso, é melhor simplesmente criar uma nova classe)
+- `Issue` substituido por `SchemaLibError` que é inspriado no `ZodError`
+- `jsType` suporte (Melhor usar um LLM para gerar tipagem)
 - `nullable` suporte
 - `nullish` suporte
-- `meta` suporte
+- `required` suporte (Deve-se usar `schema.req = true`)
+- `meta` suporte (Melhor verificar pelo nome da instancia, ou usar um LLM para gerar)
 
 ### [3.0.0-next.0] - 2024-08-30
 

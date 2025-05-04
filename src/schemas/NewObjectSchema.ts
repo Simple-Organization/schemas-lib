@@ -25,11 +25,17 @@ type MakePartial<T extends ObjectSchemaRecord> = {
   [k in OptionalKeys<T> as T[k] extends never ? never : k]?: T[k]['_o'];
 };
 
+type Identity<T> = T;
+type Flatten<T> = Identity<{ [k in keyof T]: T[k] }>;
+
 //
 //
 
-export class NewObjectSchema<R extends ObjectSchemaRecord, T = MakePartial<R>>
-  implements ISchema<T>
+export class NewObjectSchema<
+  R extends ObjectSchemaRecord,
+  T = Flatten<MakePartial<R>>,
+  // T = MakePartial<R>,
+> implements ISchema<T>
 {
   /** Property used only for type inference */
   declare readonly _o: T;
