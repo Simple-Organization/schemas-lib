@@ -1,6 +1,6 @@
 import type { SchemaLibError } from '../SchemaLibError';
 import type { ValidationErrorRecord } from '../validationErrors';
-import type { ISchema } from './NewSchema';
+import { NewSchema, type ISchema } from './NewSchema';
 
 //
 //
@@ -47,31 +47,13 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
   abstract getErrors(): ValidationErrorRecord;
 
   //
-  //  Schema info about optional, required
+  //  Schema info about optional, required, default
   //
 
-  optional(): MinMaxSchema<Exclude<T, null> | null | undefined> {
-    const clone = this.clone();
-    clone.req = false;
-    return clone as any;
-  }
-
-  required(): MinMaxSchema<Exclude<T, null> | undefined> {
-    const clone = this.clone();
-    clone.req = true;
-    return clone as any;
-  }
-
-  /**
-   * Set to default value when the value is null or undefined
-   */
-  default(defaultSetter: (() => T) | T): MinMaxSchema<T | null | undefined> {
-    const clone = /* @__PURE__ */ this.clone();
-    clone.def = (
-      typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
-    ) as () => T;
-    return clone as any;
-  }
+  declare optional: () => MinMaxSchema<Exclude<T, null> | null | undefined>;
+  declare required: () => MinMaxSchema<Exclude<T, null> | undefined>;
+  /** Set to default value when the value is null or undefined */
+  declare default: (defaultSetter: (() => T) | T) => MinMaxSchema<T>;
 
   /**
    * Parse the value, return Issue when the value is invalid
@@ -130,3 +112,10 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
     return clone;
   }
 }
+
+//
+//
+
+MinMaxSchema.prototype.required = NewSchema.prototype.required as any;
+MinMaxSchema.prototype.optional = NewSchema.prototype.optional as any;
+MinMaxSchema.prototype.default = NewSchema.prototype.default as any;

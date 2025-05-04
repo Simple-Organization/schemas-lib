@@ -18,7 +18,7 @@ export type ISchema<T> = {
   safeParse: (originalValue: any) => SafeParseReturn<T>;
   optional: () => ISchema<Exclude<T, null> | null | undefined>;
   required: () => ISchema<Exclude<T, null> | undefined>;
-  default: (defaultSetter: (() => T) | T) => ISchema<T | null | undefined>;
+  default: (defaultSetter: (() => T) | T) => ISchema<T>;
   clone: () => ISchema<T>;
   name?: string;
   parent?: ISchema<any>;
@@ -70,7 +70,7 @@ export abstract class NewSchema<T> {
   /**
    * Set to default value when the value is null or undefined
    */
-  default(defaultSetter: (() => T) | T): NewSchema<T | null | undefined> {
+  default(defaultSetter: (() => T) | T): NewSchema<T> {
     const clone = this.clone();
     clone.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter

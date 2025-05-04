@@ -60,7 +60,7 @@ export function safeParseError<T>(
 //
 
 export function safeParseSuccess<T>(
-  data: T | undefined | null = null,
+  data: T | null | undefined = null,
 ): SafeParseReturn<T> {
-  return { success: true, data };
+  return { success: true, data: data as any };
 }

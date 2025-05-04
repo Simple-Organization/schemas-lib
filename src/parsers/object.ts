@@ -130,7 +130,6 @@ export function object<T extends ObjectSchemaRecord>(
   //  Creates the output schema
 
   const schema = new ObjectSchema<T>([jsonObjectParser, objectParser], {
-    jsType: '',
     shape: _shape,
   });
 
@@ -152,33 +151,6 @@ export function object<T extends ObjectSchemaRecord>(
   }
 
   schema.meta.shape = _shape;
-
-  schema.meta.jsType =
-    '{' +
-    Object.keys(_shape)
-      .map((key) => {
-        let prop = '"' + key.replace(/"/g, '\\"') + '"';
-        let postfix = '';
-
-        if (_shape[key].meta.mode === 'optional') {
-          prop += '?';
-        } else if (_shape[key].meta.mode === 'nullish') {
-          prop += '?';
-          postfix += '|null';
-        } else if (_shape[key].meta.mode === 'nullable') {
-          postfix += '|null';
-        }
-
-        let jsType = _shape[key].meta.jsType;
-
-        if (_shape[key].meta.namedJSType) {
-          jsType = _shape[key].meta.namedJSType;
-        }
-
-        return prop + ':' + jsType + postfix;
-      })
-      .join(';') +
-    '}';
 
   return schema;
 }
