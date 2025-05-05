@@ -3,6 +3,9 @@ import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { MinMaxSchema } from '../schemas/MinMaxSchema';
 
+//
+//
+
 class IntSchema extends MinMaxSchema<number> {
   internalParse(originalValue: any): SafeParseReturn<number> {
     let value = originalValue;
@@ -43,12 +46,16 @@ class IntSchema extends MinMaxSchema<number> {
   }
 }
 
-//
-//
-
 /**
  * Only integer numbers, can be bigger than 32 bits integers
  */
 export function int() {
   return new IntSchema();
+}
+
+/**
+ * Integer number, must be greater than 0
+ */
+export function id() {
+  return new IntSchema().min(1);
 }

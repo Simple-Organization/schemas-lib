@@ -16,7 +16,7 @@ export function email() {
   return new RegexSchema(email_regex, 'O campo não é um email');
 }
 
-/** stringInteger */
-export function stringInteger() {
-  return new RegexSchema(integer_regex, 'O campo não é um inteiro');
+/** intString */
+export function intString() {
+  return new RegexSchema(integer_regex, 'O campo não é um texto de inteiro');
 }

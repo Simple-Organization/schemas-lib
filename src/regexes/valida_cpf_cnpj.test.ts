@@ -1,11 +1,7 @@
-import {
-  validarCPF,
-  validarCNPJ,
-  validarRG,
-  formatarCPF,
-  formatCNPJ,
-} from './valida_cpf_cnpj';
 import { test, expect } from 'bun:test';
+import { formatarCPF, validarCPF } from './cpf';
+import { formatCNPJ, validarCNPJ } from './cnpj';
+import { formatarRG, validarRG } from './rg';
 
 test('validarCPF - CPFs válidos', () => {
   expect(validarCPF('529.982.247-25')).toBe(true);
@@ -51,4 +47,8 @@ test('formatarCPF', () => {
 
 test('formatCNPJ', () => {
   expect(formatCNPJ('04252011000110')).toBe('04.252.011/0001-10');
+});
+
+test('formatarRG', () => {
+  expect(formatarRG('123456789')).toBe('123.456.789-9');
 });
