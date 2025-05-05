@@ -1,6 +1,6 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import type { ISchema, SafeParseReturn } from '../schemas/Schema';
+import { Schema2 } from '../version2/Schema2';
+import type { ParseContext } from '../version2/types';
 
 //
 //
@@ -57,82 +57,120 @@ export class ObjectSchema<
     }
   }
 
-  //
-  //
-
-  internalParse(originalValue: any): SafeParseReturn<T> {
-    let value = originalValue;
-
-    //
-    //  If the value is a string, try to parse it as JSON
-
-    if (typeof value === 'string') {
-      if (value === '') value = null;
+  /**
+   * Coerce the value to a number or null if empty
+   */
+  preprocess(p: ParseContext): void {
+    if (typeof p.value === 'string') {
+      if (p.value === '') p.value = null;
       else
         try {
-          value = JSON.parse(value);
+          p.value = JSON.parse(p.value);
         } catch {
-          return safeParseError('not_valid_json', this, originalValue);
+          return p.error('not_valid_json');
         }
-    } else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    } else if (p.value === undefined) {
+      p.value = null;
     }
 
-    //
-    //  If the value is not an object, return an error
-
-    if (typeof value !== 'object') {
-      return safeParseError('not_object', this, originalValue);
-    }
-
-    //
-    //  Validates each key of the object
-
-    const shape = this.shape;
-    const results: Record<string, SafeParseReturn<any>> = {};
-    const output: Record<string, any> = {};
-
-    for (const key of Object.keys(shape)) {
-      results[key] = shape[key].safeParse(value[key]);
-
-      if (!results[key].success) {
-        // Worst error ever 😂😂😂
-        return safeParseError('invalid_object_value', this, originalValue);
+    if (p.value === null) {
+      if (this.req) {
+        return p.error('required');
       }
 
-      output[key] = results[key].data;
+      if (this.def) {
+        p.value = this.def();
+        return;
+      }
     }
-
-    if (this.strict) {
-      return this._strictParser(value, output, originalValue);
-    }
-
-    return safeParseSuccess(output as T);
   }
 
   //
   //
 
-  private _strictParser(
-    value: Record<string, any>,
-    output: Record<string, any>,
-    originalValue: any,
-  ): SafeParseReturn<T> {
+  process(p: ParseContext): void {
+    //
+    //  If the value is not an object, return an error
+
+    if (typeof p.value !== 'object') {
+      return p.error('not_object');
+    }
+
+    //
+    //  Validates each key of the object
+
+    const shape = this.shape as any as Record<string, Schema2<any>>;
+    const output: Record<string, any> = {};
+
+    //
+    // Saves the previous state of ParseContext
+    const { value: values, original, path } = p;
+
+    let hasError = false;
+
+    //
+    //
+
+    for (const key of Object.keys(shape)) {
+      path.push(key);
+      p.value = values[key];
+      p.original = values[key];
+      p.schema = shape[key];
+      p.hasError = false;
+
+      shape[key].preprocess(p);
+
+      if (p.hasError) {
+        hasError = true;
+        output[key] = p.value;
+        path.pop();
+        continue;
+      } else if (p.value === null) {
+        output[key] = p.value;
+        path.pop();
+        continue;
+      }
+
+      shape[key].process(p);
+      if (p.hasError) {
+        hasError = true;
+      }
+
+      output[key] = p.value;
+      path.pop();
+    }
+
+    p.value = values;
+    p.original = original;
+    p.schema = this;
+    p.hasError = hasError;
+
+    if (hasError) {
+      p.value = output as T;
+      return p.error('object_invalid');
+    }
+
+    if (this.strict) {
+      return this._strictParser(p, output);
+    }
+
+    p.value = output as T;
+  }
+
+  //
+  //
+
+  private _strictParser(p: ParseContext, output: Record<string, any>): void {
     const shapeKeys = Object.keys(this.shape!);
-    const valueKeys = Object.keys(value);
+    const valueKeys = Object.keys(p.value);
 
     const extraKeys = valueKeys.filter((key) => !shapeKeys.includes(key));
 
     if (extraKeys.length > 0) {
-      // Worst error ever 😂😂😂
-      return safeParseError('object_extra_keys', this, originalValue);
+      return p.error('object_extra_keys', extraKeys);
     }
 
-    return safeParseSuccess(output as T);
+    p.value = output;
   }
 
   //
@@ -143,19 +181,15 @@ export class ObjectSchema<
   declare default: (defaultSetter: (() => T) | T) => ObjectSchema<R, T>;
   declare parse: (originalValue: any) => T;
   declare safeParse: (originalValue: any) => SafeParseReturn<T>;
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
-  }
 }
 
 //
 //
 
-ObjectSchema.prototype.optional = Schema.prototype.optional as any;
-ObjectSchema.prototype.default = Schema.prototype.default as any;
-ObjectSchema.prototype.safeParse = Schema.prototype.safeParse as any;
-ObjectSchema.prototype.parse = Schema.prototype.parse as any;
+ObjectSchema.prototype.optional = Schema2.prototype.optional as any;
+ObjectSchema.prototype.default = Schema2.prototype.default as any;
+ObjectSchema.prototype.safeParse = Schema2.prototype.safeParse as any;
+ObjectSchema.prototype.parse = Schema2.prototype.parse as any;
 (ObjectSchema.prototype as any).isSchema = true;
 
 //

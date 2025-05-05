@@ -1,52 +1,80 @@
-import type { SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { MinMaxSchema } from '../schemas/MinMaxSchema';
+import type { ParseContext } from '../version2/types';
+import { Schema2 } from '../version2/Schema2';
 
 //
 //
 
-class IntSchema extends MinMaxSchema<number> {
-  internalParse(originalValue: any): SafeParseReturn<number> {
-    let value = originalValue;
+class IntSchema extends Schema2<number> {
+  vMin?: number | undefined;
+  vMax?: number | undefined;
 
-    if (typeof value === 'string') {
-      value = value.trim();
-      if (value === '') value = null;
-      else value = Number(value);
-    } else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'number') {
+      return p.error('not_number_type');
     }
 
-    if (typeof value !== 'number') {
-      return safeParseError('not_number_type', this, value);
+    if (Number.isNaN(p.value)) {
+      return p.error('nan');
     }
 
-    if (Number.isNaN(value)) {
-      return safeParseError('nan', this, originalValue);
+    if (!Number.isInteger(p.value)) {
+      return p.error('not_integer');
     }
 
-    if (!Number.isInteger(value)) {
-      return safeParseError('not_integer', this, originalValue);
+    if (this.vMin !== undefined && p.value < this.vMin) {
+      return p.error('min_number');
     }
 
-    if (this.vMin !== undefined && value < this.vMin) {
-      return safeParseError('min_number', this, originalValue);
+    if (this.vMax !== undefined && p.value > this.vMax) {
+      return p.error('max_number');
     }
-
-    if (this.vMax !== undefined && value > this.vMax) {
-      return safeParseError('max_number', this, originalValue);
-    }
-
-    return safeParseSuccess(value);
   }
 
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
+  min(value: number): this {
+    this.vMin = value;
+    return this;
+  }
+  max(value: number): this {
+    this.vMax = value;
+    return this;
+  }
+  between(min: number, max: number): this {
+    this.vMin = min;
+    this.vMax = max;
+    return this;
+  }
+}
+
+//
+//
+
+IntSchema.prototype.preprocess = numberPreprocess;
+
+//
+//
+
+export function numberPreprocess(this: Schema2<number>, p: ParseContext): void {
+  if (typeof p.value === 'string') {
+    p.value = p.value.trim();
+
+    if (p.value === '') {
+      p.value = null;
+    } else {
+      p.value = Number(p.value);
+    }
+  } else if (p.value === undefined) {
+    p.value = null;
+  }
+
+  if (p.value === null) {
+    if (this.req) {
+      return p.error('required');
+    }
+
+    if (this.def) {
+      p.value = this.def();
+      return;
+    }
   }
 }
 
