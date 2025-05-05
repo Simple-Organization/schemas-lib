@@ -17,7 +17,7 @@ test('Deve executar o safeParse com sucesso', () => {
 
   expect(schema.safeParse('1234')).toEqual({
     success: true,
-    data: '123.4--',
+    data: '12.34.-',
   });
 
   expect(schema.safeParse('11111111')).toEqual({

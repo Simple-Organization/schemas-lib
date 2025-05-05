@@ -135,6 +135,7 @@ export const validationErrors: ValidationErrorRecord = {
     'Erro temporário, não é possível validar o discriminador, ele não é uma string',
   not_regex: `O campo não é uma string válida para regex`,
   not_month: `O campo não é uma string válida para mês`,
+  not_rg: `O campo não é uma string válida para RG`,
 };
 
 //
