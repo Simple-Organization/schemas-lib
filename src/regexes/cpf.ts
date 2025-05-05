@@ -56,6 +56,9 @@ export function validarCPF(cpf: string): boolean {
 //
 
 export function formatarCPF(cpf: string): string {
+  // Removendo caracteres não numéricos
+  cpf = cpf.replace(/\D/g, '');
+
   const parte1 = cpf.slice(0, 3);
   const parte2 = cpf.slice(3, 6);
   const parte3 = cpf.slice(6, 9);
@@ -85,7 +88,7 @@ export class CPFSchema extends Schema<string> {
       return safeParseError('not_string', this, originalValue);
 
     if (validarCPF(value)) {
-      return safeParseSuccess(formatarCPF(value.replace(/\D/g, '')));
+      return safeParseSuccess(formatarCPF(value));
     }
 
     return safeParseError('not_cpf', this, originalValue);

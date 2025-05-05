@@ -50,5 +50,6 @@ test('formatCNPJ', () => {
 });
 
 test('formatarRG', () => {
-  expect(formatarRG('123456789')).toBe('123.456.789-9');
+  expect(formatarRG('208229048')).toBe('20.822.904-8');
+  expect(formatarRG('28.034.332-2')).toBe('28.034.332-2');
 });

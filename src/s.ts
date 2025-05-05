@@ -17,3 +17,6 @@ export * from './regexes/regex';
 export { url } from './regexes/url';
 export { cnpj } from './regexes/cnpj';
 export { cpf } from './regexes/cpf';
+export { rg } from './regexes/rg';
+export { date } from './regexes/date';
+export { month } from './regexes/month';

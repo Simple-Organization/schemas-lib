@@ -60,6 +60,9 @@ export function validarCNPJ(cnpj: string): boolean {
 //
 
 export function formatCNPJ(cnpj: string): string {
+  // Removendo caracteres não numéricos
+  cnpj = cnpj.replace(/\D/g, '');
+
   // Aplicar a formatação do CNPJ: XX.XXX.XXX/XXXX-XX
   return (
     cnpj.slice(0, 2) +
@@ -95,7 +98,7 @@ export class CNPJSchema extends Schema<string> {
       return safeParseError('not_string', this, originalValue);
 
     if (validarCNPJ(value)) {
-      return safeParseSuccess(formatCNPJ(value.replace(/\D/g, '')));
+      return safeParseSuccess(formatCNPJ(value));
     }
 
     return safeParseError('not_cpf', this, originalValue);

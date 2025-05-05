@@ -128,7 +128,6 @@ export class ObjectSchema<
 
     const extraKeys = valueKeys.filter((key) => !shapeKeys.includes(key));
 
-    console.log('extraKeys', extraKeys);
     if (extraKeys.length > 0) {
       // Worst error ever 😂😂😂
       return safeParseError('object_extra_keys', this, originalValue);

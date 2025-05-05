@@ -29,13 +29,17 @@ export function validarRG(rg: string): boolean {
 //
 //
 
-export function formatarRG(cpf: string): string {
-  const parte1 = cpf.slice(0, 3);
-  const parte2 = cpf.slice(3, 6);
-  const parte3 = cpf.slice(6, 9);
-  const parte4 = cpf.slice(9, 11);
+export function formatarRG(rg: string): string {
+  // Removendo caracteres não numéricos
+  rg = rg.replace(/\D/g, '');
 
-  return `${parte1}.${parte2}.${parte3}-${parte4}`;
+  // Formatando o RG
+  const parte1 = rg.slice(0, 2);
+  const parte2 = rg.slice(2, 5);
+  const parte3 = rg.slice(5, 8);
+  const digitoVerificador = rg.slice(8);
+
+  return `${parte1}.${parte2}.${parte3}-${digitoVerificador}`;
 }
 
 //
@@ -59,7 +63,7 @@ export class RGSchema extends Schema<string> {
       return safeParseError('not_string', this, originalValue);
 
     if (validarRG(value)) {
-      return safeParseSuccess(formatarRG(value.replace(/\D/g, '')));
+      return safeParseSuccess(formatarRG(value));
     }
 
     return safeParseError('not_rg', this, originalValue);
