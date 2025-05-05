@@ -1,4 +1,4 @@
-import type { SchemaMeta } from './types';
+import type { SchemaMeta } from './version2/types';
 import { validationErrors } from './validationErrors';
 
 export class Issue {
