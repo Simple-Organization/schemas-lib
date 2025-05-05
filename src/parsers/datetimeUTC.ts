@@ -1,7 +1,7 @@
 import type { ValidationErrorRecord } from '../validationErrors';
+import type { SafeParseReturn } from '../schemas/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { MinMaxSchema } from '../schemas/MinMaxSchema';
-import type { SafeParseReturn } from '../schemas/Schema';
 
 //
 //
@@ -12,22 +12,13 @@ export class DatetimeSchema extends MinMaxSchema<string> {
 
     if (typeof value === 'string') {
       value = value.trim();
-      if (value === '') {
-        value = null;
-      } else {
-        value = new Date(value);
-      }
-    } else if (value === undefined) {
-      value = null;
-    }
+      if (value === '') value = null;
+      else value = new Date(value);
+    } else if (value === undefined) value = null;
 
     if (value === null) {
-      if (this.req) {
-        return safeParseError('required', this, originalValue);
-      }
-      if (this.def) {
-        return safeParseSuccess(this.def());
-      }
+      if (this.req) return safeParseError('required', this, originalValue);
+      if (this.def) return safeParseSuccess(this.def());
       return safeParseSuccess();
     }
 

@@ -33,26 +33,18 @@ export class ArraySchema<S extends ISchema<any>>
     //  If the value is a string, try to parse it as JSON
 
     if (typeof value === 'string') {
-      if (value === '') {
-        value = null;
-      } else {
+      if (value === '') value = null;
+      else
         try {
           value = JSON.parse(value);
         } catch {
           return safeParseError('not_valid_json', this, originalValue);
         }
-      }
-    } else if (value === undefined) {
-      value = null;
-    }
+    } else if (value === undefined) value = null;
 
     if (value === null) {
-      if (this.req) {
-        return safeParseError('required', this, originalValue);
-      }
-      if (this.def) {
-        return safeParseSuccess(this.def());
-      }
+      if (this.req) return safeParseError('required', this, originalValue);
+      if (this.def) return safeParseSuccess(this.def());
       return safeParseSuccess();
     }
 

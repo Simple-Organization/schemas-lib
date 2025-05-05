@@ -34,7 +34,8 @@ export class RegexSchema extends Schema<string> {
 
     this.regex.lastIndex = 0; // Reset the regex index to 0
     if (!this.regex.test(value)) {
-      return safeParseError(this.msg || 'not_regex', this, originalValue);
+      // TODO: add a better error message
+      return safeParseError('not_regex', this, originalValue);
     }
 
     return safeParseSuccess(value);

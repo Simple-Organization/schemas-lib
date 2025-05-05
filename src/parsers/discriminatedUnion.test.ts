@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { distinct } from './distinct';
+import { discriminatedUnion } from './discriminatedUnion';
 import { object } from './object';
 import { literal } from './literal';
 import { int } from './int';
@@ -17,7 +17,7 @@ const DogSchema = object({
   age: int(),
 });
 
-const schema = distinct('type', [CatSchema, DogSchema]);
+const schema = discriminatedUnion('type', [CatSchema, DogSchema]);
 
 test('Deve executar o safeParse com sucesso para cat', () => {
   expect(schema.safeParse({ type: 'cat', name: 'meow', age: 2 })).toEqual({

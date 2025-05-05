@@ -131,6 +131,9 @@ export const validationErrors: ValidationErrorRecord = {
     'Erro temporário, não é possível validar o discriminador',
   missing_discriminator:
     'Erro temporário, não é possível validar o discriminador, ele não foi encontrado',
+  not_string:
+    'Erro temporário, não é possível validar o discriminador, ele não é uma string',
+  not_regex: `O campo não é uma string válida para regex`,
 };
 
 //

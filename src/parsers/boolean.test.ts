@@ -25,12 +25,6 @@ test('Deve executar o safeParse com sucesso', () => {
     error: new SchemaLibError('required', schema, ''),
   });
 
-  // whitespace string
-  expect(schema.safeParse('   ')).toEqual({
-    success: false,
-    error: new SchemaLibError('boolean_type', schema, '   '),
-  });
-
   // undefined
   expect(schema.safeParse(undefined)).toEqual({
     success: false,

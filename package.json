@@ -3,7 +3,7 @@
   "version": "3.0.0-next.1",
   "author": "Simple Organization",
   "scripts": {
-    "build": "tsc && rollup -c && bun build src/index.ts --outfile=dist/index.js",
+    "build": "tsc && rollup -c && bun build src/index.ts --outfile=dist/index.js --target=browser",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "prepack": "pnpm build",
     "test": "mocha tests/**/*.spec.ts -r esbuild-register -extension ts --file tests/setup-tests.ts"

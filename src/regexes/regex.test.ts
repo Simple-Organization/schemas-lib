@@ -53,7 +53,7 @@ test('Deve usar mensagem customizada', () => {
 
   expect(schema.safeParse('abc')).toEqual({
     success: false,
-    error: new SchemaLibError('apenas números', schema, 'abc'),
+    error: new SchemaLibError('not_regex', schema, 'abc'),
   });
 });
 

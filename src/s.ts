@@ -4,7 +4,7 @@ export { array } from './parsers/array';
 export { enumType } from './parsers/enumType';
 export { union } from './parsers/union';
 export { literal } from './parsers/literal';
-export { distinct } from './parsers/distinct';
+export { discriminatedUnion as distinct } from './parsers/discriminatedUnion';
 
 export { string, trimmed } from './parsers/string';
 export { int } from './parsers/int';
