@@ -1,10 +1,11 @@
 import { test, expect } from 'bun:test';
-import { object2, strict2 } from './object2';
-import { int2 as int } from './int2';
+import { object2 as object, strict2 as strict } from './object2';
+import { id2 as id, int2 as int } from './int2';
 import { SchemaLibError } from '../SchemaLibError';
+import { float2 as float, number2 as number } from './float2';
 
 test('Deve executar o safeParse com sucesso', () => {
-  const schema = object2({
+  const schema = object({
     a: int(),
     b: int().optional(),
   });
@@ -51,7 +52,7 @@ test('Deve executar o safeParse com sucesso', () => {
 });
 
 test('Deve ser opcional com sucesso', () => {
-  const schema = object2({
+  const schema = object({
     a: int().optional(),
   }).optional();
 
@@ -62,7 +63,7 @@ test('Deve ser opcional com sucesso', () => {
 });
 
 test('Deve ter default com sucesso', () => {
-  const schema = object2({
+  const schema = object({
     a: int(),
   }).default(() => ({ a: 42 }));
 
@@ -76,7 +77,7 @@ test('Deve ter default com sucesso', () => {
 });
 
 test('Deve validar modo estrito', () => {
-  const schema = strict2({
+  const schema = strict({
     a: int(),
   });
 
@@ -92,10 +93,47 @@ test('Deve validar modo estrito', () => {
 });
 
 test('Deve retornar erro para JSON inválido', () => {
-  const schema = object2({ a: int() });
+  const schema = object({ a: int() });
 
   expect(schema.safeParse('{a:1}')).toEqual({
     success: false,
     error: new SchemaLibError('not_valid_json', schema, '{a:1}'),
+  });
+});
+
+test('Deve fazer parse de um objeto complexo', () => {
+  const schema = object({
+    a: int(),
+    b: float(),
+    c: number(),
+    d: id(),
+    e: object({ f: object({ g: id() }) }),
+  });
+
+  expect(
+    schema.safeParse({
+      a: 1,
+      b: 2.5,
+      c: 3,
+      d: 4,
+      e: {
+        f: {
+          g: 5,
+        },
+      },
+    }),
+  ).toEqual({
+    success: true,
+    data: {
+      a: 1,
+      b: 2.5,
+      c: 3,
+      d: 4,
+      e: {
+        f: {
+          g: 5,
+        },
+      },
+    },
   });
 });

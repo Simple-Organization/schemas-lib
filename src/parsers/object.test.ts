@@ -1,7 +1,8 @@
 import { test, expect } from 'bun:test';
 import { object, strict } from './object';
-import { int } from './int';
+import { id, int } from './int';
 import { SchemaLibError } from '../SchemaLibError';
+import { float, number } from './float';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = object({
@@ -97,5 +98,42 @@ test('Deve retornar erro para JSON inválido', () => {
   expect(schema.safeParse('{a:1}')).toEqual({
     success: false,
     error: new SchemaLibError('not_valid_json', schema, '{a:1}'),
+  });
+});
+
+test('Deve fazer parse de um objeto complexo', () => {
+  const schema = object({
+    a: int(),
+    b: float(),
+    c: number(),
+    d: id(),
+    e: object({ f: object({ g: id() }) }),
+  });
+
+  expect(
+    schema.safeParse({
+      a: 1,
+      b: 2.5,
+      c: 3,
+      d: 4,
+      e: {
+        f: {
+          g: 5,
+        },
+      },
+    }),
+  ).toEqual({
+    success: true,
+    data: {
+      a: 1,
+      b: 2.5,
+      c: 3,
+      d: 4,
+      e: {
+        f: {
+          g: 5,
+        },
+      },
+    },
   });
 });

@@ -14,7 +14,8 @@ export type ErrorMessageCode =
   | 'not_valid_json'
   | 'not_object'
   | 'object_extra_keys'
-  | 'object_invalid'; // Temporary, to be removed later
+  | 'object_invalid' // Temporary, to be removed later
+  | 'not_finite';
 
 //
 //
