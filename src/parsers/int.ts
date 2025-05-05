@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema2 } from '../version2/Schema2';
+import type { ISchema } from '../schemas/Schema';
 
 //
 //
@@ -53,7 +54,7 @@ IntSchema.prototype.preprocess = numberPreprocess;
 //
 //
 
-export function numberPreprocess(this: Schema2<number>, p: ParseContext): void {
+export function numberPreprocess(this: ISchema<number>, p: ParseContext): void {
   if (typeof p.value === 'string') {
     p.value = p.value.trim();
 

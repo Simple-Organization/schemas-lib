@@ -1,7 +1,7 @@
 // Parsers and prebuiltin schemas
 export { object, strict } from './parsers/object';
 export { array } from './parsers/array';
-export { enumType } from './parsers/enumType';
+export { enumType as enum } from './parsers/enum';
 export { union } from './parsers/union';
 export { literal } from './parsers/literal';
 export { discriminatedUnion as distinct } from './parsers/discriminatedUnion';

@@ -18,7 +18,10 @@ export type ErrorMessageCode =
   | 'not_finite'
   | 'not_string_type'
   | 'not_literal_equal'
-  | 'not_enum';
+  | 'not_enum'
+  | 'boolean_type'
+  | 'not_array'
+  | 'invalid_array_element';
 
 //
 //
@@ -55,5 +58,11 @@ export function getErrorMessage(
       return `O campo não é igual a ${addon}`;
     case 'not_enum':
       return `O campo não é um dos valores permitidos: ${addon}`;
+    case 'boolean_type':
+      return 'O campo não é um booleano';
+    case 'not_array':
+      return 'O campo não é um array';
+    case 'invalid_array_element':
+      return 'O campo não é um array válido';
   }
 }

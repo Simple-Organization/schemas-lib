@@ -18,8 +18,10 @@ export type ISchema<T> = {
   readonly isSchema: true;
   parse: (originalValue: any) => T;
   safeParse: (originalValue: any) => SafeParseReturn<T>;
-  optional: () => ISchema<Exclude<T, null> | null | undefined>;
   default: (defaultSetter: (() => T) | T) => ISchema<T>;
+  optional: () => ISchema<Exclude<T, null> | null | undefined>;
+  req: boolean;
+  def?: () => T;
 };
 
 //

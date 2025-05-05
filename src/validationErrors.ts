@@ -1,5 +1,5 @@
 import type { ISchema } from './schemas/Schema';
-import type { EnumSchema } from './parsers/enumType';
+import type { EnumSchema } from './parsers/enum';
 import type { LiteralSchema } from './parsers/literal';
 import { falseOptions, trueOptions } from './parsers/boolean';
 import { MinMaxSchema } from './schemas/MinMaxSchema';

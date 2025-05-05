@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { enumType } from './enumType';
+import { enumType } from './enum';
 import { SchemaLibError } from '../SchemaLibError';
 
 //

@@ -1,6 +1,5 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
+import type { ParseContext } from '../version2/types';
+import { Schema2 } from '../version2/Schema2';
 
 //
 //
@@ -11,34 +10,18 @@ export const falseOptions = [false, 0, 'false', '0', 'off'] as const;
 //
 //
 
-export class BooleanSchema extends Schema<boolean> {
+export class BooleanSchema extends Schema2<boolean> {
   //
   //
 
-  internalParse(originalValue: any): SafeParseReturn<boolean> {
-    let value = originalValue;
-
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
-    }
-
-    if (trueOptions.includes(value)) {
-      return safeParseSuccess(true);
-    } else if (falseOptions.includes(value)) {
-      return safeParseSuccess(false);
+  process(p: ParseContext): void {
+    if (trueOptions.includes(p.value)) {
+      p.value = true;
+    } else if (falseOptions.includes(p.value)) {
+      p.value = false;
     } else {
-      return safeParseError('boolean_type', this, originalValue);
+      return p.error('boolean_type');
     }
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

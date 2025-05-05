@@ -57,33 +57,8 @@ export class ObjectSchema<
     }
   }
 
-  /**
-   * Coerce the value to a number or null if empty
-   */
-  preprocess(p: ParseContext): void {
-    if (typeof p.value === 'string') {
-      if (p.value === '') p.value = null;
-      else
-        try {
-          p.value = JSON.parse(p.value);
-        } catch {
-          return p.error('not_valid_json');
-        }
-    } else if (p.value === undefined) {
-      p.value = null;
-    }
-
-    if (p.value === null) {
-      if (this.req) {
-        return p.error('required');
-      }
-
-      if (this.def) {
-        p.value = this.def();
-        return;
-      }
-    }
-  }
+  /** Uses jsonPreprocess */
+  declare preprocess: (p: ParseContext) => void;
 
   //
   //
@@ -186,10 +161,40 @@ export class ObjectSchema<
 //
 //
 
+/** Coerce to json if is string */
+export function jsonPreprocess(this: ISchema<any>, p: ParseContext): void {
+  if (typeof p.value === 'string') {
+    if (p.value === '') p.value = null;
+    else
+      try {
+        p.value = JSON.parse(p.value);
+      } catch {
+        return p.error('not_valid_json');
+      }
+  } else if (p.value === undefined) {
+    p.value = null;
+  }
+
+  if (p.value === null) {
+    if (this.req) {
+      return p.error('required');
+    }
+
+    if (this.def) {
+      p.value = this.def();
+      return;
+    }
+  }
+}
+
+//
+//
+
 ObjectSchema.prototype.optional = Schema2.prototype.optional as any;
 ObjectSchema.prototype.default = Schema2.prototype.default as any;
 ObjectSchema.prototype.safeParse = Schema2.prototype.safeParse as any;
 ObjectSchema.prototype.parse = Schema2.prototype.parse as any;
+ObjectSchema.prototype.preprocess = jsonPreprocess;
 (ObjectSchema.prototype as any).isSchema = true;
 
 //
