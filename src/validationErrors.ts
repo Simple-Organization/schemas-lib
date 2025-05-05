@@ -136,6 +136,7 @@ export const validationErrors: ValidationErrorRecord = {
   not_regex: `O campo não é uma string válida para regex`,
   not_month: `O campo não é uma string válida para mês`,
   not_rg: `O campo não é uma string válida para RG`,
+  object_invalid: `O campo não é um objeto válido`,
 };
 
 //

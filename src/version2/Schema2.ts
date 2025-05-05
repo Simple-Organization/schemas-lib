@@ -91,9 +91,7 @@ export abstract class Schema2<T> {
         error: new SchemaLibError(c.issues[0].code as any, this, c.original),
         success: false,
       };
-    }
-
-    if (c.value === null) {
+    } else if (c.value === null) {
       return {
         data: null as any,
         success: true,

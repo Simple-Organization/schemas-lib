@@ -18,7 +18,7 @@ export type ParseContext = {
   /** Array mutável usada para definir a posição do erro de validação */
   path: PropertyKey[];
   /** Define um erro atual */
-  error(code: ErrorMessageCode): void;
+  error(code: ErrorMessageCode, addon?: any): void;
 };
 
 export interface Issue {

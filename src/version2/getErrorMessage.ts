@@ -10,7 +10,11 @@ export type ErrorMessageCode =
   | 'not_integer'
   | 'min_number'
   | 'max_number'
-  | 'nan';
+  | 'nan'
+  | 'not_valid_json'
+  | 'not_object'
+  | 'object_extra_keys'
+  | 'object_invalid'; // Temporary, to be removed later
 
 //
 //
@@ -18,6 +22,7 @@ export type ErrorMessageCode =
 export function getErrorMessage(
   code: ErrorMessageCode,
   c: ParseContext,
+  addon?: any,
 ): string | void {
   switch (code) {
     case 'required':
@@ -32,5 +37,11 @@ export function getErrorMessage(
       return `O campo é maior que o máximo ${(c.schema as MinMaxSchema<number>).vMax}`;
     case 'nan':
       return 'O campo não é um número válido';
+    case 'not_valid_json':
+      return 'O campo não é um JSON válido';
+    case 'not_object':
+      return 'O campo não é um objeto';
+    case 'object_extra_keys':
+      return `O campo tem chaves extras: ${addon}`;
   }
 }
