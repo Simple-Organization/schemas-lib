@@ -4,9 +4,6 @@ export * as s from './s';
 // Utils
 export { getParsedType } from './utils/utils';
 
-// Prebuilt schemas
-export * from './prebuilt';
-
 // Errors
 export { validationErrors } from './validationErrors';
 
