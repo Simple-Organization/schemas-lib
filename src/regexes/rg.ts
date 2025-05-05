@@ -76,6 +76,10 @@ export class RGSchema extends Schema<string> {
 
 /**
  * RG - Brazilian RG
+ *
+ * PRECISA ser melhorado usando https://www.npmjs.com/package/br-validations ou
+ * https://www.npmjs.com/package/@brasil-interface/utils ou
+ * https://www.npmjs.com/package/br-validations
  */
 export function rg() {
   return new RGSchema();

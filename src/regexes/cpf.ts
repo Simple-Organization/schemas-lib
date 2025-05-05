@@ -101,6 +101,10 @@ export class CPFSchema extends Schema<string> {
 
 /**
  * CPF - Brazilian CPF
+ *
+ * PRECISA ser melhorado usando https://www.npmjs.com/package/br-validations ou
+ * https://www.npmjs.com/package/@brasil-interface/utils ou
+ * https://www.npmjs.com/package/br-validations
  */
 export function cpf() {
   return new CPFSchema();
