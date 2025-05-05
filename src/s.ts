@@ -20,3 +20,4 @@ export { cpf } from './regexes/cpf';
 export { rg } from './regexes/rg';
 export { date } from './regexes/date';
 export { month } from './regexes/month';
+export { telefone } from './regexes/telefone';

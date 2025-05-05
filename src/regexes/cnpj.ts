@@ -111,6 +111,9 @@ export class CNPJSchema extends Schema<string> {
 
 /**
  * CNPJ - Brazilian CNPJ
+ *
+ * PRECISA ser melhorado usando https://www.npmjs.com/package/br-validations ou
+ * https://www.npmjs.com/package/@brasil-interface/utils
  */
 export function cnpj() {
   return new CNPJSchema();
