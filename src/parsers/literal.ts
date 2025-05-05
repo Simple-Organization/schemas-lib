@@ -1,6 +1,5 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
+import type { ParseContext } from '../version2/types';
+import { Schema2 } from '../version2/Schema2';
 
 //
 //
@@ -10,7 +9,7 @@ export type Primitive = string | number | bigint | boolean | null | undefined;
 //
 //
 
-export class LiteralSchema<T extends Primitive> extends Schema<T> {
+export class LiteralSchema<T extends Primitive> extends Schema2<T> {
   constructor(public literal: T) {
     super();
 
@@ -31,28 +30,10 @@ export class LiteralSchema<T extends Primitive> extends Schema<T> {
   //
   //
 
-  internalParse(originalValue: any): SafeParseReturn<T> {
-    let value = originalValue;
-
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+  process(p: ParseContext): void {
+    if (p.value !== this.literal) {
+      return p.error('not_literal_equal', this.literal);
     }
-
-    if (value !== this.literal) {
-      return safeParseError('not_literal_equal', this, originalValue);
-    }
-
-    return safeParseSuccess(value);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

@@ -1,7 +1,7 @@
 import { test, expect } from 'bun:test';
 import { string, StringSchema, trimmed } from './string';
 import { SchemaLibError } from '../SchemaLibError';
-import type { MinMaxSchema } from '../schemas/MinMaxSchema';
+import type { Schema2 } from '../version2/Schema2';
 
 //
 //
@@ -58,8 +58,8 @@ test.each([[trimmed() as StringSchema], [string() as StringSchema]])(
 //
 
 test.each([
-  [trimmed().optional() as MinMaxSchema<string | null | undefined>],
-  [string().optional() as MinMaxSchema<string | null | undefined>],
+  [trimmed().optional() as Schema2<string | null | undefined>],
+  [string().optional() as Schema2<string | null | undefined>],
 ])('Deve ser opcional com sucesso', (schema) => {
   expect(schema.safeParse('')).toEqual({ success: true, data: null });
   if ((schema as StringSchema).trim) {

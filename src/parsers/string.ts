@@ -1,49 +1,65 @@
-import type { SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { MinMaxSchema } from '../schemas/MinMaxSchema';
+import type { ParseContext } from '../version2/types';
+import { Schema2 } from '../version2/Schema2';
 
 //
 //
 
-export class StringSchema extends MinMaxSchema<string> {
+export class StringSchema extends Schema2<string> {
   trim = true;
+  vMin?: number | undefined;
+  vMax?: number | undefined;
 
-  //
-  //
-
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
-
+  /**
+   * Coerce the value to a string or null if empty
+   */
+  preprocess(p: ParseContext): void {
     // Boilerplate to normalize the value with trimming
-    if (typeof value === 'string') {
-      if (this.trim) value = value.trim();
-      if (value === '') value = null;
-    } else if (value === undefined) value = null;
+    if (typeof p.value === 'string') {
+      if (this.trim) p.value = p.value.trim();
+      if (p.value === '') p.value = null;
+    } else if (p.value === undefined) p.value = null;
 
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    if (p.value === null) {
+      if (this.req) {
+        return p.error('required');
+      }
+
+      if (this.def) {
+        p.value = this.def();
+        return;
+      }
     }
-
-    if (typeof value !== 'string') {
-      return safeParseError('not_string_type', this, originalValue);
-    }
-
-    if (this.vMin !== undefined && value.length < this.vMin) {
-      return safeParseError('min_number', this, originalValue);
-    }
-
-    if (this.vMax !== undefined && value.length > this.vMax) {
-      return safeParseError('max_number', this, originalValue);
-    }
-
-    return safeParseSuccess(value);
   }
 
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
+  //
+  //
+
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'string') {
+      return p.error('not_string_type');
+    }
+
+    if (this.vMin !== undefined && p.value.length < this.vMin) {
+      return p.error('min_number');
+    }
+
+    if (this.vMax !== undefined && p.value.length > this.vMax) {
+      return p.error('max_number');
+    }
+  }
+
+  min(value: number): this {
+    this.vMin = value;
+    return this;
+  }
+  max(value: number): this {
+    this.vMax = value;
+    return this;
+  }
+  between(min: number, max: number): this {
+    this.vMin = min;
+    this.vMax = max;
+    return this;
   }
 }
 

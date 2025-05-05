@@ -1,42 +1,24 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
+import type { ParseContext } from '../version2/types';
+import { Schema } from '../schemas/Schema';
+import { Schema2 } from '../version2/Schema2';
 
 //
 //
 
-export class EnumSchema extends Schema<string> {
+export class EnumSchema extends Schema2<string> {
   enum: string[] = [];
 
   //
   //
 
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
-
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'string') {
+      return p.error('not_string_type');
     }
 
-    if (typeof value !== 'string') {
-      return safeParseError('not_string_type', this, originalValue);
+    if (!this.enum.includes(p.value)) {
+      return p.error('not_enum', this.enum);
     }
-
-    if (!this.enum.includes(value)) {
-      return safeParseError('not_enum', this, originalValue);
-    }
-
-    return safeParseSuccess(value);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 
