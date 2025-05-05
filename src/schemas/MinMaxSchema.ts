@@ -23,7 +23,6 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
   declare readonly isSchema: true;
   req = true;
   def?: () => T;
-  parent?: ISchema<any>;
   vMin: number | undefined;
   vMax: number | undefined;
 
@@ -46,16 +45,7 @@ export abstract class MinMaxSchema<T> implements ISchema<T> {
    * Parse the value, return Issue when the value is invalid
    */
   safeParse(originalValue: any): SafeParseReturn<T> {
-    const parsed = this.internalParse(originalValue);
-
-    if (parsed.error && this.def) {
-      return {
-        data: this.def(),
-        success: true,
-      };
-    }
-
-    return parsed;
+    return this.internalParse(originalValue);
   }
 
   /**

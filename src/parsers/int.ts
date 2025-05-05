@@ -26,6 +26,10 @@ class IntSchema extends MinMaxSchema<number> {
       return safeParseError('not_number_type', this, value);
     }
 
+    if (Number.isNaN(value)) {
+      return safeParseError('nan', this, originalValue);
+    }
+
     if (!Number.isInteger(value)) {
       return safeParseError('not_integer', this, originalValue);
     }

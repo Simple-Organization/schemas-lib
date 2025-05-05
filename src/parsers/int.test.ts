@@ -51,7 +51,7 @@ test('Deve executar o safeParse com sucesso', () => {
 
   expect(schema.safeParse('a')).toEqual({
     success: false,
-    error: new SchemaLibError('not_integer', schema, 'a'),
+    error: new SchemaLibError('nan', schema, 'a'),
   });
 });
 
@@ -122,5 +122,17 @@ test('Deve ter testar min, max e between', () => {
   expect(schema3.safeParse(1)).toEqual({
     success: true,
     data: 1,
+  });
+});
+
+//
+//
+
+test('Valor default não pode cancelar erro', () => {
+  const schema = int().default(() => 1);
+
+  expect(schema.safeParse('asdf')).toEqual({
+    success: false,
+    error: new SchemaLibError('nan', schema, 'asdf'),
   });
 });

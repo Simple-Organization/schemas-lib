@@ -59,6 +59,7 @@ export abstract class Schema<T> {
     this.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
+    this.req = false;
     return this;
   }
 
@@ -66,16 +67,7 @@ export abstract class Schema<T> {
    * Parse the value, return Issue when the value is invalid
    */
   safeParse(originalValue: any): SafeParseReturn<T> {
-    const parsed = this.internalParse(originalValue);
-
-    if (parsed.error && this.def) {
-      return {
-        data: this.def(),
-        success: true,
-      };
-    }
-
-    return parsed;
+    return this.internalParse(originalValue);
   }
 
   /**
@@ -98,10 +90,3 @@ export abstract class Schema<T> {
 //
 
 (Schema.prototype as any).isSchema = true;
-
-//
-//
-
-export const defaultValidationErrors: ValidationErrorRecord = {
-  required: 'O campo é obrigatório',
-};
