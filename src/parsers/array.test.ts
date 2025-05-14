@@ -3,15 +3,34 @@ import { array } from './array';
 import { int } from '../parsers/int';
 import { SchemaLibError } from '../SchemaLibError';
 
-test('Deve executar o safeParse com sucesso', () => {
+test('Deve executar o safeParse com sucesso 1', () => {
+  const schema = array(int());
+
+  expect(schema.safeParse(['1'])).toEqual({
+    success: true,
+    data: [1],
+  });
+});
+
+//
+//
+
+test('Deve executar o safeParse com sucesso 2', () => {
+  const schema = array(int());
+
+  expect(schema.safeParse(['a'])).toEqual({
+    success: false,
+    error: new SchemaLibError('nan', schema, ['a']),
+  });
+});
+
+//
+//
+
+test('Deve executar o safeParse com sucesso 3', () => {
   const schema = array(int());
 
   expect(schema.safeParse([1, 2, 3])).toEqual({
-    success: true,
-    data: [1, 2, 3],
-  });
-
-  expect(schema.safeParse(['1', 2, 3])).toEqual({
     success: true,
     data: [1, 2, 3],
   });
@@ -43,12 +62,12 @@ test('Deve executar o safeParse com sucesso', () => {
 
   expect(schema.safeParse(['a', 2])).toEqual({
     success: false,
-    error: new SchemaLibError('invalid_array_element', schema, ['a', 2]),
+    error: new SchemaLibError('nan', schema, ['a', 2]),
   });
 
   expect(schema.safeParse('[1,"a"]')).toEqual({
     success: false,
-    error: new SchemaLibError('invalid_array_element', schema, '[1,"a"]'),
+    error: new SchemaLibError('nan', schema, '[1,"a"]'),
   });
 
   expect(schema.safeParse('not_json')).toEqual({

@@ -58,7 +58,11 @@ export class ArraySchema<S extends ISchema<any>>
       p.original = values[i];
       p.hasError = false;
 
+      // console.log('p antes preprocess', { ...p, schema: undefined });
+
       element.preprocess(p);
+
+      // console.log('p depois preprocess', { ...p, schema: undefined });
 
       if (p.hasError) {
         hasError = true;
@@ -76,14 +80,16 @@ export class ArraySchema<S extends ISchema<any>>
         hasError = true;
       }
 
+      // console.log('p depois process', { ...p, schema: undefined });
+
       output[i] = p.value;
       path.pop();
     }
 
-    p.value = values;
+    p.value = output;
     p.original = original;
     p.schema = this;
-    // p.hasError = hasError;
+    p.hasError = hasError;
   }
 
   //

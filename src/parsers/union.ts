@@ -1,6 +1,5 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import type { ISchema, SafeParseReturn } from '../version2/types';
+import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { Schema } from '../version2/Schema';
 
 //
@@ -88,10 +87,6 @@ export class UnionSchema<S extends readonly ISchema<any>[]>
   declare safeParse: (
     originalValue: any,
   ) => SafeParseReturn<OutputOf<S[number]>>;
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
-  }
 }
 
 //
