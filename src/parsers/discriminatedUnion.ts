@@ -2,6 +2,7 @@ import type { ISchema, ParseContext, SafeParseReturn } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { ObjectSchema } from './object';
+import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 
 //
 //
@@ -15,16 +16,15 @@ export class DistinctSchema<
   Prop extends string,
   Schemas extends readonly ObjectSchema<any>[],
 > extends Schema<Schemas[number]['_o']> {
-  process(c: ParseContext): void {
-    throw new Error('Method not implemented.');
-  }
-
   declare readonly _o: Schemas[number]['_o'];
   declare readonly isSchema: true;
 
   readonly discriminator: Prop;
   readonly schemas: Schemas;
   private readonly schemaMap: Map<any, ObjectSchema<any>>;
+
+  //
+  //
 
   constructor(discriminator: Prop, schemas: Schemas) {
     super();
@@ -54,45 +54,35 @@ export class DistinctSchema<
     this.schemaMap = map;
   }
 
-  internalParse(originalValue: any): SafeParseReturn<Schemas[number]['_o']> {
-    let value = originalValue;
+  //
+  //
 
-    //
-    //  If the value is a string, try to parse it as JSON
-
-    if (typeof value === 'string') {
-      if (value === '') value = null;
-      else
-        try {
-          value = JSON.parse(value);
-        } catch {
-          return safeParseError('not_valid_json', this, originalValue);
-        }
-    } else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'object' || p.value === null) {
+      return p.error('not_object');
     }
 
-    if (typeof value !== 'object' || value === null) {
-      return safeParseError('not_object', this, originalValue);
-    }
-
-    const discValue = value[this.discriminator];
+    const discValue = p.value[this.discriminator];
     if (discValue === undefined) {
-      return safeParseError('missing_discriminator', this, originalValue);
+      return p.error('missing_discriminator', this.discriminator);
     }
 
     const schema = this.schemaMap.get(discValue);
     if (!schema) {
-      return safeParseError('invalid_discriminator', this, originalValue);
+      return p.error('invalid_discriminator', discValue);
     }
 
-    return schema.safeParse(originalValue);
+    schema.preprocess(p);
+
+    if (p.hasError) {
+      return;
+    }
+
+    schema.process(p);
   }
 }
+
+DistinctSchema.prototype.preprocess = jsonPreprocess;
 
 //
 //

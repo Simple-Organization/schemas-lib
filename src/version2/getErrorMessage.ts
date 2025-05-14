@@ -24,7 +24,9 @@ export type ErrorMessageCode =
   | 'union_no_match'
   | 'not_datetime_type'
   | 'min_datetime'
-  | 'max_datetime';
+  | 'max_datetime'
+  | 'missing_discriminator'
+  | 'invalid_discriminator';
 
 //
 //
@@ -75,5 +77,9 @@ export function getErrorMessage(
       return `O campo é menor que a data mínima ${addon}`;
     case 'max_datetime':
       return `O campo é maior que a data máxima ${addon}`;
+    case 'missing_discriminator':
+      return `O campo não possui o discriminador "${addon}"`;
+    case 'invalid_discriminator':
+      return `O campo possui um discriminador inválido "${addon}"`;
   }
 }
