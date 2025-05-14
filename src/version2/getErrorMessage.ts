@@ -20,7 +20,8 @@ export type ErrorMessageCode =
   | 'not_enum'
   | 'boolean_type'
   | 'not_array'
-  | 'invalid_array_element';
+  | 'invalid_array_element'
+  | 'union_no_match';
 
 //
 //
@@ -63,5 +64,7 @@ export function getErrorMessage(
       return 'O campo não é um array';
     case 'invalid_array_element':
       return 'O campo não é um array válido';
+    case 'union_no_match':
+      return 'O campo não é um dos tipos permitidos';
   }
 }

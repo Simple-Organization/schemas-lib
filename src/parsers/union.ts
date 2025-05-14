@@ -1,5 +1,9 @@
-import type { ISchema, SafeParseReturn } from '../version2/types';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import type {
+  ISchema,
+  Issue,
+  ParseContext,
+  SafeParseReturn,
+} from '../version2/types';
 import { Schema } from '../version2/Schema';
 
 //
@@ -37,33 +41,72 @@ export class UnionSchema<S extends readonly ISchema<any>[]>
     this.schemas = schemas;
   }
 
-  internalParse(originalValue: any): SafeParseReturn<OutputOf<S[number]>> {
-    let value = originalValue;
+  /** Does nothing */
+  declare preprocess: (p: ParseContext) => void;
 
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
+  process(p: ParseContext): void {
+    //
+    // Saves the previous state of ParseContext like object does
+    const { value: values, issues } = p;
+    let firstIssues: Issue[] | null = null;
+    let firstValue: any = null;
 
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    //
+
+    for (const schema of this.schemas as any as Schema<any>[]) {
+      p.schema = schema;
+      p.value = values;
+      p.issues = []; // Reset issues for each schema
+
+      // console.log('p antes preprocess', {
+      //   ...p,
+      //   schema: undefined,
+      // });
+
+      schema.preprocess(p);
+
+      // console.log('p depois preprocess', {
+      //   ...p,
+      //   schema: undefined,
+      // });
+
+      if (p.hasError) {
+        p.hasError = false;
+
+        if (!firstIssues) {
+          firstIssues = p.issues;
+          firstValue = p.value;
+        }
+        continue;
+      }
+
+      schema.process(p);
+
+      // console.log('p depois process', {
+      //   ...p,
+      //   schema: undefined,
+      // });
+
+      if (p.hasError) {
+        p.hasError = false;
+
+        if (!firstIssues) {
+          firstIssues = p.issues;
+          firstValue = p.value;
+        }
+      } else {
+        firstIssues = null; // Reset firstIssues if a schema successfully parsed the value
+        p.issues = issues; // Reset issues to the original context
+        break; // Exit the loop if a schema successfully parsed the value
+      }
     }
 
-    let firstError: SafeParseReturn<any> | undefined;
-
-    for (const schema of this.schemas) {
-      const result = schema.safeParse(value);
-      if (result.success) {
-        return safeParseSuccess(result.data as OutputOf<S[number]>);
-      }
-      if (!firstError) {
-        firstError = result;
-      }
+    if (firstIssues) {
+      p.issues = [...issues, ...firstIssues];
+      p.value = firstValue;
+      p.hasError = true;
+      p.error('union_no_match');
     }
-
-    // return firstError ?? safeParseError('union_no_match', this, originalValue);
-    return safeParseError('union_no_match', this, originalValue);
   }
 
   //
@@ -92,6 +135,7 @@ export class UnionSchema<S extends readonly ISchema<any>[]>
 //
 //
 
+UnionSchema.prototype.preprocess = Schema.prototype.preprocess as any;
 UnionSchema.prototype.optional = Schema.prototype.optional as any;
 UnionSchema.prototype.default = Schema.prototype.default as any;
 UnionSchema.prototype.safeParse = Schema.prototype.safeParse as any;

@@ -27,7 +27,7 @@ test('Deve executar o safeParse com sucesso', () => {
 
   expect(schema.safeParse({})).toEqual({
     success: false,
-    error: new SchemaLibError('union_no_match', schema, {}),
+    error: new SchemaLibError('not_number_type', schema, {}),
   });
 });
 
@@ -42,6 +42,15 @@ test('Deve ser opcional com sucesso', () => {
   expect(schema.safeParse(null)).toEqual({ success: true, data: null });
   expect(schema.safeParse(2)).toEqual({ success: true, data: 2 });
   expect(schema.safeParse('abc')).toEqual({ success: true, data: 'abc' });
+});
+
+//
+//
+
+test('Deve retornar o primeiro sucesso', () => {
+  const schema = union([int(), string()]).optional();
+
+  expect(schema.safeParse(2)).toEqual({ success: true, data: 2 });
 });
 
 //
@@ -68,6 +77,6 @@ test('Deve retornar erro se nenhum schema casar', () => {
 
   expect(schema.safeParse({})).toEqual({
     success: false,
-    error: new SchemaLibError('union_no_match', schema, {}),
+    error: new SchemaLibError('not_number_type', schema, {}),
   });
 });
