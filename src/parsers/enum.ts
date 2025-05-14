@@ -1,11 +1,10 @@
 import type { ParseContext } from '../version2/types';
-import { Schema } from '../schemas/Schema';
-import { Schema2 } from '../version2/Schema2';
+import { Schema } from '../version2/Schema';
 
 //
 //
 
-export class EnumSchema extends Schema2<string> {
+export class EnumSchema extends Schema<string> {
   enum: string[] = [];
 
   //

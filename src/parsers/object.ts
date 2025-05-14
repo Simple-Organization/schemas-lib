@@ -1,6 +1,6 @@
-import type { ISchema, SafeParseReturn } from '../schemas/Schema';
-import { Schema2 } from '../version2/Schema2';
-import type { ParseContext } from '../version2/types';
+import type { ISchema, ParseContext, SafeParseReturn } from '../version2/types';
+import { Schema } from '../version2/Schema';
+import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 
 //
 //
@@ -74,7 +74,7 @@ export class ObjectSchema<
     //
     //  Validates each key of the object
 
-    const shape = this.shape as any as Record<string, Schema2<any>>;
+    const shape = this.shape as any as Record<string, Schema<any>>;
     const output: Record<string, any> = {};
 
     //
@@ -161,39 +161,10 @@ export class ObjectSchema<
 //
 //
 
-/** Coerce to json if is string */
-export function jsonPreprocess(this: ISchema<any>, p: ParseContext): void {
-  if (typeof p.value === 'string') {
-    if (p.value === '') p.value = null;
-    else
-      try {
-        p.value = JSON.parse(p.value);
-      } catch {
-        return p.error('not_valid_json');
-      }
-  } else if (p.value === undefined) {
-    p.value = null;
-  }
-
-  if (p.value === null) {
-    if (this.req) {
-      return p.error('required');
-    }
-
-    if (this.def) {
-      p.value = this.def();
-      return;
-    }
-  }
-}
-
-//
-//
-
-ObjectSchema.prototype.optional = Schema2.prototype.optional as any;
-ObjectSchema.prototype.default = Schema2.prototype.default as any;
-ObjectSchema.prototype.safeParse = Schema2.prototype.safeParse as any;
-ObjectSchema.prototype.parse = Schema2.prototype.parse as any;
+ObjectSchema.prototype.optional = Schema.prototype.optional as any;
+ObjectSchema.prototype.default = Schema.prototype.default as any;
+ObjectSchema.prototype.safeParse = Schema.prototype.safeParse as any;
+ObjectSchema.prototype.parse = Schema.prototype.parse as any;
 ObjectSchema.prototype.preprocess = jsonPreprocess;
 (ObjectSchema.prototype as any).isSchema = true;
 

@@ -1,3 +1,5 @@
+export { Schema } from './version2/Schema';
+
 // Parsers and prebuiltin schemas
 export { object, strict } from './parsers/object';
 export { array } from './parsers/array';

@@ -1,5 +1,4 @@
-import type { MinMaxSchema } from '../schemas/MinMaxSchema';
-import type { ParseContext } from './types';
+import type { MinMaxSchema, ParseContext } from './types';
 
 //
 //
@@ -39,9 +38,9 @@ export function getErrorMessage(
     case 'not_integer':
       return 'O campo não é um número inteiro';
     case 'min_number':
-      return `O campo é menor que o mínimo ${(c.schema as MinMaxSchema<number>).vMin}`;
+      return `O campo é menor que o mínimo ${(c.schema as MinMaxSchema).vMin}`;
     case 'max_number':
-      return `O campo é maior que o máximo ${(c.schema as MinMaxSchema<number>).vMax}`;
+      return `O campo é maior que o máximo ${(c.schema as MinMaxSchema).vMax}`;
     case 'nan':
       return 'O campo não é um número válido';
     case 'not_valid_json':

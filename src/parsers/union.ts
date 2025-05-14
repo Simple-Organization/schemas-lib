@@ -1,6 +1,7 @@
 import type { ValidationErrorRecord } from '../validationErrors';
-import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import type { ISchema, SafeParseReturn } from '../version2/types';
+import { Schema } from '../version2/Schema';
 
 //
 //

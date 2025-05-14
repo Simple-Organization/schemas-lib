@@ -1,6 +1,6 @@
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
+import type { ParseContext, SafeParseReturn } from '../version2/types';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { Schema } from '../version2/Schema';
 
 //
 //
@@ -81,6 +81,10 @@ export function formatCNPJ(cnpj: string): string {
 //
 
 export class CNPJSchema extends Schema<string> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
+
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
@@ -102,10 +106,6 @@ export class CNPJSchema extends Schema<string> {
     }
 
     return safeParseError('not_cpf', this, originalValue);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

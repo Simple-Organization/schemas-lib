@@ -1,6 +1,6 @@
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { Schema } from '../version2/Schema';
+import type { ParseContext, SafeParseReturn } from '../version2/types';
 
 //
 //
@@ -71,6 +71,9 @@ export function formatarCPF(cpf: string): string {
 //
 
 export class CPFSchema extends Schema<string> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
@@ -92,10 +95,6 @@ export class CPFSchema extends Schema<string> {
     }
 
     return safeParseError('not_cpf', this, originalValue);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

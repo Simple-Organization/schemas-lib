@@ -1,6 +1,6 @@
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
+import type { ParseContext, SafeParseReturn } from '../version2/types';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { Schema } from '../version2/Schema';
 
 // Regex para nomes: pelo menos 2 letras, pode conter letras acentuadas, números e espaços após as duas primeiras letras
 const regex = /^[a-zA-Z\u00C0-\u00FF]{2}[a-zA-Z\u00C0-\u00FF0-9 ]*$/;
@@ -15,6 +15,9 @@ export function validarNome(nome: string): boolean {
 
 // Schema para campo de nome
 export class NomeSchema extends Schema<string> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
@@ -38,10 +41,6 @@ export class NomeSchema extends Schema<string> {
     }
 
     return safeParseError('not_name', this, originalValue);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

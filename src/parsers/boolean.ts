@@ -1,5 +1,5 @@
 import type { ParseContext } from '../version2/types';
-import { Schema2 } from '../version2/Schema2';
+import { Schema } from '../version2/Schema';
 
 //
 //
@@ -10,7 +10,7 @@ export const falseOptions = [false, 0, 'false', '0', 'off'] as const;
 //
 //
 
-export class BooleanSchema extends Schema2<boolean> {
+export class BooleanSchema extends Schema<boolean> {
   //
   //
 
@@ -35,6 +35,6 @@ export class BooleanSchema extends Schema2<boolean> {
  *
  * `on` and `off` are for `HTMLInput[type='checkbox']`
  */
-export function boolean() {
+export function boolean(): BooleanSchema {
   return new BooleanSchema();
 }

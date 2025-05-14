@@ -1,12 +1,14 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import type { SafeParseReturn } from '../schemas/Schema';
+import { Schema } from '../version2/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { MinMaxSchema } from '../schemas/MinMaxSchema';
+import type { ParseContext, SafeParseReturn } from '../version2/types';
 
 //
 //
 
-export class DatetimeSchema extends MinMaxSchema<string> {
+export class DatetimeSchema extends Schema<string> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
@@ -78,10 +80,6 @@ export class DatetimeSchema extends MinMaxSchema<string> {
     this.min(min);
     this.max(max);
     return this;
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

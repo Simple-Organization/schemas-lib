@@ -1,12 +1,15 @@
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { Schema } from '../version2/Schema';
+import type { ParseContext, SafeParseReturn } from '../version2/types';
 import { hostname_regex } from './zodRegexes';
 
 //
 //
 
 export class URLSchema extends Schema<string> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
@@ -37,10 +40,6 @@ export class URLSchema extends Schema<string> {
     }
 
     return safeParseSuccess(value);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

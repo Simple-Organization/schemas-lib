@@ -1,6 +1,6 @@
-import type { ValidationErrorRecord } from '../validationErrors';
+import type { ISchema, ParseContext, SafeParseReturn } from '../version2/types';
+import { Schema } from '../version2/Schema';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
 import { ObjectSchema } from './object';
 
 //
@@ -15,6 +15,10 @@ export class DistinctSchema<
   Prop extends string,
   Schemas extends readonly ObjectSchema<any>[],
 > extends Schema<Schemas[number]['_o']> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
+
   declare readonly _o: Schemas[number]['_o'];
   declare readonly isSchema: true;
 
@@ -87,10 +91,6 @@ export class DistinctSchema<
     }
 
     return schema.safeParse(originalValue);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

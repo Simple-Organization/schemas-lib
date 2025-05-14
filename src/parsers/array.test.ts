@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { array } from './array';
-import { int } from './int';
+import { int } from '../parsers/int';
 import { SchemaLibError } from '../SchemaLibError';
 
 test('Deve executar o safeParse com sucesso', () => {

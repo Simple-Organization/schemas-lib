@@ -1,11 +1,11 @@
 import type { ParseContext } from '../version2/types';
-import { Schema2 } from '../version2/Schema2';
-import { numberPreprocess } from './int';
+import { Schema } from '../version2/Schema';
+import { numberPreprocess } from '../preprocess/numberPreprocess';
 
 //
 //
 
-export class NumberSchema extends Schema2<number> {
+export class NumberSchema extends Schema<number> {
   vMin: number | undefined;
   vMax: number | undefined;
 

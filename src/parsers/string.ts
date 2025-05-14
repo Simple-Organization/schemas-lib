@@ -1,10 +1,10 @@
 import type { ParseContext } from '../version2/types';
-import { Schema2 } from '../version2/Schema2';
+import { Schema } from '../version2/Schema';
 
 //
 //
 
-export class StringSchema extends Schema2<string> {
+export class StringSchema extends Schema<string> {
   trim = true;
   vMin?: number | undefined;
   vMax?: number | undefined;

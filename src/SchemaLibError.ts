@@ -1,5 +1,4 @@
-import { type ISchema, type SafeParseReturn } from './schemas/Schema';
-import { validationErrors } from './validationErrors';
+import type { ISchema, SafeParseReturn } from './version2/types';
 
 export class SchemaLibError {
   readonly value: any;
@@ -10,10 +9,6 @@ export class SchemaLibError {
     originalValue: any,
   ) {
     this.value = originalValue;
-
-    if (code !== 'custom' && validationErrors[code] === undefined) {
-      throw new Error(`Validation error "${code}" not found`);
-    }
   }
 
   get message() {
@@ -27,14 +22,8 @@ export class SchemaLibError {
     return this.toString();
   }
 
-  toString() {
-    const error = validationErrors[this.code];
-
-    if (typeof error === 'function') {
-      return error(this.value, this.owner);
-    }
-
-    return error;
+  toString(): string {
+    throw new Error('Not implemented');
   }
 }
 

@@ -1,6 +1,6 @@
-import type { ValidationErrorRecord } from '../validationErrors';
-import { Schema, type ISchema, type SafeParseReturn } from '../schemas/Schema';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import type { ISchema, ParseContext, SafeParseReturn } from '../version2/types';
+import { Schema } from '../version2/Schema';
+import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 
 //
 //
@@ -24,35 +24,15 @@ export class ArraySchema<S extends ISchema<any>>
     this.element = elementSchema;
   }
 
-  internalParse(
-    originalValue: any,
-  ): SafeParseReturn<Array<S extends ISchema<infer E> ? E : never>> {
-    let value = originalValue;
+  /** Uses jsonPreprocess */
+  declare preprocess: (p: ParseContext) => void;
 
-    //
-    //  If the value is a string, try to parse it as JSON
-
-    if (typeof value === 'string') {
-      if (value === '') value = null;
-      else
-        try {
-          value = JSON.parse(value);
-        } catch {
-          return safeParseError('not_valid_json', this, originalValue);
-        }
-    } else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
-    }
-
+  process(p: ParseContext): void {
     //
     //  If the value is not an array, return an error
 
-    if (!Array.isArray(value)) {
-      return safeParseError('not_array', this, originalValue);
+    if (!Array.isArray(p.value)) {
+      return p.error('not_array');
     }
 
     //
@@ -61,20 +41,49 @@ export class ArraySchema<S extends ISchema<any>>
     const results: SafeParseReturn<any>[] = [];
     const output: any[] = [];
 
-    for (const item of value) {
-      const result = this.element.safeParse(item);
+    //
+    // Saves the previous state of ParseContext like object does
+    const { value: values, original, path } = p;
 
-      if (!result.success) {
-        return safeParseError('invalid_array_element', this, originalValue);
+    let hasError = false;
+    const element = this.element as any as Schema<any>;
+    p.schema = element;
+
+    //
+    //
+
+    for (let i = 0; i < values.length; i++) {
+      path.push(i);
+      p.value = values[i];
+      p.original = values[i];
+      p.hasError = false;
+
+      element.preprocess(p);
+
+      if (p.hasError) {
+        hasError = true;
+        output[i] = p.value;
+        path.pop();
+        continue;
+      } else if (p.value === null) {
+        output[i] = p.value;
+        path.pop();
+        continue;
       }
 
-      output.push(result.data);
-      results.push(result);
+      element.process(p);
+      if (p.hasError) {
+        hasError = true;
+      }
+
+      output[i] = p.value;
+      path.pop();
     }
 
-    return safeParseSuccess(
-      output as Array<S extends ISchema<infer E> ? E : never>,
-    );
+    p.value = values;
+    p.original = original;
+    p.schema = this;
+    // p.hasError = hasError;
   }
 
   //
@@ -104,15 +113,12 @@ export class ArraySchema<S extends ISchema<any>>
   declare safeParse: (
     originalValue: any,
   ) => SafeParseReturn<Array<S extends ISchema<infer E> ? E : never>>;
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
-  }
 }
 
 //
 //
 
+ArraySchema.prototype.preprocess = jsonPreprocess;
 ArraySchema.prototype.optional = Schema.prototype.optional as any;
 ArraySchema.prototype.default = Schema.prototype.default as any;
 ArraySchema.prototype.safeParse = Schema.prototype.safeParse as any;

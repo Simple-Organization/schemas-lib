@@ -1,12 +1,11 @@
-import type { ParseContext } from './types';
-import type { SafeParseReturn } from '../schemas/Schema';
+import type { ParseContext, SafeParseReturn } from './types';
 import { getErrorMessage } from './getErrorMessage';
 import { SchemaLibError } from '../SchemaLibError';
 
 //
 //
 
-export abstract class Schema2<T> {
+export abstract class Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
   declare readonly isSchema: true;
@@ -40,7 +39,7 @@ export abstract class Schema2<T> {
   //  Schema info about optional, required
   //
 
-  optional(): Schema2<Exclude<T, null> | null | undefined> {
+  optional(): Schema<Exclude<T, null> | null | undefined> {
     this.req = false;
     return this as any;
   }
@@ -48,7 +47,7 @@ export abstract class Schema2<T> {
   /**
    * Set to default value when the value is null or undefined
    */
-  default(defaultSetter: (() => T) | T): Schema2<T> {
+  default(defaultSetter: (() => T) | T): Schema<T> {
     this.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
@@ -129,4 +128,4 @@ export abstract class Schema2<T> {
 //
 //
 
-(Schema2.prototype as any).isSchema = true;
+(Schema.prototype as any).isSchema = true;

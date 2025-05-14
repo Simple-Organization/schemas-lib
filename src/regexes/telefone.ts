@@ -1,6 +1,6 @@
-import { Schema, type SafeParseReturn } from '../schemas/Schema';
-import type { ValidationErrorRecord } from '../validationErrors';
 import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import { Schema } from '../version2/Schema';
+import type { ParseContext, SafeParseReturn } from '../version2/types';
 
 // Validação de telefone brasileiro (fixo ou celular)
 export function validarTelefone(phone: string): boolean {
@@ -45,6 +45,9 @@ export function formatarTelefone(phone: string): string {
 
 // Schema para telefone brasileiro
 export class TelefoneSchema extends Schema<string> {
+  process(c: ParseContext): void {
+    throw new Error('Method not implemented.');
+  }
   internalParse(originalValue: any): SafeParseReturn<string> {
     let value = originalValue;
 
@@ -66,10 +69,6 @@ export class TelefoneSchema extends Schema<string> {
     }
 
     return safeParseError('not_phone', this, originalValue);
-  }
-
-  getErrors(): ValidationErrorRecord {
-    throw new Error('Method not implemented.');
   }
 }
 

@@ -1,12 +1,12 @@
 import { test, expect } from 'bun:test';
-import { NumberSchema } from './float';
+import { number, NumberSchema } from './float';
 import { SchemaLibError } from '../SchemaLibError';
 
 //
 //
 
 test('Deve executar o safeParse com sucesso', () => {
-  const schema = new NumberSchema();
+  const schema = number();
 
   expect(schema.safeParse(1)).toEqual({
     success: true,

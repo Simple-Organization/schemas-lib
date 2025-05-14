@@ -1,5 +1,5 @@
 import type { ParseContext } from '../version2/types';
-import { Schema2 } from '../version2/Schema2';
+import { Schema } from '../version2/Schema';
 
 //
 //
@@ -9,7 +9,7 @@ export type Primitive = string | number | bigint | boolean | null | undefined;
 //
 //
 
-export class LiteralSchema<T extends Primitive> extends Schema2<T> {
+export class LiteralSchema<T extends Primitive> extends Schema<T> {
   constructor(public literal: T) {
     super();
 
