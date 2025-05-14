@@ -1,78 +1,68 @@
+import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
-import type { ParseContext, SafeParseReturn } from '../version2/types';
 
 //
 //
 
 export class DatetimeSchema extends Schema<string> {
-  process(c: ParseContext): void {
-    throw new Error('Method not implemented.');
+  vMin?: number | undefined;
+  vMax?: number | undefined;
+
+  preprocess(p: ParseContext): void {
+    // Boilerplate to normalize the value with trimming
+    if (typeof p.value === 'string') {
+      p.value = p.value.trim();
+      if (p.value === '') p.value = null;
+      else p.value = new Date(p.value);
+    } else if (p.value === undefined) p.value = null;
+
+    if (p.value === null) {
+      if (this.req) {
+        return p.error('required');
+      }
+
+      if (this.def) {
+        p.value = this.def();
+        return;
+      }
+    }
   }
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
 
-    if (typeof value === 'string') {
-      value = value.trim();
-      if (value === '') value = null;
-      else value = new Date(value);
-    } else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+  process(p: ParseContext): void {
+    if (typeof p.value === 'number') {
+      p.value = new Date(p.value);
     }
 
-    if (typeof value === 'number') {
-      value = new Date(value);
-    }
-
-    if (value instanceof Date) {
-      const time = value.getTime();
+    if (p.value instanceof Date) {
+      const time = p.value.getTime();
 
       if (Number.isNaN(time)) {
-        return safeParseError('not_datetime_type', this, originalValue);
+        return p.error('not_datetime_type');
       }
 
       if (this.vMin !== undefined && time < this.vMin) {
-        return safeParseError('min_datetime', this, originalValue);
+        return p.error('min_datetime', this.vMin);
       }
 
       if (this.vMax !== undefined && time > this.vMax) {
-        return safeParseError('max_datetime', this, originalValue);
+        return p.error('max_datetime', this.vMax);
       }
 
-      value = value.toISOString().replace(/\.\d+Z$/, 'Z');
+      p.value = p.value.toISOString().replace(/\.\d+Z$/, 'Z');
     }
 
-    if (typeof value === 'string') {
-      // if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)) {
-      //   return safeParseError('not_utc_datetime_string', this, originalValue);
-      // }
-      return safeParseSuccess(value);
+    if (typeof p.value !== 'string') {
+      return p.error('not_datetime_type');
     }
-
-    return safeParseError('not_datetime_type', this, originalValue);
   }
 
   min(value: number | Date | string): this {
-    const min = this.internalParse(value);
-    if (!min.success) {
-      throw new Error(`Invalid min value: ${min.error}`);
-    }
-
-    this.vMin = new Date(min.data!).getTime();
+    this.vMin = new Date(value).getTime();
     return this;
   }
 
   max(value: number | Date | string): this {
-    const max = this.internalParse(value);
-    if (!max.success) {
-      throw new Error(`Invalid max value: ${max.error}`);
-    }
-
-    this.vMax = new Date(max.data!).getTime();
+    this.vMax = new Date(value).getTime();
     return this;
   }
 

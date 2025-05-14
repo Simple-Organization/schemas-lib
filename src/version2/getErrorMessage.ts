@@ -21,7 +21,10 @@ export type ErrorMessageCode =
   | 'boolean_type'
   | 'not_array'
   | 'invalid_array_element'
-  | 'union_no_match';
+  | 'union_no_match'
+  | 'not_datetime_type'
+  | 'min_datetime'
+  | 'max_datetime';
 
 //
 //
@@ -66,5 +69,11 @@ export function getErrorMessage(
       return 'O campo não é um array válido';
     case 'union_no_match':
       return 'O campo não é um dos tipos permitidos';
+    case 'not_datetime_type':
+      return 'O campo não é uma data válida';
+    case 'min_datetime':
+      return `O campo é menor que a data mínima ${addon}`;
+    case 'max_datetime':
+      return `O campo é maior que a data máxima ${addon}`;
   }
 }
