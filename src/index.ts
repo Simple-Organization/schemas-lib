@@ -10,3 +10,5 @@ export { flatten, unflatten } from './utils/flatten';
 
 // Default
 export type { InferSchema, SafeParseReturn, Issue } from './version2/types';
+
+export { Schema } from './version2/Schema';
