@@ -7,9 +7,9 @@ import { Schema } from '../version2/Schema';
 // Utilitário para extrair o tipo de saída de um Schema
 type OutputOf<T> = T extends Schema<infer O> ? O : never;
 
-export class UnionSchema<S extends readonly Schema<any>[]>
-  implements Schema<OutputOf<S[number]>>
-{
+export class UnionSchema<S extends readonly Schema<any>[]> extends Schema<
+  OutputOf<S[number]>
+> {
   schemas: S;
   /** Property used only for type inference */
   declare readonly _o: OutputOf<S[number]>;
@@ -17,12 +17,11 @@ export class UnionSchema<S extends readonly Schema<any>[]>
 
   req = true;
 
-  def?: () => OutputOf<S[number]>;
-
   //
   //
 
   constructor(schemas: S) {
+    super();
     if (!Array.isArray(schemas) || schemas.length < 2) {
       throw new Error(
         `You must provide at least 2 schemas for the union. Received: ${schemas.length}`,
@@ -103,39 +102,7 @@ export class UnionSchema<S extends readonly Schema<any>[]>
       p.error('union_no_match');
     }
   }
-
-  //
-  //  Schema info about optional, required, default
-  //
-
-  declare optional: () => Schema<
-    Exclude<OutputOf<S[number]>, null> | null | undefined
-  >;
-  /** Set to default value when the value is null or undefined */
-  declare default: (
-    defaultSetter: (() => OutputOf<S[number]>) | OutputOf<S[number]>,
-  ) => UnionSchema<S>;
-  /**
-   * Parse the value, throw {@link SafeParseReturn} when the value is invalid
-   */
-  declare parse: (originalValue: any) => OutputOf<S[number]>;
-  /**
-   * Parse the value, return {@link SafeParseReturn} when the value is invalid
-   */
-  declare safeParse: (
-    originalValue: any,
-  ) => SafeParseReturn<OutputOf<S[number]>>;
 }
-
-//
-//
-
-UnionSchema.prototype.preprocess = Schema.prototype.preprocess as any;
-UnionSchema.prototype.optional = Schema.prototype.optional as any;
-UnionSchema.prototype.default = Schema.prototype.default as any;
-UnionSchema.prototype.safeParse = Schema.prototype.safeParse as any;
-UnionSchema.prototype.parse = Schema.prototype.parse as any;
-(UnionSchema.prototype as any).isSchema = true;
 
 //
 //

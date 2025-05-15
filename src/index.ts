@@ -10,7 +10,13 @@ export { getSchemaByPath } from './utils/getSchemaByPath';
 export { flatten, unflatten } from './utils/flatten';
 
 // Default
-export type { InferSchema, SafeParseReturn, Issue } from './version2/types';
+export type {
+  InferSchema,
+  SafeParseReturn,
+  Issue,
+  ParseContext,
+  MinMaxSchema,
+} from './version2/types';
 
 export { Schema } from './version2/Schema';
 // export { ArraySchema } from './parsers/array';
