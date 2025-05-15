@@ -36,7 +36,8 @@ export type ErrorMessageCode =
   | 'not_email'
   | 'not_regex'
   | 'not_name'
-  | 'not_a_file';
+  | 'not_a_file'
+  | 'custom';
 
 //
 //
@@ -113,6 +114,8 @@ export function getErrorMessage(
       return 'O campo não é um nome válido';
     case 'not_a_file':
       return 'O campo não é um arquivo';
+    case 'custom':
+      return addon ? addon : 'Erro de validação personalizada';
     default:
       console.log('Erro desconhecido', code);
       return 'Erro desconhecido';
