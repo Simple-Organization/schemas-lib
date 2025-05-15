@@ -64,7 +64,7 @@ export function getErrorMessage(
     case 'not_object':
       return 'O campo não é um objeto';
     case 'object_extra_keys':
-      return `O campo tem chaves extras: ${addon}`;
+      return `O campo tem chaves extras '${addon}'`;
     case 'not_finite':
       return 'O campo não é um número finito';
     case 'not_string_type':
@@ -72,7 +72,7 @@ export function getErrorMessage(
     case 'not_literal_equal':
       return `O campo não é igual a ${addon}`;
     case 'not_enum':
-      return `O campo não é um dos valores permitidos: ${addon}`;
+      return `O campo não é um dos valores permitidos '${addon}'`;
     case 'boolean_type':
       return 'O campo não é um booleano';
     case 'not_array':
@@ -88,9 +88,9 @@ export function getErrorMessage(
     case 'max_datetime':
       return `O campo é maior que a data máxima ${addon}`;
     case 'missing_discriminator':
-      return `O campo não possui o discriminador "${addon}"`;
+      return `O campo não possui o discriminador '${addon}'`;
     case 'invalid_discriminator':
-      return `O campo possui um discriminador inválido "${addon}"`;
+      return `O campo possui um discriminador inválido '${addon}'`;
     case 'not_cpf':
       return 'O campo não é um CPF válido';
     case 'not_cnpj':

@@ -7,8 +7,6 @@ import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = enumType(['A', 'B']);
-  // @ts-ignore
-  schema.enum = ['A', 'B'];
 
   expect(schema.safeParse('A')).toEqual({
     success: true,
@@ -32,8 +30,6 @@ test('Deve executar o safeParse com sucesso', () => {
 
 test('Deve ser opcional com sucesso', () => {
   const schema = enumType(['A', 'B']).optional();
-  // @ts-ignore
-  schema.enum = ['A', 'B'];
 
   expect(schema.safeParse('')).toEqual({ success: true, data: null });
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
@@ -66,11 +62,20 @@ test('Deve funcionar com uma array externa', () => {
 
 test('Deve ter default com sucesso', () => {
   const schema = enumType(['A', 'B']).default(() => 'A');
-  // @ts-ignore
-  schema.enum = ['A', 'B'];
 
   expect(schema.safeParse('')).toEqual({ success: true, data: 'A' });
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: 'A' });
   expect(schema.safeParse(null)).toEqual({ success: true, data: 'A' });
   expect(schema.safeParse('B')).toEqual({ success: true, data: 'B' });
+});
+
+//
+//
+
+test('Erro do enum não pode ter undefined', () => {
+  const schema = enumType(['A', 'B']);
+
+  expect(schema.safeParse('AAAAAAA').error!.issues[0].message).not.toContain(
+    'undefined',
+  );
 });

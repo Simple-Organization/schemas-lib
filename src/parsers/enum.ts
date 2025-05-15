@@ -16,7 +16,7 @@ export class EnumSchema extends Schema<string> {
     }
 
     if (!this.enum.includes(p.value)) {
-      return p.error('not_enum', this.enum);
+      return p.error('not_enum', this.enum.join(', '));
     }
   }
 }

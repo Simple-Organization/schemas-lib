@@ -66,10 +66,10 @@ export abstract class Schema<T> {
       hasError: false,
       issues: [],
       path: [],
-      error: (code) => {
+      error: (code, addon) => {
         c.hasError = true;
 
-        let message = getErrorMessage(code, c);
+        let message = getErrorMessage(code, c, addon);
         if (!message) {
           message = `Error ${code} not found`;
         }
