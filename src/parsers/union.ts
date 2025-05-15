@@ -1,5 +1,5 @@
 import type {
-  ISchema,
+  Schema,
   Issue,
   ParseContext,
   SafeParseReturn,
@@ -9,11 +9,11 @@ import { Schema } from '../version2/Schema';
 //
 //
 
-// Utilitário para extrair o tipo de saída de um ISchema
-type OutputOf<T> = T extends ISchema<infer O> ? O : never;
+// Utilitário para extrair o tipo de saída de um Schema
+type OutputOf<T> = T extends Schema<infer O> ? O : never;
 
-export class UnionSchema<S extends readonly ISchema<any>[]>
-  implements ISchema<OutputOf<S[number]>>
+export class UnionSchema<S extends readonly Schema<any>[]>
+  implements Schema<OutputOf<S[number]>>
 {
   schemas: S;
   /** Property used only for type inference */
@@ -113,7 +113,7 @@ export class UnionSchema<S extends readonly ISchema<any>[]>
   //  Schema info about optional, required, default
   //
 
-  declare optional: () => ISchema<
+  declare optional: () => Schema<
     Exclude<OutputOf<S[number]>, null> | null | undefined
   >;
   /** Set to default value when the value is null or undefined */
@@ -145,7 +145,7 @@ UnionSchema.prototype.parse = Schema.prototype.parse as any;
 //
 //
 
-export function union<T extends readonly ISchema<any>[]>(
+export function union<T extends readonly Schema<any>[]>(
   schemas: T,
 ): UnionSchema<T> {
   return new UnionSchema(schemas);

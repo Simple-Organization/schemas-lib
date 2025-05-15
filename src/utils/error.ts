@@ -1,5 +1,5 @@
 import { type ErrorMessageCode } from '../version2/getErrorMessage';
-import type { ISchema } from '../version2/types';
+import type { Schema } from '../version2/types';
 import { SchemaLibError } from '../SchemaLibError';
 import { expect } from 'bun:test';
 
@@ -8,7 +8,7 @@ import { expect } from 'bun:test';
 
 export function errorTesting(
   code: ErrorMessageCode,
-  schema: ISchema<any>,
+  schema: Schema<any>,
   value: any,
 ) {
   const safeParseResult = schema.safeParse(value);

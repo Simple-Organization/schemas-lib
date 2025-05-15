@@ -1,4 +1,4 @@
-import type { ISchema, ParseContext } from '../version2/types';
+import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { numberPreprocess } from '../preprocess/numberPreprocess';
 

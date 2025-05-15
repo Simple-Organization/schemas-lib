@@ -1,4 +1,4 @@
-import type { ISchema, ParseContext } from '../version2/types';
+import type { Schema, ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { ObjectSchema } from './object';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
@@ -86,14 +86,14 @@ DistinctSchema.prototype.preprocess = jsonPreprocess;
 //
 //
 
-type InferSchemaType<T> = T extends ISchema<infer U> ? U : never;
+type InferSchemaType<T> = T extends Schema<infer U> ? U : never;
 
 export function discriminatedUnion<
-  Schemas extends readonly ISchema<any>[],
+  Schemas extends readonly Schema<any>[],
   Discriminator extends string,
 >(
   discriminator: Discriminator,
   schemas: Schemas,
-): ISchema<InferSchemaType<Schemas[number]>> {
+): Schema<InferSchemaType<Schemas[number]>> {
   return new DistinctSchema(discriminator, schemas as any);
 }

@@ -1,9 +1,9 @@
-import type { ISchema, ParseContext } from '../version2/types';
+import type { Schema, ParseContext } from '../version2/types';
 
 //
 //
 
-export function numberPreprocess(this: ISchema<number>, p: ParseContext): void {
+export function numberPreprocess(this: Schema<number>, p: ParseContext): void {
   if (typeof p.value === 'string') {
     p.value = p.value.trim();
 

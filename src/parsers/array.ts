@@ -1,17 +1,16 @@
-import type { ISchema, ParseContext } from '../version2/types';
+import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 
 //
 //
 
-export class ArraySchema<S extends ISchema<any>>
-  extends Schema<Array<S extends ISchema<infer E> ? E : never>>
-  implements ISchema<Array<S extends ISchema<infer E> ? E : never>>
-{
+export class ArraySchema<S extends Schema<any>> extends Schema<
+  Array<S extends Schema<infer E> ? E : never>
+> {
   element: S;
   /** Property used only for type inference */
-  declare readonly _o: Array<S extends ISchema<infer E> ? E : never>;
+  declare readonly _o: Array<S extends Schema<infer E> ? E : never>;
   declare readonly isSchema: true;
 
   req = true;
@@ -96,8 +95,6 @@ ArraySchema.prototype.preprocess = jsonPreprocess;
 //
 //
 
-export function array<T extends ISchema<any>>(
-  elementSchema: T,
-): ArraySchema<T> {
+export function array<T extends Schema<any>>(elementSchema: T): ArraySchema<T> {
   return new ArraySchema(elementSchema);
 }

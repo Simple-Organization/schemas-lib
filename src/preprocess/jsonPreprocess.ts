@@ -1,10 +1,10 @@
-import type { ISchema, ParseContext } from '../version2/types';
+import type { Schema, ParseContext } from '../version2/types';
 
 //
 //
 
 /** Coerce to json if is string */
-export function jsonPreprocess(this: ISchema<any>, p: ParseContext): void {
+export function jsonPreprocess(this: Schema<any>, p: ParseContext): void {
   if (typeof p.value === 'string') {
     if (p.value === '') p.value = null;
     else

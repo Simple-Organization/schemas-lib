@@ -28,7 +28,7 @@ export type ParseContext = {
   /** Lista de erros que já aconteceram no schema.process */
   issues: Issue[];
   /** O Schema que está processando no momento */
-  schema: ISchema<any>;
+  schema: Schema<any>;
   /** Array mutável usada para definir a posição do erro de validação */
   path: PropertyKey[];
   /** Define um erro atual */
@@ -47,18 +47,4 @@ export type SafeParseReturn<T> = {
 //
 //
 
-export type ISchema<T> = {
-  readonly _o?: T;
-  readonly isSchema: true;
-  parse: (originalValue: any) => T;
-  safeParse: (originalValue: any) => SafeParseReturn<T>;
-  default: (defaultSetter: (() => T) | T) => ISchema<T>;
-  optional: () => ISchema<Exclude<T, null> | null | undefined>;
-  req: boolean;
-  def?: () => T;
-};
-
-//
-//
-
-export type Infer<T extends Schema<any>> = T['_o'];
+export type InferSchema<T extends Schema<any>> = T['_o'];
