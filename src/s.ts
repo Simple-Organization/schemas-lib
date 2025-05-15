@@ -6,7 +6,7 @@ export { array } from './parsers/array';
 export { enumType as enum } from './parsers/enum';
 export { union } from './parsers/union';
 export { literal } from './parsers/literal';
-export { discriminatedUnion as distinct } from './parsers/discriminatedUnion';
+export { discriminatedUnion } from './parsers/discriminatedUnion';
 
 export { string, trimmed } from './parsers/string';
 export { int, id } from './parsers/int';
@@ -23,3 +23,4 @@ export { rg } from './regexes/rg';
 export { date } from './regexes/date';
 export { month } from './regexes/month';
 export { telefone } from './regexes/telefone';
+export { nome } from './regexes/nameField';
