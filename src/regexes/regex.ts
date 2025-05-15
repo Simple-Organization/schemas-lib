@@ -2,7 +2,7 @@ import { email_regex, integer_regex, ipv4_regex } from './zodRegexes';
 import { RegexSchema } from './RegexSchema';
 
 /** A string with a regex */
-export function regex(regex: RegExp, msg?: string) {
+export function regex(regex: RegExp, msg: string) {
   return new RegexSchema(regex, msg);
 }
 
@@ -13,10 +13,13 @@ export function ipv4() {
 
 /** email */
 export function email() {
-  return new RegexSchema(email_regex, 'O campo não é um email');
+  return new RegexSchema(email_regex, 'O campo não é um email válido');
 }
 
 /** intString */
 export function intString() {
-  return new RegexSchema(integer_regex, 'O campo não é um texto de inteiro');
+  return new RegexSchema(
+    integer_regex,
+    'O campo não é um texto de número inteiro',
+  );
 }

@@ -1,13 +1,12 @@
 import { test, expect } from 'bun:test';
 import { regex } from './regex';
-import { SchemaLibError } from '../SchemaLibError';
 import { errorTesting } from '../utils/error';
 
 //
 //
 
 test('Deve executar o safeParse com sucesso', () => {
-  const schema = regex(/^[a-z]+$/);
+  const schema = regex(/^[a-z]+$/, 'Apenas letras minúsculas');
 
   expect(schema.safeParse('abc')).toEqual({
     success: true,
@@ -35,13 +34,17 @@ test('Deve usar mensagem customizada', () => {
   const schema = regex(/^\d+$/, 'apenas números');
 
   errorTesting('not_regex', schema, 'abc');
+
+  expect(schema.safeParse('AAAAAAA').error!.issues[0].message).toBe(
+    'apenas números',
+  );
 });
 
 //
 //
 
 test('Deve ser opcional com sucesso', () => {
-  const schema = regex(/^[a-z]+$/).optional();
+  const schema = regex(/^[a-z]+$/, 'Apenas letras minúsculas').optional();
 
   expect(schema.safeParse('')).toEqual({ success: true, data: null });
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
@@ -53,7 +56,9 @@ test('Deve ser opcional com sucesso', () => {
 //
 
 test('Deve ter default com sucesso', () => {
-  const schema = regex(/^[a-z]+$/).default(() => 'default');
+  const schema = regex(/^[a-z]+$/, 'Apenas letras minúsculas').default(
+    () => 'default',
+  );
 
   expect(schema.safeParse('')).toEqual({ success: true, data: 'default' });
   expect(schema.safeParse(undefined)).toEqual({

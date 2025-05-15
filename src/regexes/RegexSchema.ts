@@ -7,7 +7,7 @@ import { Schema } from '../version2/Schema';
 export class RegexSchema extends Schema<string> {
   constructor(
     readonly regex: RegExp,
-    readonly msg?: string,
+    readonly msg: string,
   ) {
     super();
   }
@@ -19,9 +19,9 @@ export class RegexSchema extends Schema<string> {
     if (typeof p.value !== 'string') return p.error('not_string_type');
 
     this.regex.lastIndex = 0; // Reset the regex index to 0
+
     if (!this.regex.test(p.value)) {
-      // TODO: add a better error message
-      return p.error('not_regex');
+      return p.error('not_regex', this.msg);
     }
   }
 }

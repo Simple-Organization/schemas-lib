@@ -108,7 +108,7 @@ export function getErrorMessage(
     case 'not_email':
       return 'O campo não é um e-mail válido';
     case 'not_regex':
-      return 'O campo não corresponde à expressão regular';
+      return addon ? addon : 'O campo não corresponde à expressão regular';
     case 'not_name':
       return 'O campo não é um nome válido';
     case 'not_a_file':
