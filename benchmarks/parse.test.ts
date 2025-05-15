@@ -1,8 +1,6 @@
 import { Bench } from 'tinybench';
 import { test } from 'bun:test';
 import { s } from '../src';
-import { object2 } from '../src/version2/object2';
-import { id2 } from '../src/version2/int2';
 import z from 'zod';
 
 //
@@ -56,10 +54,6 @@ test('2 - Parse Zod vs schemas-lib', async () => {
     id: s.id().optional(),
   });
 
-  const userSchemaLib2 = object2({
-    id: id2().optional(),
-  });
-
   const userZod = z.object({
     id: z.number().int().min(1).nullish(),
   });
@@ -80,9 +74,6 @@ test('2 - Parse Zod vs schemas-lib', async () => {
     })
     .add('SchemasLib 1', () => {
       userSchemaLib1.safeParse(validData);
-    })
-    .add('SchemasLib 2', () => {
-      userSchemaLib2.safeParse(validData);
     });
 
   await bench.run();
@@ -95,8 +86,6 @@ test('2 - Parse Zod vs schemas-lib', async () => {
 
 test('3 - Parse Zod vs schemas-lib', async () => {
   const userSchemaLib1 = s.id();
-
-  const userSchemaLib2 = id2();
 
   const userZod1 = z.number().int().min(1).nullish();
   const userZod2 = z.number();
@@ -112,9 +101,6 @@ test('3 - Parse Zod vs schemas-lib', async () => {
     })
     .add('SchemasLib 1', () => {
       userSchemaLib1.safeParse(1);
-    })
-    .add('SchemasLib 2', () => {
-      userSchemaLib2.safeParse(1);
     });
 
   await bench.run();

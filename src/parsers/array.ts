@@ -1,4 +1,4 @@
-import type { ISchema, ParseContext, SafeParseReturn } from '../version2/types';
+import type { ISchema, ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 
@@ -6,6 +6,7 @@ import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 //
 
 export class ArraySchema<S extends ISchema<any>>
+  extends Schema<Array<S extends ISchema<infer E> ? E : never>>
   implements ISchema<Array<S extends ISchema<infer E> ? E : never>>
 {
   element: S;
@@ -15,17 +16,13 @@ export class ArraySchema<S extends ISchema<any>>
 
   req = true;
 
-  def?: () => Array<S extends ISchema<infer E> ? E : never>;
-
   //
   //
 
   constructor(readonly elementSchema: S) {
+    super();
     this.element = elementSchema;
   }
-
-  /** Uses jsonPreprocess */
-  declare preprocess: (p: ParseContext) => void;
 
   process(p: ParseContext): void {
     //
@@ -89,45 +86,12 @@ export class ArraySchema<S extends ISchema<any>>
     p.schema = this;
     p.hasError = hasError;
   }
-
-  //
-  //  Schema info about optional, required, default
-  //
-
-  declare optional: () => ISchema<
-    | Exclude<Array<S extends ISchema<infer E> ? E : never>, null>
-    | null
-    | undefined
-  >;
-  /** Set to default value when the value is null or undefined */
-  declare default: (
-    defaultSetter:
-      | (() => Array<S extends ISchema<infer E> ? E : never>)
-      | Array<S extends ISchema<infer E> ? E : never>,
-  ) => ArraySchema<S>;
-  /**
-   * Parse the value, throw {@link SafeParseReturn} when the value is invalid
-   */
-  declare parse: (
-    originalValue: any,
-  ) => Array<S extends ISchema<infer E> ? E : never>;
-  /**
-   * Parse the value, return {@link SafeParseReturn} when the value is invalid
-   */
-  declare safeParse: (
-    originalValue: any,
-  ) => SafeParseReturn<Array<S extends ISchema<infer E> ? E : never>>;
 }
 
 //
 //
 
 ArraySchema.prototype.preprocess = jsonPreprocess;
-ArraySchema.prototype.optional = Schema.prototype.optional as any;
-ArraySchema.prototype.default = Schema.prototype.default as any;
-ArraySchema.prototype.safeParse = Schema.prototype.safeParse as any;
-ArraySchema.prototype.parse = Schema.prototype.parse as any;
-(ArraySchema.prototype as any).isSchema = true;
 
 //
 //

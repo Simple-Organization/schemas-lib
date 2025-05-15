@@ -10,7 +10,7 @@ export { discriminatedUnion } from './parsers/discriminatedUnion';
 
 export { string, trimmed } from './parsers/string';
 export { int, id } from './parsers/int';
-export { float, number } from './parsers/float';
+export { float, number, dinheiro } from './parsers/float';
 export { boolean } from './parsers/boolean';
 export { datetimeUTC } from './parsers/datetimeUTC';
 
@@ -20,7 +20,7 @@ export { url } from './regexes/url';
 export { cnpj } from './regexes/cnpj';
 export { cpf } from './regexes/cpf';
 export { rg } from './regexes/rg';
-export { date } from './regexes/date';
-export { month } from './regexes/month';
+export { data } from './regexes/date';
+export { mes } from './regexes/month';
 export { telefone } from './regexes/telefone';
 export { nome } from './regexes/nameField';

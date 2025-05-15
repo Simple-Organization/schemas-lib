@@ -26,6 +26,6 @@ export class MonthSchema extends Schema<string> {
 /**
  * Month
  */
-export function month() {
+export function mes() {
   return new MonthSchema();
 }

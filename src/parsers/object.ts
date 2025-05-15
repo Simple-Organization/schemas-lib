@@ -35,8 +35,7 @@ export class ObjectSchema<
   R extends ObjectSchemaRecord,
   T = Flatten<MakePartial<R>>,
   // T = MakePartial<R>,
-> implements ISchema<T>
-{
+> extends Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
   declare readonly isSchema: true;
@@ -44,12 +43,11 @@ export class ObjectSchema<
   req = true;
   strict = false;
 
-  def?: () => T;
-
   //
   //
 
   constructor(readonly shape: R) {
+    super();
     if (typeof shape !== 'object' || shape === null) {
       throw new Error(
         'You must provide a shape to the object schema and must be an object',
@@ -151,26 +149,12 @@ export class ObjectSchema<
 
     p.value = output;
   }
-
-  //
-  //  Schema info about optional, required, default
-  //
-
-  declare optional: () => ISchema<Exclude<T, null> | null | undefined>;
-  declare default: (defaultSetter: (() => T) | T) => ObjectSchema<R, T>;
-  declare parse: (originalValue: any) => T;
-  declare safeParse: (originalValue: any) => SafeParseReturn<T>;
 }
 
 //
 //
 
-ObjectSchema.prototype.optional = Schema.prototype.optional as any;
-ObjectSchema.prototype.default = Schema.prototype.default as any;
-ObjectSchema.prototype.safeParse = Schema.prototype.safeParse as any;
-ObjectSchema.prototype.parse = Schema.prototype.parse as any;
 ObjectSchema.prototype.preprocess = jsonPreprocess;
-(ObjectSchema.prototype as any).isSchema = true;
 
 //
 //

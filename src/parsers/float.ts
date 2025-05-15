@@ -58,3 +58,8 @@ export function float(): NumberSchema {
 export function number(): NumberSchema {
   return new NumberSchema();
 }
+
+/** Campo dinheiro em reais */
+export function dinheiro(): NumberSchema {
+  return new NumberSchema();
+}

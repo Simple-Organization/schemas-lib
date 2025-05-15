@@ -26,6 +26,6 @@ export class DateSchema extends Schema<string> {
 /**
  * Date
  */
-export function date() {
+export function data() {
   return new DateSchema();
 }
