@@ -35,7 +35,8 @@ export type ErrorMessageCode =
   | 'not_telefone'
   | 'not_email'
   | 'not_regex'
-  | 'not_name';
+  | 'not_name'
+  | 'not_a_file';
 
 //
 //
@@ -110,6 +111,8 @@ export function getErrorMessage(
       return 'O campo não corresponde à expressão regular';
     case 'not_name':
       return 'O campo não é um nome válido';
+    case 'not_a_file':
+      return 'O campo não é um arquivo';
     default:
       console.log('Erro desconhecido', code);
       return 'Erro desconhecido';
