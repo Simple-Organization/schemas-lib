@@ -16,7 +16,7 @@ export abstract class Schema<T> {
   //  Important methods
   //
 
-  abstract process(c: ParseContext): void;
+  abstract process(p: ParseContext): void;
 
   /**
    * Preprocess the value, return Issue when the value is invalid

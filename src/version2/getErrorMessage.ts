@@ -30,7 +30,12 @@ export type ErrorMessageCode =
   | 'not_cpf'
   | 'not_cnpj'
   | 'not_date'
-  | 'not_month';
+  | 'not_month'
+  | 'not_url'
+  | 'not_rg'
+  | 'not_telefone'
+  | 'not_email'
+  | 'not_regex';
 
 //
 //
@@ -93,5 +98,17 @@ export function getErrorMessage(
       return 'O campo não é uma data válida';
     case 'not_month':
       return 'O campo não é um mês válido';
+    case 'not_url':
+      return 'O campo não é uma URL válida';
+    case 'not_rg':
+      return 'O campo não é um RG válido';
+    case 'not_telefone':
+      return 'O campo não é um telefone válido';
+    case 'not_email':
+      return 'O campo não é um e-mail válido';
+    case 'not_regex':
+      return 'O campo não corresponde à expressão regular';
+    default:
+      return 'Erro desconhecido';
   }
 }
