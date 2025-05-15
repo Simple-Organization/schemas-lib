@@ -1,22 +1,22 @@
 {
   "name": "schemas-lib",
-  "version": "3.0.0-next.6",
+  "version": "3.0.0-next.9",
   "author": "Simple Organization",
   "scripts": {
     "build": "tsc && rollup -c && bun build src/index.ts --outfile=dist/index.js --target=browser",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "prepack": "pnpm build",
-    "test": "mocha tests/**/*.spec.ts -r esbuild-register -extension ts --file tests/setup-tests.ts"
+    "prepack": "bun run build",
+    "test": "bun test"
   },
   "main": "dist/index.js",
   "devDependencies": {
-    "@types/bun": "^1.2.11",
+    "@types/bun": "^1.2.13",
     "prettier": "^3.5.3",
-    "rollup": "^4.40.1",
+    "rollup": "^4.40.2",
     "rollup-plugin-dts": "^6.2.1",
     "tinybench": "^4.0.1",
     "typescript": "^5.8.3",
-    "zod": "^4.0.0-beta.20250505T012514"
+    "zod": "^4.0.0-beta.20250505T195954"
   },
   "files": [
     "dist/index.d.ts",

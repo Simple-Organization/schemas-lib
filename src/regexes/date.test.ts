@@ -1,11 +1,11 @@
 import { test, expect } from 'bun:test';
-import { data } from './date';
+import { date } from './date';
 import { errorTesting } from '../utils/error';
 
 //
 //
 test.only('Deve executar o safeParse com sucesso', () => {
-  const schema = data();
+  const schema = date();
 
   expect(schema.safeParse('2024-05-04')).toEqual({
     success: true,
@@ -36,7 +36,7 @@ test.only('Deve executar o safeParse com sucesso', () => {
 //
 //
 test('Deve ser opcional com sucesso', () => {
-  const schema = data().optional();
+  const schema = date().optional();
 
   expect(schema.safeParse('')).toEqual({ success: true, data: null });
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
@@ -50,7 +50,7 @@ test('Deve ser opcional com sucesso', () => {
 //
 //
 test('Deve ter default com sucesso', () => {
-  const schema = data().default(() => '2024-01-01');
+  const schema = date().default(() => '2024-01-01');
 
   expect(schema.safeParse('')).toEqual({ success: true, data: '2024-01-01' });
   expect(schema.safeParse(undefined)).toEqual({

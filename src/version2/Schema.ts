@@ -118,7 +118,7 @@ export abstract class Schema<T> {
     const parsed = this.safeParse(originalValue);
 
     if (parsed.error) {
-      throw parsed;
+      throw parsed.error;
     }
 
     return parsed.data!;

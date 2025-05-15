@@ -1,9 +1,9 @@
 import { test, expect } from 'bun:test';
-import { mes } from './month';
+import { month } from './month';
 import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
-  const schema = mes();
+  const schema = month();
 
   expect(schema.safeParse('2024-05')).toEqual({
     success: true,
@@ -27,7 +27,7 @@ test('Deve executar o safeParse com sucesso', () => {
 });
 
 test('Deve ser opcional com sucesso', () => {
-  const schema = mes().optional();
+  const schema = month().optional();
 
   expect(schema.safeParse('')).toEqual({ success: true, data: null });
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
@@ -39,7 +39,7 @@ test('Deve ser opcional com sucesso', () => {
 });
 
 test('Deve ter default com sucesso', () => {
-  const schema = mes().default(() => '2024-01');
+  const schema = month().default(() => '2024-01');
 
   expect(schema.safeParse('')).toEqual({ success: true, data: '2024-01' });
   expect(schema.safeParse(undefined)).toEqual({
