@@ -6,6 +6,7 @@ export { array } from './parsers/array';
 export { enumType as enum } from './parsers/enum';
 export { union } from './parsers/union';
 export { literal } from './parsers/literal';
+export { file } from './parsers/file';
 export { discriminatedUnion } from './parsers/discriminatedUnion';
 
 export { string, trimmed } from './parsers/string';
