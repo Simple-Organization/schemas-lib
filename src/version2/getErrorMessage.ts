@@ -13,7 +13,6 @@ export type ErrorMessageCode =
   | 'not_valid_json'
   | 'not_object'
   | 'object_extra_keys'
-  | 'object_invalid' // Temporary, to be removed later
   | 'not_finite'
   | 'not_string_type'
   | 'not_literal_equal'
@@ -112,6 +111,7 @@ export function getErrorMessage(
     case 'not_name':
       return 'O campo não é um nome válido';
     default:
+      console.log('Erro desconhecido', code);
       return 'Erro desconhecido';
   }
 }

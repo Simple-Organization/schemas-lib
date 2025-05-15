@@ -82,12 +82,14 @@ export class ObjectSchema<
     const { value: values, original, path } = p;
 
     let hasError = false;
+    let newPath = path.slice();
 
     //
     //
 
     for (const key of Object.keys(shape)) {
-      path.push(key);
+      newPath.push(key);
+      p.path = newPath;
       p.value = values[key];
       p.original = values[key];
       p.schema = shape[key];
@@ -98,23 +100,25 @@ export class ObjectSchema<
       if (p.hasError) {
         hasError = true;
         output[key] = p.value;
-        path.pop();
+        newPath = path.slice();
         continue;
       } else if (p.value === null) {
         output[key] = p.value;
-        path.pop();
+        newPath.pop();
         continue;
       }
 
       shape[key].process(p);
       if (p.hasError) {
         hasError = true;
+        newPath = path.slice();
       }
 
       output[key] = p.value;
-      path.pop();
+      newPath.pop();
     }
 
+    p.path = path;
     p.value = values;
     p.original = original;
     p.schema = this;
@@ -122,7 +126,7 @@ export class ObjectSchema<
 
     if (hasError) {
       p.value = output as T;
-      return p.error('object_invalid');
+      return;
     }
 
     if (this.strict) {

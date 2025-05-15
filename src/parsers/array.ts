@@ -47,44 +47,43 @@ export class ArraySchema<S extends ISchema<any>>
     let hasError = false;
     const element = this.element as any as Schema<any>;
     p.schema = element;
+    let newPath = path.slice();
 
     //
     //
 
     for (let i = 0; i < values.length; i++) {
-      path.push(i);
+      newPath.push(i);
+      p.path = newPath;
       p.value = values[i];
       p.original = values[i];
       p.hasError = false;
 
-      // console.log('p antes preprocess', { ...p, schema: undefined });
-
       element.preprocess(p);
-
-      // console.log('p depois preprocess', { ...p, schema: undefined });
 
       if (p.hasError) {
         hasError = true;
         output[i] = p.value;
-        path.pop();
+        newPath = path.slice();
         continue;
       } else if (p.value === null) {
         output[i] = p.value;
-        path.pop();
+        newPath.pop();
         continue;
       }
 
       element.process(p);
       if (p.hasError) {
         hasError = true;
+        newPath = path.slice();
       }
 
       // console.log('p depois process', { ...p, schema: undefined });
 
       output[i] = p.value;
-      path.pop();
     }
 
+    p.path = path;
     p.value = output;
     p.original = original;
     p.schema = this;
