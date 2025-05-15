@@ -1,7 +1,7 @@
 import { test, expect } from 'bun:test';
 import { string, StringSchema, trimmed } from './string';
-import { SchemaLibError } from '../SchemaLibError';
 import type { Schema } from '../version2/Schema';
+import { errorTesting } from '../utils/error';
 
 //
 //
@@ -19,16 +19,10 @@ test.each([[trimmed() as StringSchema], [string() as StringSchema]])(
       data: '1.2',
     });
 
-    expect(schema.safeParse('')).toEqual({
-      success: false,
-      error: new SchemaLibError('required', schema, ''),
-    });
+    errorTesting('required', schema, '');
 
     if (schema.trim) {
-      expect(schema.safeParse('   ')).toEqual({
-        success: false,
-        error: new SchemaLibError('required', schema, '   '),
-      });
+      errorTesting('required', schema, '   ');
     } else {
       expect(schema.safeParse('   ')).toEqual({
         success: true,
@@ -36,21 +30,12 @@ test.each([[trimmed() as StringSchema], [string() as StringSchema]])(
       });
     }
 
-    expect(schema.safeParse(undefined)).toEqual({
-      success: false,
-      error: new SchemaLibError('required', schema, undefined),
-    });
+    errorTesting('required', schema, undefined);
 
-    expect(schema.safeParse(null)).toEqual({
-      success: false,
-      error: new SchemaLibError('required', schema, null),
-    });
+    errorTesting('required', schema, null);
 
     const obj = {};
-    expect(schema.safeParse(obj)).toEqual({
-      success: false,
-      error: new SchemaLibError('not_string_type', schema, obj),
-    });
+    errorTesting('not_string_type', schema, obj);
   },
 );
 

@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { int } from './int';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 //
 //
@@ -18,41 +18,20 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 1,
   });
 
-  expect(schema.safeParse('1.2')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_integer', schema, '1.2'),
-  });
+  errorTesting('not_integer', schema, '1.2');
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse('   ')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, '   '),
-  });
+  errorTesting('required', schema, '   ');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   const obj = {};
-  expect(schema.safeParse(obj)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_number_type', schema, obj),
-  });
+  errorTesting('not_number_type', schema, obj);
 
-  expect(schema.safeParse('a')).toEqual({
-    success: false,
-    error: new SchemaLibError('nan', schema, 'a'),
-  });
+  errorTesting('nan', schema, 'a');
 });
 
 //
@@ -89,10 +68,7 @@ test('Deve ter testar min, max e between', () => {
   const schema2 = int().max(10);
   const schema3 = int().between(1, 10);
 
-  expect(schema1.safeParse(0)).toEqual({
-    success: false,
-    error: new SchemaLibError('min_number', schema1, 0),
-  });
+  errorTesting('min_number', schema1, 0);
 
   expect(schema1.safeParse(1)).toEqual({
     success: true,
@@ -109,15 +85,9 @@ test('Deve ter testar min, max e between', () => {
     data: 10,
   });
 
-  expect(schema2.safeParse(11)).toEqual({
-    success: false,
-    error: new SchemaLibError('max_number', schema2, 11),
-  });
+  errorTesting('max_number', schema2, 11);
 
-  expect(schema3.safeParse(0)).toEqual({
-    success: false,
-    error: new SchemaLibError('min_number', schema3, 0),
-  });
+  errorTesting('min_number', schema3, 0);
 
   expect(schema3.safeParse(1)).toEqual({
     success: true,
@@ -131,8 +101,5 @@ test('Deve ter testar min, max e between', () => {
 test('Valor default não pode cancelar erro', () => {
   const schema = int().default(() => 1);
 
-  expect(schema.safeParse('asdf')).toEqual({
-    success: false,
-    error: new SchemaLibError('nan', schema, 'asdf'),
-  });
+  errorTesting('nan', schema, 'asdf');
 });

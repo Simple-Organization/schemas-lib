@@ -1,8 +1,8 @@
 import { test, expect } from 'bun:test';
 import { union } from './union';
 import { int } from './int';
-import { SchemaLibError } from '../SchemaLibError';
 import { string } from './string';
+import { errorTesting } from '../utils/error';
 
 //
 //
@@ -25,10 +25,7 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 'abc',
   });
 
-  expect(schema.safeParse({})).toEqual({
-    success: false,
-    error: new SchemaLibError('not_number_type', schema, {}),
-  });
+  errorTesting('not_number_type', schema, {});
 });
 
 //
@@ -75,8 +72,5 @@ test('Deve ter default com sucesso', () => {
 test('Deve retornar erro se nenhum schema casar', () => {
   const schema = union([int(), string()]);
 
-  expect(schema.safeParse({})).toEqual({
-    success: false,
-    error: new SchemaLibError('not_number_type', schema, {}),
-  });
+  errorTesting('not_number_type', schema, {});
 });

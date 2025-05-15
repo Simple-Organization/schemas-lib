@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { enumType } from './enum';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 //
 //
@@ -20,20 +20,11 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 'B',
   });
 
-  expect(schema.safeParse('C')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_enum', schema, 'C'),
-  });
+  errorTesting('not_enum', schema, 'C');
 
-  expect(schema.safeParse(1)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_string_type', schema, 1),
-  });
+  errorTesting('not_string_type', schema, 1);
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 });
 
 //

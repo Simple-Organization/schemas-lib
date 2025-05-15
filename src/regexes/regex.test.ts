@@ -1,6 +1,7 @@
 import { test, expect } from 'bun:test';
 import { regex } from './regex';
 import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 //
 //
@@ -13,36 +14,18 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 'abc',
   });
 
-  expect(schema.safeParse('ABC')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_regex', schema, 'ABC'),
-  });
+  errorTesting('not_regex', schema, 'ABC');
 
-  expect(schema.safeParse('123')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_regex', schema, '123'),
-  });
+  errorTesting('not_regex', schema, '123');
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   const obj = {};
-  expect(schema.safeParse(obj)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_string_type', schema, obj),
-  });
+  errorTesting('not_string_type', schema, obj);
 });
 
 //
@@ -51,10 +34,7 @@ test('Deve executar o safeParse com sucesso', () => {
 test('Deve usar mensagem customizada', () => {
   const schema = regex(/^\d+$/, 'apenas números');
 
-  expect(schema.safeParse('abc')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_regex', schema, 'abc'),
-  });
+  errorTesting('not_regex', schema, 'abc');
 });
 
 //

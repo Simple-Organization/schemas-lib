@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { number, NumberSchema } from './float';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 //
 //
@@ -23,36 +23,20 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 1.2,
   });
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse('   ')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, '   '),
-  });
+  errorTesting('required', schema, '   ');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   const obj = {};
-  expect(schema.safeParse(obj)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_number_type', schema, obj),
-  });
+  errorTesting('not_number_type', schema, obj);
 
-  expect(schema.safeParse('a')).toEqual({
-    success: false,
-    error: new SchemaLibError('nan', schema, 'a'),
-  });
+  errorTesting('not_number_type', schema, obj);
+
+  errorTesting('nan', schema, 'a');
 });
 
 //

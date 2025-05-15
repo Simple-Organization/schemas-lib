@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { telefone } from './telefone';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = telefone();
@@ -15,31 +15,16 @@ test('Deve executar o safeParse com sucesso', () => {
     data: '(11) 91234-5678',
   });
 
-  expect(schema.safeParse('11111111111')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_telefone', schema, '11111111111'),
-  });
+  errorTesting('not_telefone', schema, '11111111111');
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   const obj = {};
-  expect(schema.safeParse(obj)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_string_type', schema, obj),
-  });
+  errorTesting('not_string_type', schema, obj);
 });
 
 test('Deve ser opcional com sucesso', () => {

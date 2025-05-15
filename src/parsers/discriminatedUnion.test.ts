@@ -4,6 +4,7 @@ import { object } from './object';
 import { literal } from './literal';
 import { int } from './int';
 import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 const CatSchema = object({
   type: literal('cat'),
@@ -34,30 +35,21 @@ test('Deve executar o safeParse com sucesso para dog', () => {
 });
 
 test('Deve falhar se discriminador estiver ausente', () => {
-  expect(schema.safeParse({ name: 'meow', age: 2 })).toEqual({
-    success: false,
-    error: new SchemaLibError('missing_discriminator', schema, {
-      name: 'meow',
-      age: 2,
-    }),
+  errorTesting('missing_discriminator', schema, {
+    name: 'meow',
+    age: 2,
   });
 });
 
 test('Deve falhar se discriminador for inválido', () => {
-  expect(schema.safeParse({ type: 'bird', age: 1 })).toEqual({
-    success: false,
-    error: new SchemaLibError('invalid_discriminator', schema, {
-      type: 'bird',
-      age: 1,
-    }),
+  errorTesting('invalid_discriminator', schema, {
+    type: 'bird',
+    age: 1,
   });
 });
 
 test('Deve falhar se não for um json válido', () => {
-  expect(schema.safeParse('not a valid json')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_valid_json', schema, 'not a valid json'),
-  });
+  errorTesting('not_valid_json', schema, 'not a valid json');
 });
 
 test('Deve ser opcional com sucesso', () => {

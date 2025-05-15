@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { literal } from './literal';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = literal('abc');
@@ -10,25 +10,13 @@ test('Deve executar o safeParse com sucesso', () => {
     data: 'abc',
   });
 
-  expect(schema.safeParse('def')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_literal_equal', schema, 'def'),
-  });
+  errorTesting('not_literal_equal', schema, 'def');
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 });
 
 test('Deve ser opcional com sucesso', () => {

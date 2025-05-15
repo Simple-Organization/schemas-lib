@@ -1,8 +1,8 @@
 import { test, expect } from 'bun:test';
 import { object, strict } from './object';
 import { id, int } from './int';
-import { SchemaLibError } from '../SchemaLibError';
 import { float, number } from './float';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = object({
@@ -20,35 +20,20 @@ test('Deve executar o safeParse com sucesso', () => {
     data: { a: 1, b: null },
   });
 
-  expect(schema.safeParse({})).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, {}), // Não importa muito agora, pois vai mudar
-  });
+  errorTesting('required', schema, {});
 
   expect(schema.safeParse('{"a":1,"b":2}')).toEqual({
     success: true,
     data: { a: 1, b: 2 },
   });
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
-  expect(schema.safeParse(123)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_object', schema, 123),
-  });
+  errorTesting('not_object', schema, 123);
 });
 
 test('Deve ser opcional com sucesso', () => {
@@ -86,19 +71,13 @@ test('Deve validar modo estrito', () => {
     data: { a: 1 },
   });
 
-  expect(schema.safeParse({ a: 1, b: 2 })).toEqual({
-    success: false,
-    error: new SchemaLibError('object_extra_keys', schema, { a: 1, b: 2 }),
-  });
+  errorTesting('object_extra_keys', schema, { a: 1, b: 2 });
 });
 
 test('Deve retornar erro para JSON inválido', () => {
   const schema = object({ a: int() });
 
-  expect(schema.safeParse('{a:1}')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_valid_json', schema, '{a:1}'),
-  });
+  errorTesting('not_valid_json', schema, '{a:1}');
 });
 
 test('Deve fazer parse de um objeto complexo', () => {

@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { month } from './month';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = month();
@@ -10,41 +10,20 @@ test('Deve executar o safeParse com sucesso', () => {
     data: '2024-05',
   });
 
-  expect(schema.safeParse('2024-13')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_month', schema, '2024-13'),
-  });
+  errorTesting('not_month', schema, '2024-13');
 
-  expect(schema.safeParse('2024-5')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_month', schema, '2024-5'),
-  });
+  errorTesting('not_month', schema, '2024-5');
 
-  expect(schema.safeParse('2024-64')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_month', schema, '2024-64'),
-  });
+  errorTesting('not_month', schema, '2024-64');
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   const obj = {};
-  expect(schema.safeParse(obj)).toEqual({
-    success: false,
-    error: new SchemaLibError('not_string_type', schema, obj),
-  });
+  errorTesting('not_string_type', schema, obj);
 });
 
 test('Deve ser opcional com sucesso', () => {
