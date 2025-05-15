@@ -1,6 +1,6 @@
 {
   "name": "schemas-lib",
-  "version": "3.0.0-next.10",
+  "version": "3.0.0-next.11",
   "author": "Simple Organization",
   "scripts": {
     "build": "tsc && rollup -c && bun build src/index.ts --outfile=dist/index.js --target=browser",

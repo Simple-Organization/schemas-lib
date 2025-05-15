@@ -1,5 +1,5 @@
 import { type ErrorMessageCode } from '../version2/getErrorMessage';
-import type { Schema } from '../version2/types';
+import { type Schema } from '../version2/Schema';
 import { SchemaLibError } from '../SchemaLibError';
 import { expect } from 'bun:test';
 

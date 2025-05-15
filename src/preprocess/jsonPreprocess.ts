@@ -1,4 +1,5 @@
-import type { Schema, ParseContext } from '../version2/types';
+import type { Schema } from '../version2/Schema';
+import type { ParseContext } from '../version2/types';
 
 //
 //

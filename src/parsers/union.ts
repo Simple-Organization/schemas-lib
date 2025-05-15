@@ -1,9 +1,4 @@
-import type {
-  Schema,
-  Issue,
-  ParseContext,
-  SafeParseReturn,
-} from '../version2/types';
+import type { Issue, ParseContext, SafeParseReturn } from '../version2/types';
 import { Schema } from '../version2/Schema';
 
 //

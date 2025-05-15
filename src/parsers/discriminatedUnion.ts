@@ -1,4 +1,4 @@
-import type { Schema, ParseContext } from '../version2/types';
+import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { ObjectSchema } from './object';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
