@@ -1,6 +1,5 @@
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
+import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
-import type { ParseContext, SafeParseReturn } from '../version2/types';
 
 // Validação de telefone brasileiro (fixo ou celular)
 export function validarTelefone(phone: string): boolean {
@@ -45,30 +44,14 @@ export function formatarTelefone(phone: string): string {
 
 // Schema para telefone brasileiro
 export class TelefoneSchema extends Schema<string> {
-  process(c: ParseContext): void {
-    throw new Error('Method not implemented.');
-  }
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'string') return p.error('not_string_type');
 
-    // Normalização sem trim
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    if (!validarTelefone(p.value)) {
+      return p.error('not_telefone', p.value);
     }
 
-    if (typeof value !== 'string')
-      return safeParseError('not_string', this, originalValue);
-
-    if (validarTelefone(value)) {
-      return safeParseSuccess(formatarTelefone(value));
-    }
-
-    return safeParseError('not_phone', this, originalValue);
+    p.value = formatarTelefone(p.value);
   }
 }
 

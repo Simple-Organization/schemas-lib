@@ -1,4 +1,4 @@
-import type { ISchema, SafeParseReturn } from './version2/types';
+import type { ISchema } from './version2/types';
 
 export class SchemaLibError {
   readonly value: any;
@@ -25,27 +25,4 @@ export class SchemaLibError {
   toString(): string {
     throw new Error('Not implemented');
   }
-}
-
-//
-//
-
-export function safeParseError<T>(
-  code: string,
-  owner: ISchema<T>,
-  originalValue: any,
-): SafeParseReturn<T> {
-  return {
-    success: false,
-    error: new SchemaLibError(code, owner, originalValue),
-  };
-}
-
-//
-//
-
-export function safeParseSuccess<T>(
-  data: T | null | undefined = null,
-): SafeParseReturn<T> {
-  return { success: true, data: data as any };
 }

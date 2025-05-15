@@ -35,7 +35,8 @@ export type ErrorMessageCode =
   | 'not_rg'
   | 'not_telefone'
   | 'not_email'
-  | 'not_regex';
+  | 'not_regex'
+  | 'not_name';
 
 //
 //
@@ -108,6 +109,8 @@ export function getErrorMessage(
       return 'O campo não é um e-mail válido';
     case 'not_regex':
       return 'O campo não corresponde à expressão regular';
+    case 'not_name':
+      return 'O campo não é um nome válido';
     default:
       return 'Erro desconhecido';
   }

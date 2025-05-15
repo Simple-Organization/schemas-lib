@@ -1,6 +1,5 @@
-import type { ISchema, ParseContext, SafeParseReturn } from '../version2/types';
+import type { ISchema, ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
-import { safeParseError, safeParseSuccess } from '../SchemaLibError';
 import { ObjectSchema } from './object';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
 
