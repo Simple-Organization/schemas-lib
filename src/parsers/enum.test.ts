@@ -44,6 +44,26 @@ test('Deve ser opcional com sucesso', () => {
 //
 //
 
+test('Deve funcionar com uma array externa', () => {
+  const role = ['dev', 'admin', 'escritorio', 'tecnico'] as const;
+
+  const schema = enumType(role).optional();
+
+  expect(schema.safeParse('dev')).toEqual({ success: true, data: 'dev' });
+  expect(schema.safeParse('admin')).toEqual({ success: true, data: 'admin' });
+  expect(schema.safeParse('escritorio')).toEqual({
+    success: true,
+    data: 'escritorio',
+  });
+  expect(schema.safeParse('tecnico')).toEqual({
+    success: true,
+    data: 'tecnico',
+  });
+});
+
+//
+//
+
 test('Deve ter default com sucesso', () => {
   const schema = enumType(['A', 'B']).default(() => 'A');
   // @ts-ignore

@@ -29,6 +29,7 @@ export function enumType<
   T extends Readonly<[...E[]]>,
 >(values: T): Schema<T[number]> {
   const schema = new EnumSchema();
+  schema.enum = values as any as string[];
 
   //
   //  Dev generation values
