@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { boolean } from './boolean';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = boolean();
@@ -20,32 +20,17 @@ test('Deve executar o safeParse com sucesso', () => {
   expect(schema.safeParse('off')).toEqual({ success: true, data: false });
 
   // empty string
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
   // undefined
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
   // null
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   // invalid value
-  expect(schema.safeParse('abc')).toEqual({
-    success: false,
-    error: new SchemaLibError('boolean_type', schema, 'abc'),
-  });
-  expect(schema.safeParse({})).toEqual({
-    success: false,
-    error: new SchemaLibError('boolean_type', schema, {}),
-  });
+  errorTesting('boolean_type', schema, 'abc');
+  errorTesting('boolean_type', schema, {});
 });
 
 test('Deve ser opcional com sucesso', () => {

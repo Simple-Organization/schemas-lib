@@ -1,6 +1,6 @@
 import { test, expect } from 'bun:test';
 import { datetimeUTC } from './datetimeUTC';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = datetimeUTC();
@@ -23,25 +23,13 @@ test('Deve executar o safeParse com sucesso', () => {
     data: '2024-06-01T12:34:56Z',
   });
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('required', schema, '');
 
-  expect(schema.safeParse('   ')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, '   '),
-  });
+  errorTesting('required', schema, '   ');
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+  errorTesting('required', schema, undefined);
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
+  errorTesting('required', schema, null);
 
   expect(schema.safeParse('2024-06-01 12:34:56')).toEqual({
     success: true,
@@ -53,10 +41,7 @@ test('Deve executar o safeParse com sucesso', () => {
     data: '2024-06-01T09:34:56Z',
   });
 
-  expect(schema.safeParse({})).toEqual({
-    success: false,
-    error: new SchemaLibError('not_datetime_type', schema, {}),
-  });
+  const errorNotDatetimeType = errorTesting('not_datetime_type', schema, {});
 });
 
 test('Deve ser opcional com sucesso', () => {
@@ -104,10 +89,7 @@ test('Deve testar min, max e between', () => {
   const schemaMax = datetimeUTC().max(maxDate);
   const schemaBetween = datetimeUTC().between(minDate, maxDate);
 
-  expect(schemaMin.safeParse(beforeMin)).toEqual({
-    success: false,
-    error: new SchemaLibError('min_datetime', schemaMin, beforeMin),
-  });
+  errorTesting('min_datetime', schemaMin, beforeMin);
 
   expect(schemaMin.safeParse(minDate)).toEqual({
     success: true,
@@ -119,20 +101,11 @@ test('Deve testar min, max e between', () => {
     data: maxDate,
   });
 
-  expect(schemaMax.safeParse(afterMax)).toEqual({
-    success: false,
-    error: new SchemaLibError('max_datetime', schemaMax, afterMax),
-  });
+  errorTesting('max_datetime', schemaMax, afterMax);
 
-  expect(schemaBetween.safeParse(beforeMin)).toEqual({
-    success: false,
-    error: new SchemaLibError('min_datetime', schemaBetween, beforeMin),
-  });
+  errorTesting('min_datetime', schemaBetween, beforeMin);
 
-  expect(schemaBetween.safeParse(afterMax)).toEqual({
-    success: false,
-    error: new SchemaLibError('max_datetime', schemaBetween, afterMax),
-  });
+  errorTesting('max_datetime', schemaBetween, afterMax);
 
   expect(schemaBetween.safeParse(betweenDate)).toEqual({
     success: true,

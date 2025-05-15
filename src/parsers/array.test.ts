@@ -1,7 +1,7 @@
 import { test, expect } from 'bun:test';
 import { array } from './array';
 import { int } from '../parsers/int';
-import { SchemaLibError } from '../SchemaLibError';
+import { errorTesting } from '../utils/error';
 
 test('Deve executar o safeParse com sucesso 1', () => {
   const schema = array(int());
@@ -17,11 +17,7 @@ test('Deve executar o safeParse com sucesso 1', () => {
 
 test('Deve executar o safeParse com sucesso 2', () => {
   const schema = array(int());
-
-  expect(schema.safeParse(['a'])).toEqual({
-    success: false,
-    error: new SchemaLibError('nan', schema, ['a']),
-  });
+  errorTesting('nan', schema, ['a']);
 });
 
 //
@@ -40,40 +36,19 @@ test('Deve executar o safeParse com sucesso 3', () => {
     data: [1, 2, 3],
   });
 
-  expect(schema.safeParse('')).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, ''),
-  });
+  errorTesting('not_array', schema, new Set([1, 2, 3]));
+  errorTesting('required', schema, undefined);
+  errorTesting('required', schema, null);
+  errorTesting('not_array', schema, {});
+  errorTesting('nan', schema, ['a', 2]);
+  errorTesting('nan', schema, '[1,"a"]');
+  errorTesting('not_valid_json', schema, 'not_json');
+});
 
-  expect(schema.safeParse(undefined)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, undefined),
-  });
+test('Deve dar erro "not_valid_json" quando recebe uma string', () => {
+  const schema = array(int()).optional();
 
-  expect(schema.safeParse(null)).toEqual({
-    success: false,
-    error: new SchemaLibError('required', schema, null),
-  });
-
-  expect(schema.safeParse({})).toEqual({
-    success: false,
-    error: new SchemaLibError('not_array', schema, {}),
-  });
-
-  expect(schema.safeParse(['a', 2])).toEqual({
-    success: false,
-    error: new SchemaLibError('nan', schema, ['a', 2]),
-  });
-
-  expect(schema.safeParse('[1,"a"]')).toEqual({
-    success: false,
-    error: new SchemaLibError('nan', schema, '[1,"a"]'),
-  });
-
-  expect(schema.safeParse('not_json')).toEqual({
-    success: false,
-    error: new SchemaLibError('not_valid_json', schema, 'not_json'),
-  });
+  errorTesting('not_valid_json', schema, 'new Set([1, 2, 3])');
 });
 
 test('Deve ser opcional com sucesso', () => {

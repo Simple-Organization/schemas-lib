@@ -45,7 +45,7 @@ export function getErrorMessage(
   code: ErrorMessageCode,
   c: ParseContext,
   addon?: any,
-): string | void {
+): string {
   switch (code) {
     case 'required':
       return 'O campo é obrigatório';

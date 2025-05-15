@@ -38,7 +38,6 @@ export class ArraySchema<S extends ISchema<any>>
     //
     //  Validates each element of the array
 
-    const results: SafeParseReturn<any>[] = [];
     const output: any[] = [];
 
     //

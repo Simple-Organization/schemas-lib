@@ -1,28 +1,24 @@
-import type { ISchema } from './version2/types';
+import type { Issue } from './version2/types';
+
+//
+//
 
 export class SchemaLibError {
-  readonly value: any;
-
-  constructor(
-    readonly code: string,
-    readonly owner: ISchema<any>,
-    originalValue: any,
-  ) {
-    this.value = originalValue;
-  }
+  constructor(readonly issues: Issue[]) {}
 
   get message() {
     return this.toString();
   }
 
   /**
-   * Serialize the Issue, in object and array will return a object with the errors
+   * Inspirado no z.prettifyError
    */
-  serialize(): string | Record<string, any> {
-    return this.toString();
+  prettifyError(): string {
+    //
+    throw new Error('not implemented');
   }
 
   toString(): string {
-    throw new Error('Not implemented');
+    return this.prettifyError();
   }
 }

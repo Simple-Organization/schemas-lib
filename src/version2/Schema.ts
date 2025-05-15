@@ -87,7 +87,7 @@ export abstract class Schema<T> {
     this.preprocess(c);
     if (c.hasError) {
       return {
-        error: new SchemaLibError(c.issues[0].code as any, this, c.original),
+        error: new SchemaLibError(c.issues),
         success: false,
       };
     } else if (c.value === null) {
@@ -100,7 +100,7 @@ export abstract class Schema<T> {
     this.process(c);
     if (c.hasError) {
       return {
-        error: new SchemaLibError(c.issues[0].code as any, this, c.original),
+        error: new SchemaLibError(c.issues),
         success: false,
       };
     }
