@@ -6,8 +6,8 @@ import { Schema } from '../version2/Schema';
 
 export class StringSchema extends Schema<string> {
   trim = true;
-  vMin?: number | undefined;
-  vMax?: number | undefined;
+  vMin: number | null = null;
+  vMax: number | null = null;
 
   /**
    * Coerce the value to a string or null if empty
@@ -39,11 +39,11 @@ export class StringSchema extends Schema<string> {
       return p.error('not_string_type');
     }
 
-    if (this.vMin !== undefined && p.value.length < this.vMin) {
+    if (this.vMin !== null && p.value.length < this.vMin) {
       return p.error('min_number');
     }
 
-    if (this.vMax !== undefined && p.value.length > this.vMax) {
+    if (this.vMax !== null && p.value.length > this.vMax) {
       return p.error('max_number');
     }
   }

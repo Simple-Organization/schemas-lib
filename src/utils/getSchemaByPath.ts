@@ -7,10 +7,10 @@ import { ObjectSchema } from '../parsers/object';
 
 export function getSchemaByPath(
   path: string,
-  schema: Schema<any>,
+  schemaRoot: Schema<any>,
 ): Schema<any> | undefined {
   const parts = path.split('.');
-  let current: Schema<any> = schema;
+  let current: Schema<any> = schemaRoot;
 
   for (const part of parts) {
     if (current instanceof ObjectSchema) {

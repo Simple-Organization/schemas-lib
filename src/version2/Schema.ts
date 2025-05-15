@@ -10,7 +10,7 @@ export abstract class Schema<T> {
   declare readonly _o: T;
   declare readonly isSchema: true;
   req = true;
-  def?: () => T;
+  def: (() => T) | null = null;
 
   //
   //  Important methods
