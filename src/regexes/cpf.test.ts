@@ -38,7 +38,7 @@ test('Deve executar o safeParse com sucesso', () => {
   const obj = {};
   expect(schema.safeParse(obj)).toEqual({
     success: false,
-    error: new SchemaLibError('not_string', schema, obj),
+    error: new SchemaLibError('not_string_type', schema, obj),
   });
 });
 

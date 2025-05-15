@@ -71,30 +71,14 @@ export function formatarCPF(cpf: string): string {
 //
 
 export class CPFSchema extends Schema<string> {
-  process(c: ParseContext): void {
-    throw new Error('Method not implemented.');
-  }
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'string') return p.error('not_string_type');
 
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    if (!validarCPF(p.value)) {
+      return p.error('not_cpf', p.value);
     }
 
-    if (typeof value !== 'string')
-      return safeParseError('not_string', this, originalValue);
-
-    if (validarCPF(value)) {
-      return safeParseSuccess(formatarCPF(value));
-    }
-
-    return safeParseError('not_cpf', this, originalValue);
+    p.value = formatarCPF(p.value);
   }
 }
 

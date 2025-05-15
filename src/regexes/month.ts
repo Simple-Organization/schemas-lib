@@ -6,39 +6,21 @@ import { Schema } from '../version2/Schema';
 //
 
 export class MonthSchema extends Schema<string> {
-  process(c: ParseContext): void {
-    throw new Error('Method not implemented.');
-  }
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'string') return p.error('not_string_type');
 
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    if (!/^\d{4}-\d{2}$/.test(p.value)) {
+      return p.error('not_month', p.value);
     }
 
-    if (typeof value !== 'string')
-      return safeParseError('not_string', this, originalValue);
-
-    if (!/^\d{4}-\d{2}$/.test(value)) {
-      return safeParseError('not_month', this, originalValue);
-    }
-
-    const date = new Date(value);
+    const date = new Date(p.value);
 
     if (
       Number.isNaN(date.getTime()) ||
-      date.toISOString().slice(0, 7) !== value
+      date.toISOString().slice(0, 7) !== p.value
     ) {
-      return safeParseError('not_month', this, originalValue);
+      return p.error('not_month', p.value);
     }
-
-    return safeParseSuccess(value);
   }
 }
 

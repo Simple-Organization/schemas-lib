@@ -17,7 +17,7 @@ test('Deve executar o safeParse com sucesso', () => {
 
   expect(schema.safeParse('11.111.111/1111-11')).toEqual({
     success: false,
-    error: new SchemaLibError('not_cpf', schema, '11.111.111/1111-11'),
+    error: new SchemaLibError('not_cnpj', schema, '11.111.111/1111-11'),
   });
 
   expect(schema.safeParse('')).toEqual({
@@ -38,7 +38,7 @@ test('Deve executar o safeParse com sucesso', () => {
   const obj = {};
   expect(schema.safeParse(obj)).toEqual({
     success: false,
-    error: new SchemaLibError('not_string', schema, obj),
+    error: new SchemaLibError('not_string_type', schema, obj),
   });
 });
 

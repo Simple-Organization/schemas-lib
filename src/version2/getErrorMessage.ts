@@ -26,7 +26,11 @@ export type ErrorMessageCode =
   | 'min_datetime'
   | 'max_datetime'
   | 'missing_discriminator'
-  | 'invalid_discriminator';
+  | 'invalid_discriminator'
+  | 'not_cpf'
+  | 'not_cnpj'
+  | 'not_date'
+  | 'not_month';
 
 //
 //
@@ -81,5 +85,13 @@ export function getErrorMessage(
       return `O campo não possui o discriminador "${addon}"`;
     case 'invalid_discriminator':
       return `O campo possui um discriminador inválido "${addon}"`;
+    case 'not_cpf':
+      return 'O campo não é um CPF válido';
+    case 'not_cnpj':
+      return 'O campo não é um CNPJ válido';
+    case 'not_date':
+      return 'O campo não é uma data válida';
+    case 'not_month':
+      return 'O campo não é um mês válido';
   }
 }

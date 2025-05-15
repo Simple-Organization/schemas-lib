@@ -81,31 +81,14 @@ export function formatCNPJ(cnpj: string): string {
 //
 
 export class CNPJSchema extends Schema<string> {
-  process(c: ParseContext): void {
-    throw new Error('Method not implemented.');
-  }
+  process(p: ParseContext): void {
+    if (typeof p.value !== 'string') return p.error('not_string_type');
 
-  internalParse(originalValue: any): SafeParseReturn<string> {
-    let value = originalValue;
-
-    // Boilerplate to normalize the value without trimming
-    if (value === '') value = null;
-    else if (value === undefined) value = null;
-
-    if (value === null) {
-      if (this.req) return safeParseError('required', this, originalValue);
-      if (this.def) return safeParseSuccess(this.def());
-      return safeParseSuccess();
+    if (!validarCNPJ(p.value)) {
+      return p.error('not_cnpj', p.value);
     }
 
-    if (typeof value !== 'string')
-      return safeParseError('not_string', this, originalValue);
-
-    if (validarCNPJ(value)) {
-      return safeParseSuccess(formatCNPJ(value));
-    }
-
-    return safeParseError('not_cpf', this, originalValue);
+    p.value = formatCNPJ(p.value);
   }
 }
 
