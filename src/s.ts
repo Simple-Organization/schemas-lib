@@ -22,4 +22,5 @@ export { rg } from './regexes/rg';
 export { date } from './regexes/date';
 export { month } from './regexes/month';
 export { telefone } from './regexes/telefone';
-export { nome } from './regexes/nameField';
+export { nome } from './regexes/nome';
+export { textarea } from './regexes/textarea';

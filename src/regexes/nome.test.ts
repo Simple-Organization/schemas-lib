@@ -1,7 +1,6 @@
 import { test, expect } from 'bun:test';
-import { nome } from './nameField';
-import { SchemaLibError } from '../SchemaLibError';
 import { errorTesting } from '../utils/error';
+import { nome } from './nome';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = nome();
