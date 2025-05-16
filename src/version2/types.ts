@@ -38,10 +38,18 @@ export type ParseContext = {
 //
 //
 
-export type SafeParseReturn<T> = {
-  success: boolean;
-  data?: T;
-  error?: SchemaLibError;
+export type SafeParseReturn<T> =
+  | SafeParseReturnSuccess<T>
+  | SafeParseReturnError;
+
+export type SafeParseReturnSuccess<T> = {
+  success: true;
+  data: T;
+};
+
+export type SafeParseReturnError = {
+  success: false;
+  error: SchemaLibError;
 };
 
 //
