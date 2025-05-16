@@ -38,6 +38,12 @@ test('flatten: datas e regex', () => {
   expect(flatten(obj)).toEqual({ a: date, b: regex });
 });
 
+test('flatten: File', () => {
+  const file = new File(['conteúdo'], 'teste.txt', { type: 'text/plain' });
+  const obj = { arquivo: { file } };
+  expect(flatten(obj)).toEqual({ 'arquivo.file': file });
+});
+
 test('unflatten: objeto simples', () => {
   const flat = { a: 1, b: 2 };
   expect(unflatten(flat)).toEqual({ a: 1, b: 2 });

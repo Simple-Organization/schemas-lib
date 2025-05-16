@@ -8,14 +8,15 @@ type AnyObject = { [key: string]: any };
  * Flatten: transforma um objeto aninhado em um mapa de chaves string para valores.
  * Exemplo: { a: { b: [ { c: 1 } ] } } -> { "a.b.0.c": 1 }
  */
-export function flatten(obj: AnyObject): Record<string, any> {
+export function flatten(obj: any): Record<string, any> {
   const result: Record<string, any> = {};
 
   function recurse(curr: any, path: string) {
     if (
       Object(curr) !== curr ||
       curr instanceof Date ||
-      curr instanceof RegExp
+      curr instanceof RegExp ||
+      curr instanceof File
     ) {
       // valor primitivo ou instância não-aninhável
       result[path] = curr;
