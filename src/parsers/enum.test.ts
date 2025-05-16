@@ -75,7 +75,7 @@ test('Deve ter default com sucesso', () => {
 test('Erro do enum não pode ter undefined', () => {
   const schema = enumType(['A', 'B']);
 
-  expect(schema.safeParse('AAAAAAA').error!.issues[0].message).not.toContain(
-    'undefined',
-  );
+  expect(
+    (schema.safeParse('AAAAAAA') as any).error!.issues[0].message,
+  ).not.toContain('undefined');
 });

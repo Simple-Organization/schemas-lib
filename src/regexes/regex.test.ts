@@ -35,7 +35,7 @@ test('Deve usar mensagem customizada', () => {
 
   errorTesting('not_regex', schema, 'abc');
 
-  expect(schema.safeParse('AAAAAAA').error!.issues[0].message).toBe(
+  expect((schema.safeParse('AAAAAAA') as any).error.issues[0].message).toBe(
     'apenas números',
   );
 });
