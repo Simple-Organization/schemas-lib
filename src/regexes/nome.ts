@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 //
 // Schema para campo de nome
@@ -12,6 +13,8 @@ export class NomeSchema extends Schema<string> {
     }
   }
 }
+
+NomeSchema.prototype.preprocess = trimPreprocess;
 
 /**
  * Nome - Campo de nome (mínimo 2 letras, pode conter letras acentuadas, números e espaços)

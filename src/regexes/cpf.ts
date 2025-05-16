@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 //
 //
@@ -80,6 +81,8 @@ export class CPFSchema extends Schema<string> {
     p.value = formatarCPF(p.value);
   }
 }
+
+CPFSchema.prototype.preprocess = trimPreprocess;
 
 /**
  * CPF - Brazilian CPF

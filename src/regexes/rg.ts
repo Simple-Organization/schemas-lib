@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 //
 //
@@ -55,6 +56,8 @@ export class RGSchema extends Schema<string> {
     p.value = formatarRG(p.value);
   }
 }
+
+RGSchema.prototype.preprocess = trimPreprocess;
 
 /**
  * RG - Brazilian RG

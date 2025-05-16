@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 //
 //
@@ -22,6 +23,8 @@ export class MonthSchema extends Schema<string> {
     }
   }
 }
+
+MonthSchema.prototype.preprocess = trimPreprocess;
 
 /**
  * Month

@@ -1,24 +1,24 @@
 import { email_regex, integer_regex, ipv4_regex } from './zodRegexes';
-import { RegexSchema } from './RegexSchema';
+import { RegexSchema, TrimRegexSchema } from './RegexSchema';
 
 /** A string with a regex */
 export function regex(regex: RegExp, msg: string) {
-  return new RegexSchema(regex, msg);
+  return new TrimRegexSchema(regex, msg);
 }
 
 /** ipv4 */
 export function ipv4() {
-  return new RegexSchema(ipv4_regex, 'O campo não é um ipv4');
+  return new TrimRegexSchema(ipv4_regex, 'O campo não é um ipv4');
 }
 
 /** email */
 export function email() {
-  return new RegexSchema(email_regex, 'O campo não é um email válido');
+  return new TrimRegexSchema(email_regex, 'O campo não é um email válido');
 }
 
 /** intString */
 export function intString() {
-  return new RegexSchema(
+  return new TrimRegexSchema(
     integer_regex,
     'O campo não é um texto de número inteiro',
   );

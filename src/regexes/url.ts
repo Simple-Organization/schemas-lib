@@ -1,6 +1,7 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { hostname_regex } from './zodRegexes';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 //
 //
@@ -22,6 +23,8 @@ export class URLSchema extends Schema<string> {
     }
   }
 }
+
+URLSchema.prototype.preprocess = trimPreprocess;
 
 /**
  * Checks if the value is a valid URL

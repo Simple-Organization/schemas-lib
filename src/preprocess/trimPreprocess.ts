@@ -1,0 +1,28 @@
+import type { ParseContext } from '../version2/types';
+import type { Schema } from '../version2/Schema';
+
+//
+//
+
+export function trimPreprocess(this: Schema<number>, p: ParseContext): void {
+  if (typeof p.value === 'string') {
+    p.value = p.value.trim();
+
+    if (p.value === '') {
+      p.value = null;
+    }
+  } else if (p.value === undefined) {
+    p.value = null;
+  }
+
+  if (p.value === null) {
+    if (this.req) {
+      return p.error('required');
+    }
+
+    if (this.def) {
+      p.value = this.def();
+      return;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 // Validação de telefone brasileiro (fixo ou celular)
 export function validarTelefone(phone: string): boolean {
@@ -54,6 +55,8 @@ export class TelefoneSchema extends Schema<string> {
     p.value = formatarTelefone(p.value);
   }
 }
+
+TelefoneSchema.prototype.preprocess = trimPreprocess;
 
 /**
  * Telefone - Telefone brasileiro (fixo ou celular)

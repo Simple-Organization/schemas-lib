@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { trimPreprocess } from '../preprocess/trimPreprocess';
 
 //
 //
@@ -25,3 +26,23 @@ export class RegexSchema extends Schema<string> {
     }
   }
 }
+
+//
+//
+
+export class TrimRegexSchema extends Schema<string> {
+  constructor(
+    readonly regex: RegExp,
+    readonly msg: string,
+  ) {
+    super();
+  }
+
+  //
+  //
+
+  declare process: (p: ParseContext) => void;
+}
+
+TrimRegexSchema.prototype.process = RegexSchema.prototype.process;
+TrimRegexSchema.prototype.preprocess = trimPreprocess;
