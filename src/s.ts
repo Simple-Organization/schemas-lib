@@ -1,16 +1,18 @@
 // Parsers and prebuiltin schemas
 export { object, strict } from './parsers/object';
+
+export { string, trimmed } from './parsers/string';
+export { int, id } from './parsers/int';
 export { array } from './parsers/array';
+export { boolean } from './parsers/boolean';
 export { enumType as enum } from './parsers/enum';
 export { union } from './parsers/union';
 export { literal } from './parsers/literal';
 export { file } from './parsers/file';
 export { discriminatedUnion } from './parsers/discriminatedUnion';
+export { record } from './parsers/record';
 
-export { string, trimmed } from './parsers/string';
-export { int, id } from './parsers/int';
 export { float, number, dinheiro } from './parsers/float';
-export { boolean } from './parsers/boolean';
 export { datetimeUTC } from './parsers/datetimeUTC';
 
 // Regex schemas
