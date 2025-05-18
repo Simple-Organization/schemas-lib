@@ -36,6 +36,19 @@ test('Deve retornar erro para valores inválidos', () => {
   errorTesting('nan', schema, { a: 1, b: 'bar' });
 });
 
+//
+//
+
+test('Valores vazios devem ser considerados undefined', () => {
+  const schema = record(int());
+
+  // Valores vazios são tratados como undefined
+  expect(schema.safeParse({ a: 1, b: undefined, c: null, d: '' })).toEqual({
+    success: true,
+    data: { a: 1 },
+  });
+});
+
 // Testa record aninhado
 test('Deve fazer parse de record aninhado', () => {
   const schema = record(record(int()));
@@ -46,6 +59,13 @@ test('Deve fazer parse de record aninhado', () => {
   });
 
   errorTesting('nan', schema, { a: { x: 'foo' } });
+});
+
+//
+test('Não deve funcionar com nan', () => {
+  const schema = record(int());
+
+  errorTesting('nan', schema, { a: 'foo' });
 });
 
 // Testa record vazio

@@ -43,6 +43,9 @@ test('Deve executar o safeParse com sucesso 3', () => {
   errorTesting('nan', schema, ['a', 2]);
   errorTesting('nan', schema, '[1,"a"]');
   errorTesting('not_valid_json', schema, 'not_json');
+  errorTesting('required', schema, [null, 2]);
+  errorTesting('required', schema, [1, undefined]);
+  errorTesting('required', schema, [1, '']);
 });
 
 test('Deve dar erro "not_valid_json" quando recebe uma string', () => {

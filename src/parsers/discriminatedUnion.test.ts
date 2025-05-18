@@ -3,7 +3,6 @@ import { discriminatedUnion } from './discriminatedUnion';
 import { object } from './object';
 import { literal } from './literal';
 import { int } from './int';
-import { SchemaLibError } from '../SchemaLibError';
 import { errorTesting } from '../utils/error';
 
 const CatSchema = object({

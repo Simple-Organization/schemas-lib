@@ -1,6 +1,7 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
+import { EMPTY_VALUE } from '../symbols';
 
 //
 //
@@ -43,23 +44,43 @@ export class RecordSchema<V extends Schema<any>> extends Schema<
     const { value, original, path } = p;
     let hasError = false;
     let newPath = path.slice();
+    const valueSchema = this.valueSchema;
+    p.schema = valueSchema;
+
     for (const key of Object.keys(input)) {
       newPath.push(key);
       p.path = newPath;
       p.value = input[key];
       p.original = input[key];
-      p.schema = this.valueSchema;
       p.hasError = false;
-      this.valueSchema.preprocess(p);
-      if (!p.hasError) {
-        this.valueSchema.process(p);
+
+      valueSchema.preprocess(p);
+
+      if (p.value === EMPTY_VALUE) {
+        // If the value is empty, we don't want to add it to the output
+        newPath.pop();
+        continue;
       }
+
       if (p.hasError) {
         hasError = true;
+        newPath = path.slice();
+        continue;
       }
+
+      valueSchema.process(p);
+
+      if (p.hasError) {
+        hasError = true;
+        newPath = path.slice();
+        output[key] = p.value;
+        continue;
+      }
+
       output[key] = p.value;
       newPath.pop();
     }
+
     p.path = path;
     p.value = value;
     p.original = original;

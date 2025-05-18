@@ -1,6 +1,7 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
 import { jsonPreprocess } from '../preprocess/jsonPreprocess';
+import { EMPTY_VALUE } from '../symbols';
 
 //
 //
@@ -57,14 +58,21 @@ export class ArraySchema<S extends Schema<any>> extends Schema<
 
       element.preprocess(p);
 
-      if (p.hasError) {
+      if (p.value === EMPTY_VALUE) {
+        output[i] = element.processEmpty(p);
+
+        if (p.hasError) {
+          hasError = true;
+          newPath = path.slice();
+          continue;
+        }
+
+        newPath.pop();
+        continue;
+      } else if (p.hasError) {
         hasError = true;
         output[i] = p.value;
         newPath = path.slice();
-        continue;
-      } else if (p.value === null) {
-        output[i] = p.value;
-        newPath.pop();
         continue;
       }
 
