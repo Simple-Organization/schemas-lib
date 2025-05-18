@@ -104,6 +104,10 @@ export class ObjectSchema<
           continue;
         }
 
+        if (p.empty === undefined) {
+          delete output[key];
+        }
+
         newPath.pop();
         continue;
       } else if (p.hasError) {
@@ -126,7 +130,6 @@ export class ObjectSchema<
     }
 
     p.path = path;
-    p.value = values;
     p.original = original;
     p.schema = this;
     p.hasError = hasError;
@@ -137,6 +140,7 @@ export class ObjectSchema<
     }
 
     if (this.strict) {
+      p.value = values;
       return this._strictParser(p, output);
     }
 

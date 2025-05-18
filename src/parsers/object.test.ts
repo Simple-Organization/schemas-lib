@@ -76,11 +76,60 @@ test('Deve validar modo estrito', () => {
   errorTesting('object_extra_keys', schema, { a: 1, b: 2 });
 });
 
+//
+//
+
 test('Deve retornar erro para JSON inválido', () => {
   const schema = object({ a: int() });
 
   errorTesting('not_valid_json', schema, '{a:1}');
 });
+
+//
+//
+
+test('Se o valor empty do parse for undefined, deve remover a propriedade', () => {
+  const schema = object({
+    a: int(),
+    b: int().optional(),
+  });
+
+  const parsed = schema.safeParse({ a: 1, b: null });
+
+  expect(parsed).toEqual({
+    success: true,
+    data: { a: 1 },
+  });
+
+  expect('b' in (parsed as any).data).toBe(false);
+});
+
+//
+//
+
+test("Se o valor empty do parse for null ou '', deve incluir a propriedade", () => {
+  const schema = object({
+    a: int(),
+    b: int().optional(),
+  });
+
+  const parsed1 = schema.safeParse({ a: 1, b: null }, null);
+
+  expect(parsed1).toEqual({
+    success: true,
+    data: { a: 1, b: null },
+  });
+
+  const parsed2 = schema.safeParse({ a: 1, b: null }, '');
+
+  expect(parsed2).toEqual({
+    success: true,
+    data: { a: 1, b: '' as any },
+  });
+});
+
+//
+//
 
 test('Deve fazer parse de um objeto complexo', () => {
   const schema = object({
