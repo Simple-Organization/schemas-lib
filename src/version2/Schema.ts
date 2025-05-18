@@ -1,6 +1,7 @@
 import type { ParseContext, SafeParseReturn } from './types';
 import { getErrorMessage } from './getErrorMessage';
 import { SchemaLibError } from '../SchemaLibError';
+import { EMPTY_VALUE } from '../symbols';
 
 //
 //
@@ -47,7 +48,11 @@ export abstract class Schema<T> {
   /**
    * Set to default value when the value is null or undefined
    */
-  default(defaultSetter: (() => T) | T): Schema<T> {
+  default(defaultSetter?: (() => T) | T | null | undefined): Schema<T> {
+    if (defaultSetter === undefined || defaultSetter === null) {
+      defaultSetter = EMPTY_VALUE as any;
+    }
+
     this.def = (
       typeof defaultSetter === 'function' ? defaultSetter : () => defaultSetter
     ) as () => T;
