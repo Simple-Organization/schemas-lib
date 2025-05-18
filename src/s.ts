@@ -3,6 +3,7 @@ export { object, strict } from './parsers/object';
 
 export { string, trimmed } from './parsers/string';
 export { int, id } from './parsers/int';
+export { any } from './parsers/any';
 export { array } from './parsers/array';
 export { boolean } from './parsers/boolean';
 export { enumType as enum } from './parsers/enum';
