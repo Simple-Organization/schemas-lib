@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { EMPTY_VALUE } from '../symbols';
 
 //
 //
@@ -12,19 +13,15 @@ export class DatetimeSchema extends Schema<string> {
     // Boilerplate to normalize the value with trimming
     if (typeof p.value === 'string') {
       p.value = p.value.trim();
-      if (p.value === '') p.value = null;
-      else p.value = new Date(p.value);
-    } else if (p.value === undefined) p.value = null;
-
-    if (p.value === null) {
-      if (this.req) {
-        return p.error('required');
+      if (p.value === '') {
+        p.value = EMPTY_VALUE;
+      } else {
+        p.value = new Date(p.value);
       }
-
-      if (this.def) {
-        p.value = this.def();
-        return;
-      }
+    } else if (p.value === undefined) {
+      p.value = EMPTY_VALUE;
+    } else if (p.value === null) {
+      p.value = EMPTY_VALUE;
     }
   }
 

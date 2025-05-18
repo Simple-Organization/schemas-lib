@@ -33,6 +33,8 @@ export type ParseContext = {
   path: PropertyKey[];
   /** Define um erro atual */
   error(code: ErrorMessageCode, addon?: any): void;
+  /** The value to use when the value is empty */
+  empty: '' | null | undefined;
 };
 
 //

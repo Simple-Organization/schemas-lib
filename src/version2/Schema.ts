@@ -10,8 +10,10 @@ export abstract class Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
   declare readonly isSchema: true;
+  /** @internal */
   req = true;
-  def: (() => T) | null = null;
+  /** @internal */
+  def: (() => T) | null | typeof EMPTY_VALUE = null;
 
   //
   //  Important methods
@@ -24,16 +26,9 @@ export abstract class Schema<T> {
    */
   preprocess(p: ParseContext): void {
     // Boilerplate to normalize the value without trimming
-    if (p.value === '') p.value = null;
-    else if (p.value === undefined) p.value = null;
-
-    if (p.value === null) {
-      if (this.req) return p.error('required');
-      if (this.def) {
-        p.value = this.def();
-        return;
-      }
-    }
+    if (p.value === '') p.value = EMPTY_VALUE;
+    else if (p.value === undefined) p.value = EMPTY_VALUE;
+    else if (p.value === null) p.value = EMPTY_VALUE;
   }
 
   //
@@ -50,7 +45,9 @@ export abstract class Schema<T> {
    */
   default(defaultSetter?: (() => T) | T | null | undefined): Schema<T> {
     if (defaultSetter === undefined || defaultSetter === null) {
-      defaultSetter = EMPTY_VALUE as any;
+      this.def = EMPTY_VALUE;
+      this.req = false;
+      return this;
     }
 
     this.def = (
@@ -60,58 +57,105 @@ export abstract class Schema<T> {
     return this;
   }
 
+  processEmpty(p: ParseContext): any {
+    if (this.def) {
+      if (this.def === EMPTY_VALUE) {
+        return p.empty;
+      }
+
+      return this.def();
+    }
+
+    if (this.req) {
+      return p.error('required');
+    }
+
+    return p.empty;
+  }
+
   /**
    * Parse the value, return Issue when the value is invalid
+   * @param originalValue The value to parse
+   * @param empty The value to use when the value is empty
    */
-  safeParse(originalValue: any): SafeParseReturn<T> {
-    const c: ParseContext = {
+  safeParse(
+    originalValue: any,
+    empty: '' | null | undefined = undefined,
+  ): SafeParseReturn<T> {
+    const p: ParseContext = {
       value: originalValue,
       original: originalValue,
       schema: this,
       hasError: false,
       issues: [],
       path: [],
+      empty,
       error: (code, addon) => {
-        c.hasError = true;
+        p.hasError = true;
 
-        let message = getErrorMessage(code, c, addon);
+        let message = getErrorMessage(code, p, addon);
         if (!message) {
           message = `Error ${code} not found`;
         }
 
-        c.issues.push({
+        p.issues.push({
           code,
           message: message,
-          value: c.value,
-          original: c.original,
-          path: c.path,
+          value: p.value,
+          original: p.original,
+          path: p.path,
         });
       },
     };
 
-    this.preprocess(c);
-    if (c.hasError) {
+    this.preprocess(p);
+
+    if (p.value === EMPTY_VALUE) {
+      p.value = this.processEmpty(p);
+
+      if (p.hasError) {
+        return {
+          error: new SchemaLibError(p.issues),
+          success: false,
+        };
+      }
+
       return {
-        error: new SchemaLibError(c.issues),
+        data: p.value,
+        success: true,
+      };
+    } else if (p.hasError) {
+      return {
+        error: new SchemaLibError(p.issues),
         success: false,
       };
-    } else if (c.value === null) {
+    }
+
+    this.process(p);
+
+    if (p.value === EMPTY_VALUE) {
+      p.value = this.processEmpty(p);
+
+      if (p.hasError) {
+        return {
+          error: new SchemaLibError(p.issues),
+          success: false,
+        };
+      }
+
       return {
         data: null as any,
         success: true,
       };
-    }
-
-    this.process(c);
-    if (c.hasError) {
+    } else if (p.hasError) {
       return {
-        error: new SchemaLibError(c.issues),
+        error: new SchemaLibError(p.issues),
         success: false,
       };
     }
 
     return {
-      data: c.value,
+      data: p.value,
       success: true,
     };
   }

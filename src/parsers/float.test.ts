@@ -45,10 +45,13 @@ test('Deve executar o safeParse com sucesso', () => {
 test('Deve ser opcional com sucesso', () => {
   const schema = new NumberSchema().optional();
 
-  expect(schema.safeParse('')).toEqual({ success: true, data: null });
-  expect(schema.safeParse('   ')).toEqual({ success: true, data: null });
-  expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
-  expect(schema.safeParse(null)).toEqual({ success: true, data: null });
+  expect(schema.safeParse('')).toEqual({ success: true, data: undefined });
+  expect(schema.safeParse('   ')).toEqual({ success: true, data: undefined });
+  expect(schema.safeParse(undefined)).toEqual({
+    success: true,
+    data: undefined,
+  });
+  expect(schema.safeParse(null)).toEqual({ success: true, data: undefined });
   expect(schema.safeParse(1)).toEqual({ success: true, data: 1 });
 });
 
@@ -63,4 +66,12 @@ test('Deve ter default com sucesso', () => {
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: 1 });
   expect(schema.safeParse(null)).toEqual({ success: true, data: 1 });
   expect(schema.safeParse(2)).toEqual({ success: true, data: 2 });
+
+  const schema2 = new NumberSchema().default(1);
+
+  expect(schema2.safeParse('')).toEqual({ success: true, data: 1 });
+  expect(schema2.safeParse('   ')).toEqual({ success: true, data: 1 });
+  expect(schema2.safeParse(undefined)).toEqual({ success: true, data: 1 });
+  expect(schema2.safeParse(null)).toEqual({ success: true, data: 1 });
+  expect(schema2.safeParse(2)).toEqual({ success: true, data: 2 });
 });

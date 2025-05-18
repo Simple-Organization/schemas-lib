@@ -34,9 +34,11 @@ test('Deve executar o safeParse com sucesso', () => {
 test('Deve ser opcional com sucesso', () => {
   const schema = union([int(), string()]).optional();
 
-  expect(schema.safeParse('')).toEqual({ success: true, data: null });
-  expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
-  expect(schema.safeParse(null)).toEqual({ success: true, data: null });
+  const success: any = { success: true };
+
+  expect(schema.safeParse('')).toEqual(success);
+  expect(schema.safeParse(undefined)).toEqual(success);
+  expect(schema.safeParse(null)).toEqual(success);
   expect(schema.safeParse(2)).toEqual({ success: true, data: 2 });
   expect(schema.safeParse('abc')).toEqual({ success: true, data: 'abc' });
 });

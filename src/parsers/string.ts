@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import { Schema } from '../version2/Schema';
+import { EMPTY_VALUE } from '../symbols';
 
 //
 //
@@ -15,19 +16,17 @@ export class StringSchema extends Schema<string> {
   preprocess(p: ParseContext): void {
     // Boilerplate to normalize the value with trimming
     if (typeof p.value === 'string') {
-      if (this.trim) p.value = p.value.trim();
-      if (p.value === '') p.value = null;
-    } else if (p.value === undefined) p.value = null;
-
-    if (p.value === null) {
-      if (this.req) {
-        return p.error('required');
+      if (this.trim) {
+        p.value = p.value.trim();
       }
 
-      if (this.def) {
-        p.value = this.def();
-        return;
+      if (p.value === '') {
+        p.value = EMPTY_VALUE;
       }
+    } else if (p.value === undefined) {
+      p.value = EMPTY_VALUE;
+    } else if (p.value === null) {
+      p.value = EMPTY_VALUE;
     }
   }
 

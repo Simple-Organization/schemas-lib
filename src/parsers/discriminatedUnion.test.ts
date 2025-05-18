@@ -53,13 +53,12 @@ test('Deve falhar se não for um json válido', () => {
 });
 
 test('Deve ser opcional com sucesso', () => {
+  const success: any = { success: true };
+
   const optionalSchema = schema.optional();
-  expect(optionalSchema.safeParse('')).toEqual({ success: true, data: null });
-  expect(optionalSchema.safeParse(undefined)).toEqual({
-    success: true,
-    data: null,
-  });
-  expect(optionalSchema.safeParse(null)).toEqual({ success: true, data: null });
+  expect(optionalSchema.safeParse('')).toEqual(success);
+  expect(optionalSchema.safeParse(undefined)).toEqual(success);
+  expect(optionalSchema.safeParse(null)).toEqual(success);
   expect(
     optionalSchema.safeParse({ type: 'cat', name: 'meow', age: 2 }),
   ).toEqual({

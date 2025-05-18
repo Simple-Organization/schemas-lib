@@ -1,5 +1,6 @@
 import type { ParseContext } from '../version2/types';
 import type { Schema } from '../version2/Schema';
+import { EMPTY_VALUE } from '../symbols';
 
 //
 //
@@ -9,22 +10,13 @@ export function numberPreprocess(this: Schema<number>, p: ParseContext): void {
     p.value = p.value.trim();
 
     if (p.value === '') {
-      p.value = null;
+      p.value = EMPTY_VALUE;
     } else {
       p.value = Number(p.value);
     }
   } else if (p.value === undefined) {
-    p.value = null;
-  }
-
-  if (p.value === null) {
-    if (this.req) {
-      return p.error('required');
-    }
-
-    if (this.def) {
-      p.value = this.def();
-      return;
-    }
+    p.value = EMPTY_VALUE;
+  } else if (p.value === null) {
+    p.value = EMPTY_VALUE;
   }
 }

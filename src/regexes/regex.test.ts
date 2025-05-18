@@ -46,9 +46,11 @@ test('Deve usar mensagem customizada', () => {
 test('Deve ser opcional com sucesso', () => {
   const schema = regex(/^[a-z]+$/, 'Apenas letras minúsculas').optional();
 
-  expect(schema.safeParse('')).toEqual({ success: true, data: null });
-  expect(schema.safeParse(undefined)).toEqual({ success: true, data: null });
-  expect(schema.safeParse(null)).toEqual({ success: true, data: null });
+  const success: any = { success: true };
+
+  expect(schema.safeParse('')).toEqual(success);
+  expect(schema.safeParse(undefined)).toEqual(success);
+  expect(schema.safeParse(null)).toEqual(success);
   expect(schema.safeParse('abc')).toEqual({ success: true, data: 'abc' });
 });
 
