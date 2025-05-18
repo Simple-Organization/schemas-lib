@@ -12,7 +12,6 @@ export class RecordSchema<V extends Schema<any>> extends Schema<
   valueSchema: V;
   /** Property used only for type inference */
   declare readonly _o: Record<string, V['_o']>;
-  declare readonly isSchema: true;
 
   req = true;
 

@@ -13,7 +13,6 @@ export class UnionSchema<S extends readonly Schema<any>[]> extends Schema<
   schemas: S;
   /** Property used only for type inference */
   declare readonly _o: OutputOf<S[number]>;
-  declare readonly isSchema: true;
 
   req = true;
 

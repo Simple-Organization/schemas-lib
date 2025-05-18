@@ -16,7 +16,6 @@ export class DistinctSchema<
   Schemas extends readonly ObjectSchema<any>[],
 > extends Schema<Schemas[number]['_o']> {
   declare readonly _o: Schemas[number]['_o'];
-  declare readonly isSchema: true;
 
   readonly discriminator: Prop;
   readonly schemas: Schemas;

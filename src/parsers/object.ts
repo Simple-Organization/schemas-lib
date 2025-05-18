@@ -39,7 +39,6 @@ export class ObjectSchema<
 > extends Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
-  declare readonly isSchema: true;
 
   req = true;
   strict = false;

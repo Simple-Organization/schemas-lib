@@ -9,7 +9,6 @@ import { EMPTY_VALUE } from '../symbols';
 export abstract class Schema<T> {
   /** Property used only for type inference */
   declare readonly _o: T;
-  declare readonly isSchema: true;
   /** @internal */
   req = true;
   /** @internal */
@@ -161,10 +160,12 @@ export abstract class Schema<T> {
   }
 
   /**
-   * Parse the value, throw IssueError when the value is invalid
+   * Parse the value, throw {@link SchemaLibError} when the value is invalid
+   * @param originalValue The value to parse
+   * @param empty The value to use when the value is empty
    */
-  parse(originalValue: any): T {
-    const parsed = this.safeParse(originalValue);
+  parse(originalValue: any, empty: '' | null | undefined = undefined): T {
+    const parsed = this.safeParse(originalValue, empty);
 
     if ('error' in parsed) {
       throw parsed.error;

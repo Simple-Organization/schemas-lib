@@ -12,7 +12,6 @@ export class ArraySchema<S extends Schema<any>> extends Schema<
   element: S;
   /** Property used only for type inference */
   declare readonly _o: Array<S extends Schema<infer E> ? E : never>;
-  declare readonly isSchema: true;
 
   req = true;
 
