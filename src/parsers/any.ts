@@ -1,9 +1,11 @@
+import { EMPTY_VALUE } from '../symbols';
 import { Schema } from '../version2/Schema';
 
 //
 //
 
 class AnySchema extends Schema<any> {
+  def = EMPTY_VALUE as any;
   preprocess(): void {}
   process(): void {}
 }
