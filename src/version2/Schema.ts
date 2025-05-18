@@ -123,6 +123,20 @@ export abstract class Schema<T> {
 
     return parsed.data;
   }
+
+  /**
+   * Modifica o valor enviado, só é executado se o valor for válido pelos parsers anteriores
+   */
+  transform<U>(fn: (value: T) => U): Schema<U> {
+    const processCopy = this.process.bind(this);
+    this.process = (p: ParseContext) => {
+      processCopy(p);
+      if (p.hasError) return;
+      p.value = fn(p.value);
+    };
+
+    return this as any;
+  }
 }
 
 //

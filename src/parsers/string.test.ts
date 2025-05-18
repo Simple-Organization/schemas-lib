@@ -80,3 +80,18 @@ test.each([
   expect(schema.safeParse(null)).toEqual({ success: true, data: '1' });
   expect(schema.safeParse('2')).toEqual({ success: true, data: '2' });
 });
+
+//
+//
+
+test('Deve transformar o valor com sucesso', () => {
+  const schema = string().transform((value) => {
+    return value + '1';
+  });
+
+  expect(schema.safeParse('2')).toEqual({ success: true, data: '21' });
+  errorTesting('not_string_type', schema, 2);
+  errorTesting('not_string_type', schema, true);
+  errorTesting('not_string_type', schema, false);
+  expect(schema.safeParse('aaaa')).toEqual({ success: true, data: 'aaaa1' });
+});
