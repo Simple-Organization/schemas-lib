@@ -95,3 +95,57 @@ export function unflatten(flatObj: Record<string, any>): AnyObject {
 
   return result;
 }
+
+/**
+ * Flatten: transforma um objeto aninhado em um mapa de chaves string para valores em string
+ *
+ * Valores null e undefined são convertidos para string vazia.
+ *
+ * E objetos e arrays vazios são convertidos para string vazia.
+ *
+ * Exemplo: { a: { b: [ { c: 1 } ] }, b: null } -> { "a.b.0.c": '1', "b": '' }
+ */
+export function flattenStr(obj: any): Record<string, string> {
+  const result: Record<string, string> = {};
+
+  function recurse(curr: any, path: string) {
+    if (
+      Object(curr) !== curr ||
+      curr instanceof Date ||
+      curr instanceof RegExp ||
+      curr instanceof File
+    ) {
+      // valor primitivo ou instância não-aninhável
+      result[path] = curr === null || curr === undefined ? '' : String(curr);
+    } else if (Array.isArray(curr)) {
+      // array: iterar índices
+      curr.forEach((item, index) => {
+        const newPath = path ? `${path}.${index}` : `${index}`;
+        recurse(item, newPath);
+      });
+      if (curr.length === 0) {
+        result[path] = '';
+      }
+    } else {
+      // objeto: iterar chaves
+      let isEmpty = true;
+      for (const key in curr) {
+        isEmpty = false;
+        const newPath = path ? `${path}.${key}` : key;
+        recurse(curr[key], newPath);
+      }
+      if (isEmpty && path) {
+        result[path] = '';
+      }
+    }
+  }
+
+  recurse(obj, '');
+
+  // remover chave vazia
+  if (result.hasOwnProperty('')) {
+    delete result[''];
+  }
+
+  return result;
+}

@@ -27,3 +27,6 @@ export { month } from './regexes/month';
 export { telefone } from './regexes/telefone';
 export { nome } from './regexes/nome';
 export { textarea } from './regexes/textarea';
+
+// infer
+export { type InferSchema as infer } from './version2/types';

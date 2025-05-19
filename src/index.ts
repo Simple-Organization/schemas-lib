@@ -7,7 +7,7 @@ export { SchemaLibError } from './SchemaLibError';
 // Utils
 export { getParsedType } from './utils/getParsedType';
 export { getSchemaByPath } from './utils/getSchemaByPath';
-export { flatten, unflatten } from './utils/flatten';
+export { flatten, unflatten, flattenStr } from './utils/flatten';
 
 // Default
 export type {
