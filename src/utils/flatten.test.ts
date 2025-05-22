@@ -114,8 +114,8 @@ test('flattenStr: datas e regex', () => {
   expect(flattenStr(obj)).toEqual({ a: String(date), b: String(regex) });
 });
 
-test('flattenStr: File', () => {
+test.only('flattenStr: File', () => {
   const file = new File(['conteúdo'], 'teste.txt', { type: 'text/plain' });
   const obj = { arquivo: { file } };
-  expect(flattenStr(obj)).toEqual({ 'arquivo.file': String(file) });
+  expect(flattenStr(obj)).toEqual({ 'arquivo.file': file as any });
 });

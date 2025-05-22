@@ -103,20 +103,23 @@ export function unflatten(flatObj: Record<string, any>): AnyObject {
  *
  * E objetos e arrays vazios são convertidos para string vazia.
  *
+ * Tipos File são mantidos como File.
+ *
  * Exemplo: { a: { b: [ { c: 1 } ] }, b: null } -> { "a.b.0.c": '1', "b": '' }
  */
-export function flattenStr(obj: any): Record<string, string> {
-  const result: Record<string, string> = {};
+export function flattenStr(obj: any): Record<string, string | File> {
+  const result: Record<string, string | File> = {};
 
   function recurse(curr: any, path: string) {
     if (
       Object(curr) !== curr ||
       curr instanceof Date ||
-      curr instanceof RegExp ||
-      curr instanceof File
+      curr instanceof RegExp
     ) {
-      // valor primitivo ou instância não-aninhável
       result[path] = curr === null || curr === undefined ? '' : String(curr);
+    } else if (curr instanceof File) {
+      // Mantém como File
+      result[path] = curr;
     } else if (Array.isArray(curr)) {
       // array: iterar índices
       curr.forEach((item, index) => {

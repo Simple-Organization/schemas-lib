@@ -3,6 +3,7 @@ import { object, strict } from './object';
 import { id, int } from './int';
 import { float, number } from './float';
 import { errorTesting } from '../utils/error';
+import { array } from './array';
 
 test('Deve executar o safeParse com sucesso', () => {
   const schema = object({
@@ -181,5 +182,39 @@ test('Os valores default de uma propriedade devem ser aplicadas', () => {
   expect(parsed).toEqual({
     success: true,
     data: { a: 1 },
+  });
+});
+
+//
+//
+
+test('Os valores default de uma propriedade devem ser aplicada 2', () => {
+  const google_maps_query_schema = object({
+    lat: number().default(-23.6594002),
+    lng: number().default(-46.4473205),
+    zoom: number().default(15),
+  });
+
+  const parsed = google_maps_query_schema.parse({});
+
+  expect(parsed).toEqual({
+    lat: -23.6594002,
+    lng: -46.4473205,
+    zoom: 15,
+  });
+});
+
+//
+//
+
+test('Um objeto com um array como string deve ter seu valor modificado corretamente', () => {
+  const google_maps_query_schema = object({
+    ids: array(int()).default([]),
+  });
+
+  const parsed = google_maps_query_schema.parse('{ "ids": "[1,2,3]" }');
+
+  expect(parsed).toEqual({
+    ids: [1, 2, 3],
   });
 });
