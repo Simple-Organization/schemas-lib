@@ -3,6 +3,9 @@ import { array } from './array';
 import { int } from '../parsers/int';
 import { errorTesting } from '../utils/error';
 
+//
+//
+
 test('Deve executar o safeParse com sucesso 1', () => {
   const schema = array(int());
 
@@ -48,11 +51,17 @@ test('Deve executar o safeParse com sucesso 3', () => {
   errorTesting('required', schema, [1, '']);
 });
 
+//
+//
+
 test('Deve dar erro "not_valid_json" quando recebe uma string', () => {
   const schema = array(int()).optional();
 
   errorTesting('not_valid_json', schema, 'new Set([1, 2, 3])');
 });
+
+//
+//
 
 test('Deve ser opcional com sucesso', () => {
   const schema = array(int()).optional();
@@ -65,6 +74,9 @@ test('Deve ser opcional com sucesso', () => {
   expect(schema.safeParse([1, 2])).toEqual({ success: true, data: [1, 2] });
 });
 
+//
+//
+
 test('Deve ter default com sucesso', () => {
   const schema = array(int()).default(() => [1, 2]);
 
@@ -72,4 +84,13 @@ test('Deve ter default com sucesso', () => {
   expect(schema.safeParse(undefined)).toEqual({ success: true, data: [1, 2] });
   expect(schema.safeParse(null)).toEqual({ success: true, data: [1, 2] });
   expect(schema.safeParse([3])).toEqual({ success: true, data: [3] });
+});
+
+//
+//
+
+test('O valor default dos itens do array devem ser aplicados', () => {
+  const schema = array(int().default(1));
+
+  expect(schema.safeParse([null])).toEqual({ success: true, data: [1] });
 });

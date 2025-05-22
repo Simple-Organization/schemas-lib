@@ -104,7 +104,7 @@ export class ObjectSchema<
           continue;
         }
 
-        if (p.empty === undefined) {
+        if (p.empty === undefined && output[key] === undefined) {
           delete output[key];
         }
 

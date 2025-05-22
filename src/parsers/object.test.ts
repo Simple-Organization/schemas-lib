@@ -167,3 +167,19 @@ test('Deve fazer parse de um objeto complexo', () => {
     },
   });
 });
+
+//
+//
+
+test('Os valores default de uma propriedade devem ser aplicadas', () => {
+  const schema = object({
+    a: int().default(1),
+  });
+
+  const parsed = schema.safeParse({});
+
+  expect(parsed).toEqual({
+    success: true,
+    data: { a: 1 },
+  });
+});
