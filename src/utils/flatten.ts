@@ -56,12 +56,25 @@ export function flatten(obj: any): Record<string, any> {
 /**
  * Unflatten: reconstrói um objeto a partir de suas chaves string flattened.
  * Exemplo: { "a.b.0.c": 1 } -> { a: { b: [ { c: 1 } ] } }
+ *
+ * Também aceita FormData como entrada.
  */
-export function unflatten(flatObj: Record<string, any>): AnyObject {
+export function unflatten(flatObj: Record<string, any> | FormData): AnyObject {
+  // Se for FormData, converte para objeto plano
+  let flat: Record<string, any>;
+  if (typeof FormData !== 'undefined' && flatObj instanceof FormData) {
+    flat = {};
+    for (const [key, value] of flatObj.entries()) {
+      flat[key] = value;
+    }
+  } else {
+    flat = flatObj as Record<string, any>;
+  }
+
   const result: AnyObject = {};
 
-  for (const flatKey in flatObj) {
-    const value = flatObj[flatKey];
+  for (const flatKey in flat) {
+    const value = flat[flatKey];
     const pathSegments = flatKey.split('.');
     let curr: any = result;
 

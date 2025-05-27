@@ -69,6 +69,14 @@ test('unflatten: objeto vazio', () => {
   expect(unflatten(flat)).toEqual({ a: {} });
 });
 
+test('unflatten: FormData', () => {
+  const fd = new FormData();
+  fd.set('a.b.0', 'x');
+  fd.set('a.b.1', 'y');
+  fd.set('c', 'z');
+  expect(unflatten(fd)).toEqual({ a: { b: ['x', 'y'] }, c: 'z' });
+});
+
 test('flatten/unflatten: inverso', () => {
   const obj = { a: { b: [{ c: 1 }, { d: 2 }] }, e: null };
   expect(unflatten(flatten(obj))).toEqual(obj);
